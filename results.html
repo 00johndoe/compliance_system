@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GH-CYBERCOMPLY | Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+        .bg-grid { position: fixed; inset: 0; z-index: 0; background-image: radial-gradient(circle, rgba(56,189,248,0.06) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.12; pointer-events: none; z-index: 0; animation: float 20s ease-in-out infinite; }
+        .orb-1 { width: 500px; height: 500px; background: #38bdf8; top: -100px; right: -100px; }
+        .orb-2 { width: 400px; height: 400px; background: #818cf8; bottom: -80px; left: -80px; animation-delay: -7s; }
+        .orb-3 { width: 350px; height: 350px; background: #f472b6; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 33% { transform: translateY(-30px) scale(1.05); } 66% { transform: translateY(20px) scale(0.95); } }
+        nav { background: rgba(15,23,42,0.7); backdrop-filter: blur(20px) saturate(1.5); border-bottom: 1px solid rgba(56,189,248,0.1); position: sticky; top: 0; z-index: 50; }
+        .nav-link { position: relative; color: #94a3b8; font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.3s; text-decoration: none; font-size: 0.9rem; }
+        .nav-link:hover { color: #e2e8f0; background: rgba(56,189,248,0.08); }
+        .nav-link.active { color: #38bdf8; }
+        .nav-link.active::after { content: ''; position: absolute; bottom: -14px; left: 10%; right: 10%; height: 3px; background: linear-gradient(90deg, #38bdf8, #818cf8); border-radius: 3px; }
+        .logo-pulse { animation: logoPulse 3s ease-in-out infinite; }
+        @keyframes logoPulse { 0%, 100% { filter: drop-shadow(0 0 6px rgba(56,189,248,0.3)); } 50% { filter: drop-shadow(0 0 16px rgba(56,189,248,0.6)); } }
+        .card { background: rgba(30,41,59,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(71,85,105,0.3); border-radius: 16px; padding: 1.5rem; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,0.3); box-shadow: 0 8px 40px rgba(56,189,248,0.08); }
+        .stat-card { background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(30,41,59,0.4)); border: 1px solid rgba(71,85,105,0.3); border-radius: 16px; padding: 1.5rem; position: relative; overflow: hidden; transition: all 0.4s; }
+        .stat-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 40%, rgba(56,189,248,0.04) 50%, transparent 60%); animation: shimmer 4s ease-in-out infinite; }
+        @keyframes shimmer { 0%, 100% { transform: translateX(-100%) rotate(45deg); } 50% { transform: translateX(100%) rotate(45deg); } }
+        .stat-card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,0.3); }
+        .hero-border { position: relative; border-radius: 20px; padding: 2.5rem; background: rgba(30,41,59,0.5); backdrop-filter: blur(10px); overflow: hidden; }
+        .hero-border::before { content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px; background: linear-gradient(135deg, #38bdf8, #818cf8, #f472b6, #38bdf8); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: borderRotate 6s linear infinite; background-size: 300% 300%; }
+        @keyframes borderRotate { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 60; }
+        .mobile-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: rgba(15,23,42,0.95); backdrop-filter: blur(20px); z-index: 70; transition: right 0.35s cubic-bezier(0.16,1,0.3,1); padding: 1.5rem; border-left: 1px solid rgba(56,189,248,0.1); }
+        .mobile-drawer.open { right: 0; }
+        .mobile-overlay.open { display: block; }
+        .mobile-drawer .nav-link { display: block; padding: 0.85rem 1rem; margin-bottom: 0.25rem; border-radius: 10px; font-size: 1rem; }
+        .mobile-drawer .nav-link.active { background: rgba(56,189,248,0.1); border-left: 3px solid #38bdf8; }
+        .mobile-drawer .nav-link.active::after { display: none; }
+        .scroll-top { position: fixed; bottom: 2rem; right: 2rem; width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #38bdf8, #818cf8); color: white; border: none; cursor: pointer; z-index: 40; display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(20px); transition: all 0.3s; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(56,189,248,0.3); }
+        .scroll-top.visible { opacity: 1; transform: translateY(0); }
+        .badge-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.85rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+        .progress-bar-bg { width: 100%; height: 8px; background: rgba(71,85,105,0.3); border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(71,85,105,0.3); background: rgba(15,23,42,0.4); }
+        th:first-child { border-radius: 12px 0 0 0; } th:last-child { border-radius: 0 12px 0 0; }
+        td { padding: 0.75rem 1rem; font-size: 0.85rem; border-bottom: 1px solid rgba(71,85,105,0.15); color: #cbd5e1; }
+        tr:hover td { background: rgba(56,189,248,0.03); }
+        .btn-primary { padding: 0.75rem 2rem; border: none; border-radius: 12px; background: linear-gradient(135deg, #38bdf8, #818cf8); color: white; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif; box-shadow: 0 4px 15px rgba(56,189,248,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(56,189,248,0.4); }
+        .btn-secondary { padding: 0.75rem 2rem; border: 1px solid rgba(71,85,105,0.4); border-radius: 12px; background: transparent; color: #94a3b8; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif; }
+        .btn-secondary:hover { border-color: rgba(56,189,248,0.4); color: #e2e8f0; }
+        @media print { .bg-grid, .orb, nav, .mobile-overlay, .mobile-drawer, .scroll-top, footer { display: none !important; } body { background: white; color: #1e293b; } .card, .stat-card, .hero-border { background: white; border: 1px solid #e2e8f0; box-shadow: none; } .card:hover, .stat-card:hover { transform: none; } }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <nav>
+        <div style="max-width:1280px;margin:auto;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+            <a href="index.html" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;">
+                <div class="logo-pulse" style="width:40px;height:40px;background:linear-gradient(135deg,#38bdf8,#818cf8);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-shield-halved" style="color:white;font-size:1.15rem;"></i>
+                </div>
+                <span style="font-size:1.15rem;font-weight:800;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+            </a>
+            <div style="display:flex;gap:0.25rem;" id="desktopNav">
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="mapping.html" class="nav-link">Control Mapping</a>
+                <a href="assessment.html" class="nav-link">Assessment</a>
+                <a href="results.html" class="nav-link active">Results</a>
+                <a href="gaps.html" class="nav-link">Gap Analysis</a>
+            </div>
+            <button onclick="toggleDrawer()" style="display:none;background:none;border:1px solid rgba(71,85,105,0.5);color:#94a3b8;width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:1.1rem;" id="menuBtn"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="overlay" onclick="toggleDrawer()"></div>
+    <div class="mobile-drawer" id="drawer">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+            <span style="font-weight:800;color:white;font-size:1.1rem;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+            <button onclick="toggleDrawer()" style="background:none;border:none;color:#94a3b8;font-size:1.2rem;cursor:pointer;"><i class="fas fa-xmark"></i></button>
+        </div>
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <a href="mapping.html" class="nav-link">Control Mapping</a>
+        <a href="assessment.html" class="nav-link">Assessment</a>
+        <a href="results.html" class="nav-link active">Results</a>
+        <a href="gaps.html" class="nav-link">Gap Analysis</a>
+    </div>
+
+    <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+    <main style="position:relative;z-index:1;max-width:1280px;margin:auto;padding:1.5rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;font-size:0.85rem;color:#64748b;" class="reveal">
+            <i class="fas fa-home" style="color:#38bdf8;"></i>
+            <a href="index.html" style="color:#64748b;text-decoration:none;">Dashboard</a>
+            <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
+            <span style="color:#38bdf8;">Results</span>
+        </div>
+
+        <div class="hero-border reveal" style="margin-bottom:2rem;text-align:center;">
+            <div class="badge-pill" style="background:rgba(52,211,153,0.1);color:#34d399;margin-bottom:1rem;display:inline-flex;">
+                <i class="fas fa-chart-pie"></i> Compliance Report
+            </div>
+            <h1 style="font-size:2.2rem;font-weight:900;color:white;margin-bottom:0.75rem;">Assessment Results</h1>
+            <p style="color:#94a3b8;max-width:600px;margin:auto;" id="reportSubtitle">Comprehensive compliance analysis and recommendations.</p>
+        </div>
+
+        <div id="noData" style="display:none;">
+            <div class="card" style="text-align:center;padding:3rem;">
+                <i class="fas fa-inbox" style="font-size:3rem;color:#475569;margin-bottom:1rem;"></i>
+                <h2 style="color:white;margin-bottom:0.5rem;">No Assessment Data</h2>
+                <p style="color:#94a3b8;margin-bottom:1.5rem;">Complete an assessment first to view results.</p>
+                <a href="assessment.html" class="btn-primary" style="text-decoration:none;display:inline-block;">Start Assessment</a>
+            </div>
+        </div>
+
+        <div id="resultsContent" style="display:none;">
+            <!-- Executive Summary -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;" class="reveal" id="summaryGrid">
+                <div class="stat-card" style="text-align:center;">
+                    <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.5rem;">Ghana NCF Score</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:#38bdf8;" id="ncfScore">0%</div>
+                    <div style="font-size:0.75rem;color:#94a3b8;" id="ncfMaturity">Level 0</div>
+                </div>
+                <div class="stat-card" style="text-align:center;">
+                    <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.5rem;">ISO 27002 Score</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:#818cf8;" id="isoScore">0%</div>
+                    <div style="font-size:0.75rem;color:#94a3b8;" id="isoMaturity">Level 0</div>
+                </div>
+                <div class="stat-card" style="text-align:center;">
+                    <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.5rem;">Overall Alignment</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:#34d399;" id="overallScore">0%</div>
+                    <div style="font-size:0.75rem;color:#94a3b8;" id="overallMaturity">Level 0</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;" id="chartsGrid">
+                <div class="card reveal">
+                    <h3 style="font-size:1rem;font-weight:700;color:white;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                        <i class="fas fa-chart-radar" style="color:#38bdf8;"></i> Ghana NCF Radar
+                    </h3>
+                    <canvas id="ncfRadar" style="max-height:300px;"></canvas>
+                </div>
+                <div class="card reveal">
+                    <h3 style="font-size:1rem;font-weight:700;color:white;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                        <i class="fas fa-chart-radar" style="color:#818cf8;"></i> ISO 27002 Radar
+                    </h3>
+                    <canvas id="isoRadar" style="max-height:300px;"></canvas>
+                </div>
+            </div>
+
+            <!-- Comparison Bar Chart -->
+            <div class="card reveal" style="margin-bottom:2rem;">
+                <h3 style="font-size:1rem;font-weight:700;color:white;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                    <i class="fas fa-chart-bar" style="color:#fbbf24;"></i> Framework Comparison
+                </h3>
+                <canvas id="compChart" style="max-height:300px;"></canvas>
+            </div>
+
+            <!-- Domain Breakdown -->
+            <div class="card reveal" style="margin-bottom:2rem;">
+                <h3 style="font-size:1rem;font-weight:700;color:white;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;">
+                    <i class="fas fa-layer-group" style="color:#34d399;"></i> Domain Breakdown
+                </h3>
+                <div id="domainBreakdown" style="display:flex;flex-direction:column;gap:1rem;"></div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="card reveal" style="margin-bottom:2rem;">
+                <h3 style="font-size:1rem;font-weight:700;color:white;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;">
+                    <i class="fas fa-lightbulb" style="color:#fbbf24;"></i> Prioritized Recommendations
+                </h3>
+                <div id="recommendations" style="display:flex;flex-direction:column;gap:0.75rem;"></div>
+            </div>
+
+            <!-- Detailed Scores Table -->
+            <div class="card reveal" style="margin-bottom:2rem;padding:0;overflow:hidden;">
+                <div style="padding:1.5rem 1.5rem 1rem;">
+                    <h3 style="font-size:1rem;font-weight:700;color:white;display:flex;align-items:center;gap:0.5rem;">
+                        <i class="fas fa-table" style="color:#818cf8;"></i> Detailed Scores
+                    </h3>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table id="detailTable">
+                        <thead><tr><th>Framework</th><th>Domain/Theme</th><th>Avg Score</th><th>Maturity</th><th>Status</th></tr></thead>
+                        <tbody id="detailBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="card reveal" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+                <button class="btn-primary" onclick="window.print()"><i class="fas fa-print" style="margin-right:0.5rem;"></i> Print Report</button>
+                <button class="btn-secondary" onclick="exportJSON()"><i class="fas fa-download" style="margin-right:0.5rem;"></i> Export JSON</button>
+                <a href="assessment.html" class="btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;"><i class="fas fa-redo" style="margin-right:0.5rem;"></i> New Assessment</a>
+            </div>
+        </div>
+    </main>
+
+    <footer style="position:relative;z-index:1;border-top:1px solid rgba(71,85,105,0.3);padding:2rem 1.5rem;text-align:center;margin-top:2rem;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.5rem;">
+            <i class="fas fa-shield-halved" style="color:#38bdf8;"></i>
+            <span style="font-weight:700;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+        </div>
+        <p style="font-size:0.8rem;color:#64748b;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
+        <p style="font-size:0.75rem;color:#475569;margin-top:0.25rem;">&copy; 2025 All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
+        function handleResize() {
+            const btn = document.getElementById('menuBtn'), nav = document.getElementById('desktopNav');
+            if (window.innerWidth < 768) { btn.style.display = 'flex'; nav.style.display = 'none'; } else { btn.style.display = 'none'; nav.style.display = 'flex'; }
+            const sg = document.getElementById('summaryGrid'), cg = document.getElementById('chartsGrid');
+            if (window.innerWidth < 640) { if(sg) sg.style.gridTemplateColumns = '1fr'; if(cg) cg.style.gridTemplateColumns = '1fr'; }
+            else { if(sg) sg.style.gridTemplateColumns = 'repeat(3,1fr)'; if(cg) cg.style.gridTemplateColumns = '1fr 1fr'; }
+        }
+        window.addEventListener('resize', handleResize); handleResize();
+        window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300); });
+        const observer = new IntersectionObserver((entries) => { entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); }); }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        const maturityLabels = ['Non-existent','Initial','Repeatable','Defined','Managed','Optimized'];
+        const maturityColors = ['#ef4444','#f97316','#fbbf24','#38bdf8','#34d399','#818cf8'];
+        function getMaturityLevel(score) { return Math.round(score * 5 / 100); }
+        function getStatusColor(pct) { return pct >= 80 ? '#34d399' : pct >= 60 ? '#38bdf8' : pct >= 40 ? '#fbbf24' : pct >= 20 ? '#f97316' : '#ef4444'; }
+
+        function processResults() {
+            const raw = localStorage.getItem('assessmentData');
+            if (!raw) { document.getElementById('noData').style.display = 'block'; return; }
+            const data = JSON.parse(raw);
+            document.getElementById('resultsContent').style.display = 'block';
+            if (data.organization?.name) document.getElementById('reportSubtitle').textContent = `Compliance report for ${data.organization.name}`;
+
+            // Calculate domain scores
+            const ncfDomains = {}, isoDomains = {};
+            Object.entries(data.ncf || {}).forEach(([key, val]) => {
+                const parts = key.split('_'); const domain = parts.slice(1, -1).join(' ').replace(/_/g, ' ');
+                if (!ncfDomains[domain]) ncfDomains[domain] = [];
+                ncfDomains[domain].push(val);
+            });
+            Object.entries(data.iso || {}).forEach(([key, val]) => {
+                const parts = key.split('_'); const domain = parts.slice(1, -1).join(' ').replace(/_/g, ' ');
+                if (!isoDomains[domain]) isoDomains[domain] = [];
+                isoDomains[domain].push(val);
+            });
+
+            const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+            const toPct = v => Math.round((v / 5) * 100);
+
+            const ncfScores = Object.entries(ncfDomains).map(([k, v]) => ({ domain: k, avg: avg(v), pct: toPct(avg(v)) }));
+            const isoScores = Object.entries(isoDomains).map(([k, v]) => ({ domain: k, avg: avg(v), pct: toPct(avg(v)) }));
+
+            const allNcf = Object.values(data.ncf || {}); const allIso = Object.values(data.iso || {});
+            const ncfPct = toPct(avg(allNcf)), isoPct = toPct(avg(allIso)), overallPct = Math.round((ncfPct + isoPct) / 2);
+
+            document.getElementById('ncfScore').textContent = ncfPct + '%';
+            document.getElementById('isoScore').textContent = isoPct + '%';
+            document.getElementById('overallScore').textContent = overallPct + '%';
+            document.getElementById('ncfMaturity').textContent = maturityLabels[getMaturityLevel(ncfPct)];
+            document.getElementById('isoMaturity').textContent = maturityLabels[getMaturityLevel(isoPct)];
+            document.getElementById('overallMaturity').textContent = maturityLabels[getMaturityLevel(overallPct)];
+
+            // Radar Charts
+            const chartOpts = { responsive: true, maintainAspectRatio: true, scales: { r: { beginAtZero: true, max: 100, ticks: { color: '#64748b', backdropColor: 'transparent', font: { size: 10 } }, grid: { color: 'rgba(71,85,105,0.3)' }, pointLabels: { color: '#94a3b8', font: { size: 10 } } } }, plugins: { legend: { display: false } } };
+            new Chart(document.getElementById('ncfRadar'), { type: 'radar', data: { labels: ncfScores.map(s => s.domain.substring(0, 15)), datasets: [{ data: ncfScores.map(s => s.pct), backgroundColor: 'rgba(56,189,248,0.2)', borderColor: '#38bdf8', borderWidth: 2, pointBackgroundColor: '#38bdf8' }] }, options: chartOpts });
+            new Chart(document.getElementById('isoRadar'), { type: 'radar', data: { labels: isoScores.map(s => s.domain.substring(0, 15)), datasets: [{ data: isoScores.map(s => s.pct), backgroundColor: 'rgba(129,140,248,0.2)', borderColor: '#818cf8', borderWidth: 2, pointBackgroundColor: '#818cf8' }] }, options: chartOpts });
+
+            // Comparison chart
+            const allDomains = [...ncfScores.map(s => s.domain.substring(0,12)), ...isoScores.map(s => s.domain.substring(0,12))];
+            const allPcts = [...ncfScores.map(s=>s.pct), ...isoScores.map(s=>s.pct)];
+            const bgColors = [...ncfScores.map(()=>'rgba(56,189,248,0.6)'), ...isoScores.map(()=>'rgba(129,140,248,0.6)')];
+            new Chart(document.getElementById('compChart'), { type: 'bar', data: { labels: allDomains, datasets: [{ data: allPcts, backgroundColor: bgColors, borderRadius: 6 }] }, options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { max: 100, ticks: { color: '#64748b' }, grid: { color: 'rgba(71,85,105,0.2)' } }, y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } } } } });
+
+            // Domain breakdown
+            const breakdown = document.getElementById('domainBreakdown');
+            const allScores = [...ncfScores.map(s => ({...s, fw: 'NCF'})), ...isoScores.map(s => ({...s, fw: 'ISO'}))];
+            breakdown.innerHTML = allScores.map(s => `
+                <div style="display:flex;align-items:center;gap:1rem;">
+                    <span class="badge-pill" style="background:${s.fw==='NCF'?'rgba(56,189,248,0.1)':'rgba(129,140,248,0.1)'};color:${s.fw==='NCF'?'#38bdf8':'#818cf8'};min-width:50px;justify-content:center;">${s.fw}</span>
+                    <span style="font-size:0.85rem;color:#cbd5e1;min-width:180px;">${s.domain}</span>
+                    <div class="progress-bar-bg" style="flex:1;"><div class="progress-bar-fill" style="width:${s.pct}%;background:${getStatusColor(s.pct)};"></div></div>
+                    <span style="font-size:0.85rem;font-weight:700;color:${getStatusColor(s.pct)};min-width:45px;text-align:right;">${s.pct}%</span>
+                </div>
+            `).join('');
+
+            // Recommendations
+            const recs = document.getElementById('recommendations');
+            const lowScores = allScores.filter(s => s.pct < 60).sort((a, b) => a.pct - b.pct);
+            if (lowScores.length === 0) {
+                recs.innerHTML = '<div style="text-align:center;padding:1rem;color:#34d399;"><i class="fas fa-check-circle" style="font-size:1.5rem;margin-bottom:0.5rem;display:block;"></i>All domains meet minimum compliance thresholds.</div>';
+            } else {
+                recs.innerHTML = lowScores.map(s => {
+                    const severity = s.pct < 20 ? { label: 'Critical', bg: 'rgba(239,68,68,0.1)', color: '#ef4444', border: 'rgba(239,68,68,0.3)' } : s.pct < 40 ? { label: 'High', bg: 'rgba(249,115,22,0.1)', color: '#f97316', border: 'rgba(249,115,22,0.3)' } : { label: 'Medium', bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: 'rgba(251,191,36,0.3)' };
+                    return `<div style="padding:1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                        <span class="badge-pill" style="background:${severity.bg};color:${severity.color};border:1px solid ${severity.border};">${severity.label}</span>
+                        <span style="font-size:0.85rem;color:#cbd5e1;flex:1;">Improve <strong>${s.domain}</strong> (${s.fw}) — currently at ${s.pct}%. Implement formal policies, training, and monitoring processes.</span>
+                    </div>`;
+                }).join('');
+            }
+
+            // Detail table
+            const tbody = document.getElementById('detailBody');
+            tbody.innerHTML = allScores.map(s => {
+                const lvl = getMaturityLevel(s.pct);
+                return `<tr>
+                    <td><span class="badge-pill" style="background:${s.fw==='NCF'?'rgba(56,189,248,0.1)':'rgba(129,140,248,0.1)'};color:${s.fw==='NCF'?'#38bdf8':'#818cf8'};">${s.fw}</span></td>
+                    <td>${s.domain}</td>
+                    <td style="font-weight:700;color:${getStatusColor(s.pct)};">${s.pct}%</td>
+                    <td><span style="color:${maturityColors[lvl]};">${maturityLabels[lvl]}</span></td>
+                    <td><span class="badge-pill" style="background:${s.pct>=60?'rgba(52,211,153,0.1)':'rgba(239,68,68,0.1)'};color:${s.pct>=60?'#34d399':'#ef4444'};">${s.pct>=60?'Pass':'Needs Work'}</span></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function exportJSON() {
+            const data = localStorage.getItem('assessmentData');
+            if (!data) return;
+            const blob = new Blob([data], { type: 'application/json' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'compliance-report.json'; a.click();
+        }
+
+        processResults();
+    </script>
+</body>
+</html>
