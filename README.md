@@ -326,9 +326,9 @@ Contributions are welcome! If you'd like to improve this project:
 
 ## 👤 Author
 
-**Your Name**
+**John Doe**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@00johndoe](https://github.com/00johndoe)
 
 ---
 
