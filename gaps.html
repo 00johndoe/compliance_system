@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GH-CYBERCOMPLY | Gap Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+        .bg-grid { position: fixed; inset: 0; z-index: 0; background-image: radial-gradient(circle, rgba(56,189,248,0.06) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.12; pointer-events: none; z-index: 0; animation: float 20s ease-in-out infinite; }
+        .orb-1 { width: 500px; height: 500px; background: #38bdf8; top: -100px; right: -100px; }
+        .orb-2 { width: 400px; height: 400px; background: #818cf8; bottom: -80px; left: -80px; animation-delay: -7s; }
+        .orb-3 { width: 350px; height: 350px; background: #f472b6; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 33% { transform: translateY(-30px) scale(1.05); } 66% { transform: translateY(20px) scale(0.95); } }
+        nav { background: rgba(15,23,42,0.7); backdrop-filter: blur(20px) saturate(1.5); border-bottom: 1px solid rgba(56,189,248,0.1); position: sticky; top: 0; z-index: 50; }
+        .nav-link { position: relative; color: #94a3b8; font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.3s; text-decoration: none; font-size: 0.9rem; }
+        .nav-link:hover { color: #e2e8f0; background: rgba(56,189,248,0.08); }
+        .nav-link.active { color: #38bdf8; }
+        .nav-link.active::after { content: ''; position: absolute; bottom: -14px; left: 10%; right: 10%; height: 3px; background: linear-gradient(90deg, #38bdf8, #818cf8); border-radius: 3px; }
+        .logo-pulse { animation: logoPulse 3s ease-in-out infinite; }
+        @keyframes logoPulse { 0%, 100% { filter: drop-shadow(0 0 6px rgba(56,189,248,0.3)); } 50% { filter: drop-shadow(0 0 16px rgba(56,189,248,0.6)); } }
+        .card { background: rgba(30,41,59,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(71,85,105,0.3); border-radius: 16px; padding: 1.5rem; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,0.3); box-shadow: 0 8px 40px rgba(56,189,248,0.08); }
+        .stat-card { background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(30,41,59,0.4)); border: 1px solid rgba(71,85,105,0.3); border-radius: 16px; padding: 1.5rem; position: relative; overflow: hidden; transition: all 0.4s; }
+        .stat-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 40%, rgba(56,189,248,0.04) 50%, transparent 60%); animation: shimmer 4s ease-in-out infinite; }
+        @keyframes shimmer { 0%, 100% { transform: translateX(-100%) rotate(45deg); } 50% { transform: translateX(100%) rotate(45deg); } }
+        .stat-card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,0.3); }
+        .hero-border { position: relative; border-radius: 20px; padding: 2.5rem; background: rgba(30,41,59,0.5); backdrop-filter: blur(10px); overflow: hidden; }
+        .hero-border::before { content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px; background: linear-gradient(135deg, #38bdf8, #818cf8, #f472b6, #38bdf8); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: borderRotate 6s linear infinite; background-size: 300% 300%; }
+        @keyframes borderRotate { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 60; }
+        .mobile-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: rgba(15,23,42,0.95); backdrop-filter: blur(20px); z-index: 70; transition: right 0.35s cubic-bezier(0.16,1,0.3,1); padding: 1.5rem; border-left: 1px solid rgba(56,189,248,0.1); }
+        .mobile-drawer.open { right: 0; }
+        .mobile-overlay.open { display: block; }
+        .mobile-drawer .nav-link { display: block; padding: 0.85rem 1rem; margin-bottom: 0.25rem; border-radius: 10px; font-size: 1rem; }
+        .mobile-drawer .nav-link.active { background: rgba(56,189,248,0.1); border-left: 3px solid #38bdf8; }
+        .mobile-drawer .nav-link.active::after { display: none; }
+        .scroll-top { position: fixed; bottom: 2rem; right: 2rem; width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #38bdf8, #818cf8); color: white; border: none; cursor: pointer; z-index: 40; display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(20px); transition: all 0.3s; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(56,189,248,0.3); }
+        .scroll-top.visible { opacity: 1; transform: translateY(0); }
+        .badge-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.85rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { text-align: left; padding: 0.85rem 1rem; font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(71,85,105,0.3); background: rgba(15,23,42,0.4); }
+        th:first-child { border-radius: 12px 0 0 0; } th:last-child { border-radius: 0 12px 0 0; }
+        td { padding: 0.85rem 1rem; font-size: 0.85rem; border-bottom: 1px solid rgba(71,85,105,0.15); color: #cbd5e1; }
+        tr:hover td { background: rgba(56,189,248,0.03); }
+        /* Mobile responsive */
+        @media (max-width: 767px) {
+            .hero-border { padding: 1.5rem 1rem; }
+            .hero-border h1 { font-size: 1.5rem !important; }
+            .hero-border p { font-size: 0.85rem !important; }
+            main { padding: 1rem !important; }
+        }
+        @media (max-width: 639px) {
+            .stat-card { padding: 1rem; }
+        }
+        @media (max-width: 479px) {
+            td { padding: 0.6rem 0.5rem; font-size: 0.78rem; }
+            th { padding: 0.6rem 0.5rem; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <nav>
+        <div style="max-width:1280px;margin:auto;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+            <a href="index.html" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;">
+                <div class="logo-pulse" style="width:40px;height:40px;background:linear-gradient(135deg,#38bdf8,#818cf8);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-shield-halved" style="color:white;font-size:1.15rem;"></i>
+                </div>
+                <span style="font-size:1.15rem;font-weight:800;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+            </a>
+            <div style="display:flex;gap:0.25rem;" id="desktopNav">
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="mapping.html" class="nav-link">Control Mapping</a>
+                <a href="assessment.html" class="nav-link">Assessment</a>
+                <a href="results.html" class="nav-link">Results</a>
+                <a href="gaps.html" class="nav-link active">Gap Analysis</a>
+            </div>
+            <button onclick="toggleDrawer()" style="display:none;background:none;border:1px solid rgba(71,85,105,0.5);color:#94a3b8;width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:1.1rem;" id="menuBtn"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="overlay" onclick="toggleDrawer()"></div>
+    <div class="mobile-drawer" id="drawer">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+            <span style="font-weight:800;color:white;font-size:1.1rem;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+            <button onclick="toggleDrawer()" style="background:none;border:none;color:#94a3b8;font-size:1.2rem;cursor:pointer;"><i class="fas fa-xmark"></i></button>
+        </div>
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <a href="mapping.html" class="nav-link">Control Mapping</a>
+        <a href="assessment.html" class="nav-link">Assessment</a>
+        <a href="results.html" class="nav-link">Results</a>
+        <a href="gaps.html" class="nav-link active">Gap Analysis</a>
+    </div>
+
+    <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+    <main style="position:relative;z-index:1;max-width:1280px;margin:auto;padding:1.5rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;font-size:0.85rem;color:#64748b;" class="reveal">
+            <i class="fas fa-home" style="color:#38bdf8;"></i>
+            <a href="index.html" style="color:#64748b;text-decoration:none;">Dashboard</a>
+            <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
+            <span style="color:#38bdf8;">Gap Analysis</span>
+        </div>
+
+        <div class="hero-border reveal" style="margin-bottom:2rem;text-align:center;">
+            <div class="badge-pill" style="background:rgba(251,191,36,0.1);color:#fbbf24;margin-bottom:1rem;display:inline-flex;">
+                <i class="fas fa-search"></i> Framework Gaps
+            </div>
+            <h1 style="font-size:2.2rem;font-weight:900;color:white;margin-bottom:0.75rem;">Gap Analysis</h1>
+            <p style="color:#94a3b8;max-width:650px;margin:auto;">Identifying structural and control-level gaps between Ghana's National Cybersecurity Framework and ISO/IEC 27002:2022.</p>
+        </div>
+
+        <!-- Overview Stats -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;" class="reveal" id="gapStats">
+            <div class="stat-card" style="text-align:center;">
+                <div style="font-size:1.8rem;font-weight:800;color:#38bdf8;">37</div>
+                <div style="font-size:0.8rem;color:#64748b;">Ghana NCF Controls</div>
+            </div>
+            <div class="stat-card" style="text-align:center;">
+                <div style="font-size:1.8rem;font-weight:800;color:#818cf8;">93</div>
+                <div style="font-size:0.8rem;color:#64748b;">ISO 27002 Controls</div>
+            </div>
+            <div class="stat-card" style="text-align:center;">
+                <div style="font-size:1.8rem;font-weight:800;color:#34d399;">47</div>
+                <div style="font-size:0.8rem;color:#64748b;">Mapped Controls</div>
+            </div>
+            <div class="stat-card" style="text-align:center;">
+                <div style="font-size:1.8rem;font-weight:800;color:#f97316;">13</div>
+                <div style="font-size:0.8rem;color:#64748b;">Unique/Unmapped</div>
+            </div>
+        </div>
+
+        <!-- Ghana-Unique Controls -->
+        <div class="card reveal" style="margin-bottom:1.5rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+                <div style="width:40px;height:40px;background:rgba(56,189,248,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-flag" style="color:#38bdf8;"></i>
+                </div>
+                <div>
+                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana NCF — Unique Controls</h2>
+                    <p style="font-size:0.8rem;color:#64748b;">Controls in Ghana NCF without direct ISO 27002 equivalent</p>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">National cybersecurity strategy development & oversight</span>
+                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">Governance</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">Cybercrime legislation & prosecution frameworks</span>
+                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">Legal</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">Academic curriculum integration for cybersecurity</span>
+                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">Capacity</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">International treaty participation & bilateral agreements</span>
+                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">International</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">National CERT/CSIRT establishment & operations</span>
+                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">Incident</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ISO-Unique Controls -->
+        <div class="card reveal" style="margin-bottom:1.5rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+                <div style="width:40px;height:40px;background:rgba(129,140,248,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-globe" style="color:#818cf8;"></i>
+                </div>
+                <div>
+                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">ISO 27002 — Unique Controls</h2>
+                    <p style="font-size:0.8rem;color:#64748b;">Controls in ISO 27002 without direct Ghana NCF equivalent</p>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">7.1-7.14 Physical security perimeters & controls</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Physical</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">8.11 Data masking techniques</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Technological</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">8.12 Data leakage prevention</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Technological</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">8.25-8.28 Secure development lifecycle & coding</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Technological</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">5.12-5.13 Information classification & labelling</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Organizational</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">8.15-8.17 Logging, monitoring & clock synchronization</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Technological</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">6.1 Personnel screening & vetting</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">People</span>
+                </div>
+                <div style="padding:0.85rem 1rem;background:rgba(15,23,42,0.4);border-radius:12px;border:1px solid rgba(71,85,105,0.2);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
+                    <span style="font-size:0.9rem;color:#cbd5e1;font-weight:500;flex:1;min-width:200px;">5.32 Intellectual property rights protection</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Organizational</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Structural Comparison -->
+        <div class="card reveal" style="margin-bottom:1.5rem;padding:0;overflow:hidden;">
+            <div style="padding:1.5rem 1.5rem 1rem;">
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <div style="width:40px;height:40px;background:rgba(251,191,36,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-columns" style="color:#fbbf24;"></i>
+                    </div>
+                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">Structural Comparison</h2>
+                </div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr><th>Aspect</th><th>Ghana NCF</th><th>ISO/IEC 27002</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="font-weight:600;color:white;">Scope</td><td>National-level cybersecurity</td><td>Organizational information security</td></tr>
+                        <tr><td style="font-weight:600;color:white;">Structure</td><td>6 policy domains</td><td>4 control themes, 93 controls</td></tr>
+                        <tr><td style="font-weight:600;color:white;">Focus</td><td>Policy, governance, national capacity</td><td>Technical & operational controls</td></tr>
+                        <tr><td style="font-weight:600;color:white;">Applicability</td><td>Ghana public & private sectors</td><td>Any organization globally</td></tr>
+                        <tr><td style="font-weight:600;color:white;">Enforcement</td><td>Regulatory (Cyber Security Authority)</td><td>Voluntary (certification-based)</td></tr>
+                        <tr><td style="font-weight:600;color:white;">Physical Security</td><td>Limited coverage</td><td>14 dedicated controls</td></tr>
+                        <tr><td style="font-weight:600;color:white;">International Aspect</td><td>5 dedicated controls</td><td>Implicit via best practices</td></tr>
+                        <tr><td style="font-weight:600;color:white;">Update Cycle</td><td>Government-driven periodic review</td><td>ISO revision cycle (2022 latest)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-bottom:2rem;" id="insightsGrid">
+            <div class="card reveal">
+                <div style="width:44px;height:44px;background:rgba(56,189,248,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                    <i class="fas fa-lightbulb" style="color:#38bdf8;font-size:1.1rem;"></i>
+                </div>
+                <h3 style="font-size:0.95rem;font-weight:700;color:white;margin-bottom:0.5rem;">Governance Strength</h3>
+                <p style="font-size:0.85rem;color:#94a3b8;line-height:1.7;">Ghana NCF excels in national governance, strategic direction, and stakeholder coordination — areas where ISO 27002 focuses on organizational-level governance only.</p>
+            </div>
+            <div class="card reveal">
+                <div style="width:44px;height:44px;background:rgba(129,140,248,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                    <i class="fas fa-cogs" style="color:#818cf8;font-size:1.1rem;"></i>
+                </div>
+                <h3 style="font-size:0.95rem;font-weight:700;color:white;margin-bottom:0.5rem;">Technical Depth</h3>
+                <p style="font-size:0.85rem;color:#94a3b8;line-height:1.7;">ISO 27002 provides significantly deeper technical and physical security controls. Organizations in Ghana should supplement NCF with these ISO controls for comprehensive coverage.</p>
+            </div>
+            <div class="card reveal">
+                <div style="width:44px;height:44px;background:rgba(52,211,153,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                    <i class="fas fa-handshake" style="color:#34d399;font-size:1.1rem;"></i>
+                </div>
+                <h3 style="font-size:0.95rem;font-weight:700;color:white;margin-bottom:0.5rem;">Complementary Frameworks</h3>
+                <p style="font-size:0.85rem;color:#94a3b8;line-height:1.7;">The two frameworks are highly complementary. Adopting both gives organizations a robust cybersecurity posture covering national compliance and international best practices.</p>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="card reveal" style="margin-bottom:2rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+                <div style="width:40px;height:40px;background:rgba(52,211,153,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-clipboard-list" style="color:#34d399;"></i>
+                </div>
+                <h2 style="font-size:1.1rem;font-weight:700;color:white;">Recommendations for Organizations</h2>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                <div style="padding:1rem;background:rgba(15,23,42,0.4);border-radius:12px;border-left:3px solid #38bdf8;">
+                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">1. Adopt Both Frameworks</h4>
+                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">Use Ghana NCF for national regulatory compliance and ISO 27002 as a technical implementation guide to achieve comprehensive cybersecurity coverage.</p>
+                </div>
+                <div style="padding:1rem;background:rgba(15,23,42,0.4);border-radius:12px;border-left:3px solid #818cf8;">
+                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">2. Address Physical Security Gaps</h4>
+                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">Implement ISO 27002's 14 physical security controls (Section 7) as Ghana NCF provides limited physical security guidance.</p>
+                </div>
+                <div style="padding:1rem;background:rgba(15,23,42,0.4);border-radius:12px;border-left:3px solid #34d399;">
+                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">3. Strengthen Secure Development</h4>
+                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">Adopt ISO 27002's secure development lifecycle controls (8.25-8.28) for software security, which are absent in Ghana NCF.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="position:relative;z-index:1;border-top:1px solid rgba(71,85,105,0.3);padding:2rem 1.5rem;text-align:center;margin-top:2rem;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.5rem;">
+            <i class="fas fa-shield-halved" style="color:#38bdf8;"></i>
+            <span style="font-weight:700;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+        </div>
+        <p style="font-size:0.8rem;color:#64748b;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
+        <p style="font-size:0.75rem;color:#475569;margin-top:0.25rem;">&copy; 2025 All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
+        function handleResize() {
+            const btn = document.getElementById('menuBtn'), nav = document.getElementById('desktopNav');
+            if (window.innerWidth < 768) { btn.style.display = 'flex'; nav.style.display = 'none'; } else { btn.style.display = 'none'; nav.style.display = 'flex'; }
+            const gs = document.getElementById('gapStats'), ig = document.getElementById('insightsGrid');
+            if (window.innerWidth < 480) {
+                if (gs) gs.style.gridTemplateColumns = '1fr';
+                if (ig) ig.style.gridTemplateColumns = '1fr';
+            } else if (window.innerWidth < 640) {
+                if (gs) gs.style.gridTemplateColumns = 'repeat(2,1fr)';
+                if (ig) ig.style.gridTemplateColumns = '1fr';
+            } else if (window.innerWidth < 768) {
+                if (gs) gs.style.gridTemplateColumns = 'repeat(2,1fr)';
+                if (ig) ig.style.gridTemplateColumns = '1fr';
+            } else {
+                if (gs) gs.style.gridTemplateColumns = 'repeat(4,1fr)';
+                if (ig) ig.style.gridTemplateColumns = '1fr 1fr 1fr';
+            }
+        }
+        window.addEventListener('resize', handleResize); handleResize();
+        window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300); });
+        const observer = new IntersectionObserver((entries) => { entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); }); }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

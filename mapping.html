@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GH-CYBERCOMPLY | Control Mapping</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+        .bg-grid { position: fixed; inset: 0; z-index: 0; background-image: radial-gradient(circle, rgba(56,189,248,0.06) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.12; pointer-events: none; z-index: 0; animation: float 20s ease-in-out infinite; }
+        .orb-1 { width: 500px; height: 500px; background: #38bdf8; top: -100px; right: -100px; }
+        .orb-2 { width: 400px; height: 400px; background: #818cf8; bottom: -80px; left: -80px; animation-delay: -7s; }
+        .orb-3 { width: 350px; height: 350px; background: #f472b6; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 33% { transform: translateY(-30px) scale(1.05); } 66% { transform: translateY(20px) scale(0.95); } }
+        nav { background: rgba(15,23,42,0.7); backdrop-filter: blur(20px) saturate(1.5); border-bottom: 1px solid rgba(56,189,248,0.1); position: sticky; top: 0; z-index: 50; }
+        .nav-link { position: relative; color: #94a3b8; font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.3s; text-decoration: none; font-size: 0.9rem; }
+        .nav-link:hover { color: #e2e8f0; background: rgba(56,189,248,0.08); }
+        .nav-link.active { color: #38bdf8; }
+        .nav-link.active::after { content: ''; position: absolute; bottom: -14px; left: 10%; right: 10%; height: 3px; background: linear-gradient(90deg, #38bdf8, #818cf8); border-radius: 3px; }
+        .logo-pulse { animation: logoPulse 3s ease-in-out infinite; }
+        @keyframes logoPulse { 0%, 100% { filter: drop-shadow(0 0 6px rgba(56,189,248,0.3)); } 50% { filter: drop-shadow(0 0 16px rgba(56,189,248,0.6)); } }
+        .card { background: rgba(30,41,59,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(71,85,105,0.3); border-radius: 16px; padding: 1.5rem; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,0.3); box-shadow: 0 8px 40px rgba(56,189,248,0.08), 0 0 0 1px rgba(56,189,248,0.1); }
+        .stat-card { background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(30,41,59,0.4)); border: 1px solid rgba(71,85,105,0.3); border-radius: 16px; padding: 1.5rem; position: relative; overflow: hidden; transition: all 0.4s; }
+        .stat-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 40%, rgba(56,189,248,0.04) 50%, transparent 60%); animation: shimmer 4s ease-in-out infinite; }
+        @keyframes shimmer { 0%, 100% { transform: translateX(-100%) rotate(45deg); } 50% { transform: translateX(100%) rotate(45deg); } }
+        .stat-card:hover { transform: translateY(-4px); border-color: rgba(56,189,248,0.3); box-shadow: 0 8px 32px rgba(56,189,248,0.1); }
+        .hero-border { position: relative; border-radius: 20px; padding: 2.5rem; background: rgba(30,41,59,0.5); backdrop-filter: blur(10px); overflow: hidden; }
+        .hero-border::before { content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 2px; background: linear-gradient(135deg, #38bdf8, #818cf8, #f472b6, #38bdf8); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: borderRotate 6s linear infinite; background-size: 300% 300%; }
+        @keyframes borderRotate { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 60; }
+        .mobile-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: rgba(15,23,42,0.95); backdrop-filter: blur(20px); z-index: 70; transition: right 0.35s cubic-bezier(0.16,1,0.3,1); padding: 1.5rem; border-left: 1px solid rgba(56,189,248,0.1); }
+        .mobile-drawer.open { right: 0; }
+        .mobile-overlay.open { display: block; }
+        .mobile-drawer .nav-link { display: block; padding: 0.85rem 1rem; margin-bottom: 0.25rem; border-radius: 10px; font-size: 1rem; }
+        .mobile-drawer .nav-link.active { background: rgba(56,189,248,0.1); border-left: 3px solid #38bdf8; }
+        .mobile-drawer .nav-link.active::after { display: none; }
+        .scroll-top { position: fixed; bottom: 2rem; right: 2rem; width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #38bdf8, #818cf8); color: white; border: none; cursor: pointer; z-index: 40; display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(20px); transition: all 0.3s; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(56,189,248,0.3); }
+        .scroll-top.visible { opacity: 1; transform: translateY(0); }
+        .scroll-top:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(56,189,248,0.4); }
+        .badge-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.85rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+        .filter-btn { padding: 0.5rem 1.2rem; border-radius: 10px; border: 1px solid rgba(71,85,105,0.4); background: transparent; color: #94a3b8; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif; }
+        .filter-btn:hover { border-color: rgba(56,189,248,0.4); color: #e2e8f0; }
+        .filter-btn.active { background: rgba(56,189,248,0.15); border-color: #38bdf8; color: #38bdf8; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { text-align: left; padding: 0.85rem 1rem; font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(71,85,105,0.3); background: rgba(15,23,42,0.4); }
+        th:first-child { border-radius: 12px 0 0 0; }
+        th:last-child { border-radius: 0 12px 0 0; }
+        td { padding: 0.85rem 1rem; font-size: 0.85rem; border-bottom: 1px solid rgba(71,85,105,0.15); color: #cbd5e1; }
+        tr:hover td { background: rgba(56,189,248,0.03); }
+        .search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem; background: rgba(15,23,42,0.5); border: 1px solid rgba(71,85,105,0.4); border-radius: 12px; color: #e2e8f0; font-size: 0.9rem; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.3s; }
+        .search-input:focus { border-color: #38bdf8; }
+        .search-input::placeholder { color: #475569; }
+        /* Mobile responsive */
+        @media (max-width: 767px) {
+            .hero-border { padding: 1.5rem 1rem; }
+            .hero-border h1 { font-size: 1.5rem !important; }
+            .hero-border p { font-size: 0.85rem !important; }
+            main { padding: 1rem !important; }
+            th:nth-child(3), td:nth-child(3),
+            th:nth-child(5), td:nth-child(5) { display: none; }
+        }
+        @media (max-width: 639px) {
+            .stat-card { padding: 1rem; }
+        }
+        @media (max-width: 479px) {
+            th:nth-child(1), td:nth-child(1) { display: none; }
+            td { padding: 0.65rem 0.5rem; font-size: 0.78rem; }
+            th { padding: 0.65rem 0.5rem; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <nav>
+        <div style="max-width:1280px;margin:auto;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+            <a href="index.html" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;">
+                <div class="logo-pulse" style="width:40px;height:40px;background:linear-gradient(135deg,#38bdf8,#818cf8);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-shield-halved" style="color:white;font-size:1.15rem;"></i>
+                </div>
+                <span style="font-size:1.15rem;font-weight:800;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+            </a>
+            <div style="display:flex;gap:0.25rem;" id="desktopNav">
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="mapping.html" class="nav-link active">Control Mapping</a>
+                <a href="assessment.html" class="nav-link">Assessment</a>
+                <a href="results.html" class="nav-link">Results</a>
+                <a href="gaps.html" class="nav-link">Gap Analysis</a>
+            </div>
+            <button onclick="toggleDrawer()" style="display:none;background:none;border:1px solid rgba(71,85,105,0.5);color:#94a3b8;width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:1.1rem;" id="menuBtn"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <div class="mobile-overlay" id="overlay" onclick="toggleDrawer()"></div>
+    <div class="mobile-drawer" id="drawer">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+            <span style="font-weight:800;color:white;font-size:1.1rem;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+            <button onclick="toggleDrawer()" style="background:none;border:none;color:#94a3b8;font-size:1.2rem;cursor:pointer;"><i class="fas fa-xmark"></i></button>
+        </div>
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <a href="mapping.html" class="nav-link active">Control Mapping</a>
+        <a href="assessment.html" class="nav-link">Assessment</a>
+        <a href="results.html" class="nav-link">Results</a>
+        <a href="gaps.html" class="nav-link">Gap Analysis</a>
+    </div>
+
+    <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+    <main style="position:relative;z-index:1;max-width:1280px;margin:auto;padding:1.5rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;font-size:0.85rem;color:#64748b;" class="reveal">
+            <i class="fas fa-home" style="color:#38bdf8;"></i>
+            <a href="index.html" style="color:#64748b;text-decoration:none;">Dashboard</a>
+            <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
+            <span style="color:#38bdf8;">Control Mapping</span>
+        </div>
+
+        <div class="hero-border reveal" style="margin-bottom:2rem;text-align:center;">
+            <div class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;margin-bottom:1rem;display:inline-flex;">
+                <i class="fas fa-project-diagram"></i> Cross-Framework Analysis
+            </div>
+            <h1 style="font-size:2.2rem;font-weight:900;color:white;margin-bottom:0.75rem;">Control Mapping</h1>
+            <p style="color:#94a3b8;max-width:600px;margin:auto;">Detailed mapping between Ghana NCF controls and their corresponding ISO/IEC 27002:2022 controls with alignment levels.</p>
+        </div>
+
+        <!-- Stats Row -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;" class="reveal" id="mapStats">
+            <div class="stat-card" style="text-align:center;">
+                <div style="font-size:1.8rem;font-weight:800;color:#34d399;">19</div>
+                <div style="font-size:0.8rem;color:#64748b;">Strong Alignment</div>
+            </div>
+            <div class="stat-card" style="text-align:center;">
+                <div style="font-size:1.8rem;font-weight:800;color:#fbbf24;">18</div>
+                <div style="font-size:0.8rem;color:#64748b;">Moderate Alignment</div>
+            </div>
+            <div class="stat-card" style="text-align:center;">
+                <div style="font-size:1.8rem;font-weight:800;color:#f97316;">10</div>
+                <div style="font-size:0.8rem;color:#64748b;">Partial Alignment</div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="card reveal" style="margin-bottom:1.5rem;">
+            <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+                <div style="position:relative;flex:1;min-width:250px;">
+                    <i class="fas fa-search" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#475569;"></i>
+                    <input type="text" class="search-input" placeholder="Search controls..." id="searchInput" oninput="filterTable()">
+                </div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <button class="filter-btn active" onclick="setFilter('all',this)">All (47)</button>
+                    <button class="filter-btn" onclick="setFilter('strong',this)">Strong</button>
+                    <button class="filter-btn" onclick="setFilter('moderate',this)">Moderate</button>
+                    <button class="filter-btn" onclick="setFilter('partial',this)">Partial</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card reveal" style="padding:0;overflow:hidden;">
+            <div style="overflow-x:auto;">
+                <table id="mappingTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ghana NCF Control</th>
+                            <th>NCF Domain</th>
+                            <th>ISO 27002 Control</th>
+                            <th>ISO Theme</th>
+                            <th>Alignment</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer style="position:relative;z-index:1;border-top:1px solid rgba(71,85,105,0.3);padding:2rem 1.5rem;text-align:center;margin-top:2rem;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.5rem;">
+            <i class="fas fa-shield-halved" style="color:#38bdf8;"></i>
+            <span style="font-weight:700;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
+        </div>
+        <p style="font-size:0.8rem;color:#64748b;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
+        <p style="font-size:0.75rem;color:#475569;margin-top:0.25rem;">&copy; 2025 All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
+        function handleResize() {
+            const btn = document.getElementById('menuBtn'), nav = document.getElementById('desktopNav');
+            if (window.innerWidth < 768) { btn.style.display = 'flex'; nav.style.display = 'none'; } else { btn.style.display = 'none'; nav.style.display = 'flex'; }
+            const ms = document.getElementById('mapStats');
+            if (ms) ms.style.gridTemplateColumns = window.innerWidth < 480 ? '1fr' : window.innerWidth < 640 ? '1fr' : 'repeat(3,1fr)';
+        }
+        window.addEventListener('resize', handleResize); handleResize();
+        window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300); });
+        const observer = new IntersectionObserver((entries) => { entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); }); }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        const mappings = [
+            { ncf: "Cybersecurity governance structure", domain: "Governance & Leadership", iso: "5.1 Policies for information security", theme: "Organizational", alignment: "strong" },
+            { ncf: "National cybersecurity strategy", domain: "Governance & Leadership", iso: "5.2 Information security roles", theme: "Organizational", alignment: "strong" },
+            { ncf: "Roles and responsibilities", domain: "Governance & Leadership", iso: "5.3 Segregation of duties", theme: "Organizational", alignment: "strong" },
+            { ncf: "Stakeholder coordination", domain: "Governance & Leadership", iso: "5.4 Management responsibilities", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Resource allocation", domain: "Governance & Leadership", iso: "5.5 Contact with authorities", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Performance monitoring", domain: "Governance & Leadership", iso: "5.35 Independent review", theme: "Organizational", alignment: "strong" },
+            { ncf: "Risk management framework", domain: "Governance & Leadership", iso: "5.7 Threat intelligence", theme: "Organizational", alignment: "strong" },
+            { ncf: "Continuous improvement", domain: "Governance & Leadership", iso: "5.36 Compliance with policies", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Data protection legislation", domain: "Legal & Regulatory", iso: "5.34 Privacy and PII protection", theme: "Organizational", alignment: "strong" },
+            { ncf: "Cybercrime legislation", domain: "Legal & Regulatory", iso: "5.6 Contact with special interest groups", theme: "Organizational", alignment: "partial" },
+            { ncf: "Electronic transactions act", domain: "Legal & Regulatory", iso: "5.10 Acceptable use of information", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Regulatory compliance monitoring", domain: "Legal & Regulatory", iso: "5.35 Independent review", theme: "Organizational", alignment: "strong" },
+            { ncf: "Legal frameworks for digital evidence", domain: "Legal & Regulatory", iso: "5.28 Collection of evidence", theme: "Organizational", alignment: "strong" },
+            { ncf: "Consumer protection in cyberspace", domain: "Legal & Regulatory", iso: "5.31 Legal requirements", theme: "Organizational", alignment: "moderate" },
+            { ncf: "National CERT/CSIRT establishment", domain: "Incident Response", iso: "5.24 Incident management planning", theme: "Organizational", alignment: "strong" },
+            { ncf: "Incident reporting mechanisms", domain: "Incident Response", iso: "6.8 Information security event reporting", theme: "People", alignment: "strong" },
+            { ncf: "Incident response procedures", domain: "Incident Response", iso: "5.26 Response to incidents", theme: "Organizational", alignment: "strong" },
+            { ncf: "Threat intelligence sharing", domain: "Incident Response", iso: "5.7 Threat intelligence", theme: "Organizational", alignment: "strong" },
+            { ncf: "Post-incident analysis", domain: "Incident Response", iso: "5.27 Learning from incidents", theme: "Organizational", alignment: "strong" },
+            { ncf: "Crisis communication", domain: "Incident Response", iso: "5.25 Assessment of incidents", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Cyber drills and exercises", domain: "Incident Response", iso: "5.29 ICT readiness for continuity", theme: "Organizational", alignment: "moderate" },
+            { ncf: "CII identification", domain: "Critical Infrastructure", iso: "5.9 Inventory of information", theme: "Organizational", alignment: "moderate" },
+            { ncf: "CII protection standards", domain: "Critical Infrastructure", iso: "8.9 Configuration management", theme: "Technological", alignment: "partial" },
+            { ncf: "Sector-specific guidelines", domain: "Critical Infrastructure", iso: "5.8 Information security in project mgmt", theme: "Organizational", alignment: "partial" },
+            { ncf: "Resilience requirements", domain: "Critical Infrastructure", iso: "5.30 ICT readiness for continuity", theme: "Organizational", alignment: "strong" },
+            { ncf: "Supply chain security", domain: "Critical Infrastructure", iso: "5.21 Managing ICT supply chain", theme: "Organizational", alignment: "strong" },
+            { ncf: "Cybersecurity awareness programs", domain: "Capacity Building", iso: "6.3 Information security awareness", theme: "People", alignment: "strong" },
+            { ncf: "Professional development", domain: "Capacity Building", iso: "6.6 Confidentiality agreements", theme: "People", alignment: "partial" },
+            { ncf: "Academic curriculum integration", domain: "Capacity Building", iso: "6.3 Information security awareness", theme: "People", alignment: "moderate" },
+            { ncf: "Cybersecurity research initiatives", domain: "Capacity Building", iso: "5.7 Threat intelligence", theme: "Organizational", alignment: "partial" },
+            { ncf: "Public awareness campaigns", domain: "Capacity Building", iso: "6.3 Information security awareness", theme: "People", alignment: "moderate" },
+            { ncf: "Skills gap assessment", domain: "Capacity Building", iso: "6.2 Terms and conditions", theme: "People", alignment: "partial" },
+            { ncf: "International treaty participation", domain: "International Cooperation", iso: "5.6 Contact with special interest groups", theme: "Organizational", alignment: "partial" },
+            { ncf: "Bilateral cybersecurity agreements", domain: "International Cooperation", iso: "5.5 Contact with authorities", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Information sharing with partners", domain: "International Cooperation", iso: "5.14 Information transfer", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Participation in global forums", domain: "International Cooperation", iso: "5.6 Contact with special interest groups", theme: "Organizational", alignment: "partial" },
+            { ncf: "Cross-border incident coordination", domain: "International Cooperation", iso: "5.5 Contact with authorities", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Technology transfer programs", domain: "International Cooperation", iso: "5.23 Cloud services security", theme: "Organizational", alignment: "partial" },
+            { ncf: "Regional capacity building support", domain: "International Cooperation", iso: "6.3 Information security awareness", theme: "People", alignment: "partial" },
+            { ncf: "Vulnerability disclosure policy", domain: "Incident Response", iso: "8.8 Management of technical vulnerabilities", theme: "Technological", alignment: "strong" },
+            { ncf: "Security audit requirements", domain: "Governance & Leadership", iso: "5.35 Independent review", theme: "Organizational", alignment: "strong" },
+            { ncf: "Access control policy", domain: "Critical Infrastructure", iso: "8.3 Access restriction", theme: "Technological", alignment: "strong" },
+            { ncf: "Encryption standards", domain: "Critical Infrastructure", iso: "8.24 Use of cryptography", theme: "Technological", alignment: "strong" },
+            { ncf: "Network security monitoring", domain: "Incident Response", iso: "8.16 Monitoring activities", theme: "Technological", alignment: "strong" },
+            { ncf: "Cloud security guidelines", domain: "Critical Infrastructure", iso: "5.23 Cloud services security", theme: "Organizational", alignment: "moderate" },
+            { ncf: "Mobile device security", domain: "Critical Infrastructure", iso: "8.1 User endpoint devices", theme: "Technological", alignment: "moderate" },
+            { ncf: "Security testing requirements", domain: "Governance & Leadership", iso: "8.34 Protection during audit testing", theme: "Technological", alignment: "moderate" },
+        ];
+
+        let currentFilter = 'all';
+        function renderTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const tbody = document.getElementById('tableBody');
+            let html = '', count = 0;
+            mappings.forEach((m, i) => {
+                if (currentFilter !== 'all' && m.alignment !== currentFilter) return;
+                if (search && !m.ncf.toLowerCase().includes(search) && !m.iso.toLowerCase().includes(search) && !m.domain.toLowerCase().includes(search)) return;
+                count++;
+                const colors = { strong: { bg: 'rgba(52,211,153,0.1)', text: '#34d399', border: 'rgba(52,211,153,0.3)' }, moderate: { bg: 'rgba(251,191,36,0.1)', text: '#fbbf24', border: 'rgba(251,191,36,0.3)' }, partial: { bg: 'rgba(249,115,22,0.1)', text: '#f97316', border: 'rgba(249,115,22,0.3)' } };
+                const c = colors[m.alignment];
+                html += `<tr>
+                    <td style="color:#475569;font-weight:600;">${count}</td>
+                    <td style="font-weight:500;">${m.ncf}</td>
+                    <td><span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">${m.domain}</span></td>
+                    <td style="font-weight:500;">${m.iso}</td>
+                    <td><span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">${m.theme}</span></td>
+                    <td><span class="badge-pill" style="background:${c.bg};color:${c.text};border:1px solid ${c.border};">${m.alignment.charAt(0).toUpperCase() + m.alignment.slice(1)}</span></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#64748b;">No mappings found.</td></tr>';
+        }
+        function setFilter(f, btn) {
+            currentFilter = f;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderTable();
+        }
+        function filterTable() { renderTable(); }
+        renderTable();
+    </script>
+</body>
+</html>
