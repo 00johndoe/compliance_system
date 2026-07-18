@@ -1,0 +1,57 @@
+'use strict';
+
+/**
+ * Control mapping between Ghana NCF controls and ISO/IEC 27002:2022 controls.
+ * Ported from server.py CONTROL_MAPPING.
+ */
+const CONTROL_MAPPING = [
+  { ncf: 'GOV-01', iso: '5.1', alignment: 'Strong', notes: 'Both establish governance structures for security policy.' },
+  { ncf: 'GOV-01', iso: '5.2', alignment: 'Strong', notes: 'Roles and responsibilities align with governance structure.' },
+  { ncf: 'GOV-02', iso: '5.36', alignment: 'Moderate', notes: 'Strategy alignment partially maps to compliance with policies.' },
+  { ncf: 'GOV-03', iso: '5.31', alignment: 'Strong', notes: 'Both address legal and regulatory compliance requirements.' },
+  { ncf: 'GOV-04', iso: '5.4', alignment: 'Moderate', notes: 'Budget allocation relates to management responsibilities.' },
+  { ncf: 'GOV-05', iso: '5.4', alignment: 'Strong', notes: 'Board oversight aligns with management responsibilities.' },
+  { ncf: 'GOV-06', iso: '5.6', alignment: 'Strong', notes: 'Stakeholder engagement maps to special interest group contact.' },
+  { ncf: 'RISK-01', iso: '5.7', alignment: 'Moderate', notes: 'Risk framework partially supported by threat intelligence.' },
+  { ncf: 'RISK-02', iso: '5.7', alignment: 'Strong', notes: 'Direct mapping of threat intelligence integration.' },
+  { ncf: 'RISK-03', iso: '8.8', alignment: 'Moderate', notes: 'Risk treatment relates to vulnerability management.' },
+  { ncf: 'RISK-04', iso: '5.19', alignment: 'Strong', notes: 'Both address supplier/third-party security management.' },
+  { ncf: 'RISK-04', iso: '5.21', alignment: 'Strong', notes: 'ICT supply chain risk directly maps.' },
+  { ncf: 'RISK-05', iso: '5.22', alignment: 'Moderate', notes: 'Risk monitoring relates to supplier service monitoring.' },
+  { ncf: 'RISK-06', iso: '5.29', alignment: 'Moderate', notes: 'Critical infrastructure risk maps to disruption security.' },
+  { ncf: 'PROT-01', iso: '5.15', alignment: 'Strong', notes: 'Direct mapping of access control requirements.' },
+  { ncf: 'PROT-01', iso: '5.16', alignment: 'Strong', notes: 'Identity management is a core component.' },
+  { ncf: 'PROT-01', iso: '8.2', alignment: 'Strong', notes: 'Privileged access control directly maps.' },
+  { ncf: 'PROT-02', iso: '5.34', alignment: 'Strong', notes: 'Both address privacy and PII protection.' },
+  { ncf: 'PROT-02', iso: '8.11', alignment: 'Moderate', notes: 'Data masking supports data protection goals.' },
+  { ncf: 'PROT-03', iso: '8.20', alignment: 'Strong', notes: 'Network security directly maps.' },
+  { ncf: 'PROT-03', iso: '8.22', alignment: 'Strong', notes: 'Network segregation supports security architecture.' },
+  { ncf: 'PROT-04', iso: '8.24', alignment: 'Strong', notes: 'Direct mapping of cryptographic controls.' },
+  { ncf: 'PROT-05', iso: '8.1', alignment: 'Strong', notes: 'Endpoint devices map to endpoint security.' },
+  { ncf: 'PROT-05', iso: '8.7', alignment: 'Strong', notes: 'Malware protection supports endpoint security.' },
+  { ncf: 'PROT-06', iso: '8.25', alignment: 'Strong', notes: 'Secure SDLC maps to application security.' },
+  { ncf: 'PROT-06', iso: '8.26', alignment: 'Strong', notes: 'Application security requirements directly map.' },
+  { ncf: 'PROT-07', iso: '7.1', alignment: 'Strong', notes: 'Physical security perimeters directly map.' },
+  { ncf: 'PROT-07', iso: '7.2', alignment: 'Strong', notes: 'Physical entry controls map.' },
+  { ncf: 'DETECT-01', iso: '8.16', alignment: 'Strong', notes: 'Monitoring activities directly map.' },
+  { ncf: 'DETECT-02', iso: '8.7', alignment: 'Moderate', notes: 'Malware protection partially supports IDS.' },
+  { ncf: 'DETECT-03', iso: '5.35', alignment: 'Strong', notes: 'Independent review maps to security audits.' },
+  { ncf: 'DETECT-04', iso: '8.16', alignment: 'Moderate', notes: 'Monitoring supports anomaly detection.' },
+  { ncf: 'DETECT-05', iso: '8.15', alignment: 'Strong', notes: 'Logging directly maps to log management.' },
+  { ncf: 'DETECT-06', iso: '5.7', alignment: 'Moderate', notes: 'Threat intelligence supports threat hunting.' },
+  { ncf: 'RESP-01', iso: '5.24', alignment: 'Strong', notes: 'Incident management planning directly maps.' },
+  { ncf: 'RESP-01', iso: '5.26', alignment: 'Strong', notes: 'Incident response directly maps.' },
+  { ncf: 'RESP-02', iso: '6.8', alignment: 'Moderate', notes: 'Event reporting partially maps to authority reporting.' },
+  { ncf: 'RESP-03', iso: '5.28', alignment: 'Strong', notes: 'Evidence collection supports digital forensics.' },
+  { ncf: 'RESP-04', iso: '5.30', alignment: 'Strong', notes: 'ICT readiness for BC directly maps.' },
+  { ncf: 'RESP-05', iso: '5.25', alignment: 'Moderate', notes: 'Event assessment partially maps to communication.' },
+  { ncf: 'RESP-06', iso: '5.27', alignment: 'Strong', notes: 'Learning from incidents directly maps.' },
+  { ncf: 'CAP-01', iso: '6.3', alignment: 'Strong', notes: 'Awareness and training directly maps.' },
+  { ncf: 'CAP-02', iso: '6.3', alignment: 'Moderate', notes: 'Education component supports technical skills.' },
+  { ncf: 'CAP-03', iso: '5.4', alignment: 'Moderate', notes: 'Management responsibilities support culture.' },
+  { ncf: 'CAP-04', iso: '6.2', alignment: 'Partial', notes: 'Employment terms loosely relate to talent pipeline.' },
+  { ncf: 'CAP-05', iso: '5.6', alignment: 'Moderate', notes: 'Special interest groups support collaboration.' },
+  { ncf: 'CAP-06', iso: '6.3', alignment: 'Moderate', notes: 'Training supports professional development.' },
+];
+
+module.exports = { CONTROL_MAPPING };

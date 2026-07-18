@@ -1,0 +1,38 @@
+{
+  "name": "gh-cybercomply-backend",
+  "version": "1.0.0",
+  "description": "Node.js + MongoDB backend for the Ghana NCF vs ISO/IEC 27002 Compliance Measurement System (GH-CYBERCOMPLY).",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "dev:memory": "USE_MEMORY_DB=true nodemon server.js",
+    "start:memory": "USE_MEMORY_DB=true node server.js",
+    "seed": "node src/seed.js",
+    "test:api": "node scripts/smoke-test.js"
+  },
+  "keywords": [
+    "compliance",
+    "iso27002",
+    "ghana-ncf",
+    "cybersecurity",
+    "express",
+    "mongodb"
+  ],
+  "author": "GH-CYBERCOMPLY",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.0.0",
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.1.4",
+    "nodemon": "^3.1.9"
+  }
+}

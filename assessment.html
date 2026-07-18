@@ -48,6 +48,8 @@
         input[type="text"], input[type="email"], select { width: 100%; padding: 0.75rem 1rem; background: rgba(30,30,30,0.6); border: 1px solid rgba(80,80,80,0.5); border-radius: 12px; color: #f3f4f6; font-size: 0.9rem; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.3s; }
         input[type="text"]:focus, input[type="email"]:focus, select:focus { border-color: #38bdf8; }
         select option { background: #1e1e1e; color: #f3f4f6; }
+        input.field-error, select.field-error { border-color: #ff3366 !important; box-shadow: 0 0 0 1px rgba(255,51,102,0.35); }
+        .control-missing { box-shadow: 0 0 0 1px rgba(255,51,102,0.55), 0 0 22px rgba(255,51,102,0.15) !important; border-color: rgba(255,51,102,0.55) !important; }
         /* Slider */
         input[type="range"] { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 4px; background: rgba(80,80,80,0.4); outline: none; transition: all 0.3s; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #818cf8); cursor: pointer; box-shadow: 0 0 10px rgba(56,189,248,0.3); transition: all 0.3s; }
@@ -72,6 +74,14 @@
         @media (max-width: 479px) {
             .btn-primary, .btn-secondary { padding: 0.65rem 1.2rem; font-size: 0.8rem; }
         }
+        /* App modal (replaces native alert) */
+        .app-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); z-index: 100; align-items: center; justify-content: center; padding: 1.5rem; opacity: 0; transition: opacity 0.25s ease; }
+        .app-modal-overlay.open { display: flex; opacity: 1; }
+        .app-modal { width: 100%; max-width: 420px; background: rgba(24,24,24,0.96); border: 1px solid rgba(56,189,248,0.2); border-radius: 18px; padding: 1.75rem; box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.08); transform: translateY(16px) scale(0.96); opacity: 0; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); text-align: center; }
+        .app-modal-overlay.open .app-modal { transform: translateY(0) scale(1); opacity: 1; }
+        .app-modal-icon { width: 56px; height: 56px; margin: 0 auto 1rem; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .app-modal-title { font-size: 1.15rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+        .app-modal-message { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
     </style>
 </head>
 <body>
@@ -113,6 +123,16 @@
     </div>
 
     <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- App Modal (replaces native alert) -->
+    <div class="app-modal-overlay" id="appModalOverlay" onclick="if(event.target===this)closeModal()">
+        <div class="app-modal" role="alertdialog" aria-modal="true" aria-labelledby="appModalTitle" aria-describedby="appModalMessage">
+            <div class="app-modal-icon" id="appModalIcon"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="app-modal-title" id="appModalTitle">Notice</div>
+            <div class="app-modal-message" id="appModalMessage"></div>
+            <button class="btn-primary" id="appModalBtn" onclick="closeModal()">OK</button>
+        </div>
+    </div>
 
     <main style="position:relative;z-index:1;max-width:1280px;margin:auto;padding:1.5rem;">
         <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;font-size:0.85rem;color:#64748b;" class="reveal">
@@ -158,12 +178,12 @@
                 <div style="display:flex;flex-direction:column;gap:1rem;">
                     <div>
                         <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:0.4rem;">Organization Name *</label>
-                        <input type="text" id="orgName" placeholder="e.g., Ghana Commercial Bank">
+                        <input type="text" id="orgName" placeholder="e.g., Ghana Commercial Bank" maxlength="200" required>
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" id="orgGrid">
                         <div>
-                            <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:0.4rem;">Sector</label>
-                            <select id="orgSector">
+                            <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:0.4rem;">Sector *</label>
+                            <select id="orgSector" required>
                                 <option value="">Select sector...</option>
                                 <option>Financial Services</option>
                                 <option>Telecommunications</option>
@@ -175,8 +195,8 @@
                             </select>
                         </div>
                         <div>
-                            <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:0.4rem;">Organization Size</label>
-                            <select id="orgSize">
+                            <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:0.4rem;">Organization Size *</label>
+                            <select id="orgSize" required>
                                 <option value="">Select size...</option>
                                 <option>Small (1-50)</option>
                                 <option>Medium (51-250)</option>
@@ -186,8 +206,8 @@
                         </div>
                     </div>
                     <div>
-                        <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:0.4rem;">Contact Email</label>
-                        <input type="email" id="orgEmail" placeholder="assessor@company.com">
+                        <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:0.4rem;">Contact Email *</label>
+                        <input type="email" id="orgEmail" placeholder="assessor@company.com" maxlength="254" required>
                     </div>
                     <div style="text-align:right;margin-top:0.5rem;">
                         <button class="btn-primary" onclick="goToStep(2)">Next: Ghana NCF <i class="fas fa-arrow-right" style="margin-left:0.5rem;"></i></button>
@@ -214,7 +234,7 @@
                             <i class="fas fa-magic" style="margin-right:0.4rem;"></i>Demo Fill
                         </button>
                         <div>
-                            <div style="font-size:0.75rem;color:#64748b;margin-bottom:0.3rem;">Progress: <span id="ncfProgress">0</span>/37</div>
+                            <div style="font-size:0.75rem;color:#64748b;margin-bottom:0.3rem;">Progress: <span id="ncfProgress">0</span>/<span id="ncfTotal">0</span></div>
                             <div class="progress-bar-bg" style="width:200px;"><div class="progress-bar-fill" id="ncfBar" style="width:0%"></div></div>
                         </div>
                     </div>
@@ -245,7 +265,7 @@
                             <i class="fas fa-magic" style="margin-right:0.4rem;"></i>Demo Fill
                         </button>
                         <div>
-                            <div style="font-size:0.75rem;color:#64748b;margin-bottom:0.3rem;">Progress: <span id="isoProgress">0</span>/93</div>
+                            <div style="font-size:0.75rem;color:#64748b;margin-bottom:0.3rem;">Progress: <span id="isoProgress">0</span>/<span id="isoTotal">0</span></div>
                             <div class="progress-bar-bg" style="width:200px;"><div class="progress-bar-fill" id="isoBar" style="width:0%"></div></div>
                         </div>
                     </div>
@@ -284,19 +304,28 @@
         const observer = new IntersectionObserver((entries) => { entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); }); }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+        // ── SME-focused assessment ──
+        // A concise subset of the two frameworks (24 questions instead of 130).
+        // Controls are drawn directly from the Ghana NCF and ISO/IEC 27002 sets
+        // in use, selecting the highest-impact controls so a small/medium
+        // business can complete the assessment in a few minutes while still
+        // covering every essential security & risk-reduction topic:
+        // governance, risk, data protection, access & authentication, malware,
+        // patching, backups, continuity, monitoring, incident response,
+        // supply-chain, awareness, network and physical security.
         const ncfDomains = {
-            "Governance & Leadership": ["Cybersecurity governance structure","National cybersecurity strategy","Roles and responsibilities","Stakeholder coordination","Resource allocation","Performance monitoring","Risk management framework","Continuous improvement"],
-            "Legal & Regulatory": ["Data protection legislation","Cybercrime legislation","Electronic transactions act","Regulatory compliance monitoring","Legal frameworks for digital evidence","Consumer protection in cyberspace"],
-            "Incident Response": ["National CERT/CSIRT establishment","Incident reporting mechanisms","Incident response procedures","Threat intelligence sharing","Post-incident analysis","Crisis communication","Cyber drills and exercises"],
-            "Critical Infrastructure": ["CII identification","CII protection standards","Sector-specific guidelines","Resilience requirements","Supply chain security"],
-            "Capacity Building": ["Cybersecurity awareness programs","Professional development","Academic curriculum integration","Cybersecurity research initiatives","Public awareness campaigns","Skills gap assessment"],
-            "International Cooperation": ["International treaty participation","Bilateral cybersecurity agreements","Information sharing with partners","Participation in global forums","Cross-border incident coordination"]
+            "Governance & Leadership": ["Cybersecurity governance structure","Risk management framework"],
+            "Legal & Regulatory": ["Data protection legislation","Regulatory compliance monitoring"],
+            "Incident Response": ["Incident response procedures","Incident reporting mechanisms"],
+            "Critical Infrastructure": ["Supply chain security"],
+            "Capacity Building": ["Cybersecurity awareness programs","Skills gap assessment"],
+            "International Cooperation": ["Information sharing with partners"]
         };
         const isoThemes = {
-            "Organizational Controls": ["5.1 Policies for information security","5.2 Information security roles","5.3 Segregation of duties","5.4 Management responsibilities","5.5 Contact with authorities","5.6 Contact with special interest groups","5.7 Threat intelligence","5.8 IS in project management","5.9 Inventory of information","5.10 Acceptable use of information","5.11 Return of assets","5.12 Classification of information","5.13 Labelling of information","5.14 Information transfer","5.15 Access control","5.16 Identity management","5.17 Authentication information","5.18 Access rights","5.19 IS in supplier relationships","5.20 Addressing IS in supplier agreements","5.21 Managing ICT supply chain","5.22 Monitoring of supplier services","5.23 Cloud services security","5.24 Incident management planning","5.25 Assessment of incidents","5.26 Response to incidents","5.27 Learning from incidents","5.28 Collection of evidence","5.29 IS during disruption","5.30 ICT readiness for continuity","5.31 Legal requirements","5.32 Intellectual property rights","5.33 Protection of records","5.34 Privacy and PII protection","5.35 Independent review","5.36 Compliance with policies","5.37 Documented operating procedures"],
-            "People Controls": ["6.1 Screening","6.2 Terms and conditions","6.3 IS awareness and training","6.4 Disciplinary process","6.5 Responsibilities after termination","6.6 Confidentiality agreements","6.7 Remote working","6.8 IS event reporting"],
-            "Physical Controls": ["7.1 Physical security perimeters","7.2 Physical entry","7.3 Securing offices and rooms","7.4 Physical security monitoring","7.5 Protecting against threats","7.6 Working in secure areas","7.7 Clear desk and screen","7.8 Equipment siting","7.9 Security of assets off-premises","7.10 Storage media","7.11 Supporting utilities","7.12 Cabling security","7.13 Equipment maintenance","7.14 Secure disposal"],
-            "Technological Controls": ["8.1 User endpoint devices","8.2 Privileged access rights","8.3 Information access restriction","8.4 Access to source code","8.5 Secure authentication","8.6 Capacity management","8.7 Protection against malware","8.8 Management of technical vulnerabilities","8.9 Configuration management","8.10 Information deletion","8.11 Data masking","8.12 Data leakage prevention","8.13 Information backup","8.14 Redundancy of facilities","8.15 Logging","8.16 Monitoring activities","8.17 Clock synchronization","8.18 Use of privileged utility programs","8.19 Installation of software","8.20 Networks security","8.21 Security of network services","8.22 Segregation of networks","8.23 Web filtering","8.24 Use of cryptography","8.25 Secure development lifecycle","8.26 Application security requirements","8.27 Secure system architecture","8.28 Secure coding","8.29 Security testing","8.30 Outsourced development","8.31 Separation of environments","8.32 Change management","8.33 Test information","8.34 Audit test protection"]
+            "Organizational Controls": ["5.1 Policies for information security","5.15 Access control","5.24 Incident management planning","5.30 ICT readiness for continuity","5.34 Privacy and PII protection"],
+            "People Controls": ["6.3 IS awareness and training"],
+            "Physical Controls": ["7.2 Physical entry"],
+            "Technological Controls": ["8.5 Secure authentication","8.7 Protection against malware","8.8 Management of technical vulnerabilities","8.13 Information backup","8.16 Monitoring activities","8.20 Networks security","8.24 Use of cryptography"]
         };
 
         const maturityLabels = ['Non-existent','Initial','Repeatable','Defined','Managed','Optimized'];
@@ -353,7 +382,10 @@
         }
 
         function calculateScore(id, prefix, score) {
-            document.getElementById(id).value = score;
+            const input = document.getElementById(id);
+            input.value = score;
+            // Clear the "unanswered" highlight on this control once it's answered.
+            if (input.parentElement) input.parentElement.classList.remove('control-missing');
             updateProgress(prefix);
         }
 
@@ -362,12 +394,14 @@
             let filled = 0;
             inputs.forEach(s => { if (parseFloat(s.value) >= 0) filled++; });
             const total = inputs.length;
-            const pct = Math.round((filled / total) * 100);
+            const pct = total ? Math.round((filled / total) * 100) : 0;
             if (prefix === 'ncf') {
                 document.getElementById('ncfProgress').textContent = filled;
+                document.getElementById('ncfTotal').textContent = total;
                 document.getElementById('ncfBar').style.width = pct + '%';
             } else {
                 document.getElementById('isoProgress').textContent = filled;
+                document.getElementById('isoTotal').textContent = total;
                 document.getElementById('isoBar').style.width = pct + '%';
             }
         }
@@ -388,11 +422,100 @@
             updateProgress(prefix);
         }
 
-        function goToStep(step) {
-            if (step === 2 && !document.getElementById('orgName').value.trim()) {
-                alert('Please enter your organization name.');
-                return;
+        function showModal(message, { title = 'Notice', type = 'warning', button = 'OK' } = {}) {
+            const styles = {
+                warning: { bg: 'rgba(255,234,0,0.1)',  color: '#ffea00', icon: 'fa-triangle-exclamation' },
+                info:    { bg: 'rgba(56,189,248,0.1)',  color: '#38bdf8', icon: 'fa-circle-info' },
+                success: { bg: 'rgba(0,255,136,0.1)',   color: '#00ff88', icon: 'fa-circle-check' },
+                error:   { bg: 'rgba(255,51,102,0.1)',  color: '#ff3366', icon: 'fa-circle-xmark' }
+            };
+            const s = styles[type] || styles.warning;
+            const iconEl = document.getElementById('appModalIcon');
+            iconEl.style.background = s.bg;
+            iconEl.style.color = s.color;
+            iconEl.innerHTML = `<i class="fas ${s.icon}"></i>`;
+            document.getElementById('appModalTitle').textContent = title;
+            document.getElementById('appModalMessage').textContent = message;
+            document.getElementById('appModalBtn').textContent = button;
+            document.getElementById('appModalOverlay').classList.add('open');
+            setTimeout(() => document.getElementById('appModalBtn').focus(), 50);
+        }
+        function closeModal() {
+            document.getElementById('appModalOverlay').classList.remove('open');
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('appModalOverlay').classList.contains('open')) closeModal();
+        });
+
+        let currentStep = 1;
+
+        // Allowed values — must match the <select> options and the backend validators.
+        const ALLOWED_SECTORS = ['Financial Services','Telecommunications','Healthcare','Government','Education','Energy','Other'];
+        const ALLOWED_SIZES = ['Small (1-50)','Medium (51-250)','Large (251-1000)','Enterprise (1000+)'];
+        const NAME_PATTERN = /^[\p{L}\p{N}\s.,'&()\-/]+$/u; // letters, numbers, spaces & common punctuation
+
+        function isValidEmail(v) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+        }
+
+        function markField(id) {
+            const el = document.getElementById(id);
+            el.classList.add('field-error');
+            el.focus();
+            el.addEventListener('input', function clear() { el.classList.remove('field-error'); el.removeEventListener('input', clear); });
+            el.addEventListener('change', function clear() { el.classList.remove('field-error'); el.removeEventListener('change', clear); });
+        }
+
+        // Every organization field is required and must be the right type/format.
+        function validateOrg() {
+            const checks = [
+                { id: 'orgName',   valid: (v) => v.trim().length > 0,                    msg: 'Please enter your organization name.' },
+                { id: 'orgName',   valid: (v) => v.trim().length >= 2 && v.trim().length <= 200, msg: 'Organization name must be between 2 and 200 characters.' },
+                { id: 'orgName',   valid: (v) => NAME_PATTERN.test(v.trim()),            msg: 'Organization name contains invalid characters.' },
+                { id: 'orgSector', valid: (v) => v !== '',                               msg: 'Please select your industry sector.' },
+                { id: 'orgSector', valid: (v) => ALLOWED_SECTORS.includes(v),            msg: 'Please choose a sector from the list.' },
+                { id: 'orgSize',   valid: (v) => v !== '',                               msg: 'Please select your organization size.' },
+                { id: 'orgSize',   valid: (v) => ALLOWED_SIZES.includes(v),              msg: 'Please choose an organization size from the list.' },
+                { id: 'orgEmail',  valid: (v) => v.trim().length > 0,                    msg: 'Please enter a contact email address.' },
+                { id: 'orgEmail',  valid: (v) => isValidEmail(v),                        msg: 'Please enter a valid email address.' },
+            ];
+            for (const c of checks) {
+                if (!c.valid(document.getElementById(c.id).value)) {
+                    showModal(c.msg, { title: 'All Fields Required', type: 'warning' });
+                    markField(c.id);
+                    return false;
+                }
             }
+            return true;
+        }
+
+        // Every control question in a section must be answered.
+        function validateControls(prefix, label) {
+            const inputs = document.querySelectorAll(`input[type="hidden"][id^="${prefix}_"]`);
+            let firstMissing = null;
+            let missing = 0;
+            inputs.forEach(s => {
+                if (parseFloat(s.value) < 0) {
+                    missing++;
+                    if (s.parentElement) s.parentElement.classList.add('control-missing');
+                    if (!firstMissing) firstMissing = s;
+                }
+            });
+            if (missing > 0) {
+                showModal(`Please answer all ${label} questions before continuing. ${missing} of ${inputs.length} still ${missing === 1 ? 'needs' : 'need'} a response.`, { title: 'All Questions Required', type: 'warning' });
+                if (firstMissing && firstMissing.parentElement) firstMissing.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+            return true;
+        }
+
+        function goToStep(step) {
+            // Validate the current step's fields when moving forward.
+            if (step > currentStep) {
+                if (currentStep === 1 && !validateOrg()) return;
+                if (currentStep === 2 && !validateControls('ncf', 'Ghana NCF')) return;
+            }
+            currentStep = step;
             document.getElementById('step1').style.display = step === 1 ? 'block' : 'none';
             document.getElementById('step2').style.display = step === 2 ? 'block' : 'none';
             document.getElementById('step3').style.display = step === 3 ? 'block' : 'none';
@@ -406,6 +529,10 @@
         }
 
         function submitAssessment() {
+            // Final gate: all organization fields and all questions must be complete.
+            if (!validateOrg()) { goToStep(1); return; }
+            if (!validateControls('ncf', 'Ghana NCF')) { goToStep(2); return; }
+            if (!validateControls('iso', 'ISO 27002')) return;
             const data = {
                 organization: { name: document.getElementById('orgName').value, sector: document.getElementById('orgSector').value, size: document.getElementById('orgSize').value, email: document.getElementById('orgEmail').value },
                 ncf: {}, iso: {}, timestamp: new Date().toISOString()
@@ -418,6 +545,8 @@
 
         renderControls(ncfDomains, 'ncf', 'ncfControls');
         renderControls(isoThemes, 'iso', 'isoControls');
+        updateProgress('ncf');
+        updateProgress('iso');
     </script>
 </body>
 </html>

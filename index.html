@@ -197,9 +197,9 @@
                     <h2 style="font-size:1.1rem;font-weight:700;color:white;">Scoring Methodology</h2>
                 </div>
                 <div style="background:rgba(30,30,30,0.6);border:1px solid rgba(80,80,80,0.4);border-radius:12px;padding:1.25rem;margin-bottom:1rem;">
-                    <code style="color:#38bdf8;font-size:0.85rem;">Compliance Score = (Σ(control_score × weight) / Σ(max_score × weight)) × 100</code>
+                    <code style="color:#38bdf8;font-size:0.85rem;">Compliance Score = (Σ control_score) / (number of controls)</code>
                 </div>
-                <p style="font-size:0.85rem;color:#94a3b8;line-height:1.7;">Each control is assessed using a 0-5 Capability Maturity Model scale, weighted by control criticality, then normalized to a 0-100% score.</p>
+                <p style="font-size:0.85rem;color:#94a3b8;line-height:1.7;">Each control is assessed on a 0-5 Capability Maturity Model scale, converted to a percentage, then averaged across all controls to produce a 0-100% score.</p>
             </div>
         </div>
 
