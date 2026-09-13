@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GH-CYBERCOMPLY | Printable Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="results.css" />
+    <link rel="stylesheet" href="print.css" />
+</head>
+<body>
+    <div class="report-content">
+        <div id="noData" class="no-data-panel hidden">
+            <i class="fas fa-inbox" style="font-size: 2.5rem; color: var(--slate-500); margin-bottom: 1rem; display: block;"></i>
+            <h2>No Assessment Data</h2>
+            <p>Complete an assessment first to generate a printable report.</p>
+            <a class="action-button action-button--primary" href="assessment.html">
+                <i class="fas fa-arrow-right"></i>
+                Start Assessment
+            </a>
+        </div>
+
+        <main id="resultsContent" class="report-page hidden">
+            <section class="cover-section report-section" id="cover">
+                <div class="cover-topbar">
+                    <div class="cover-brand">
+                        <div class="brand-mark">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <div class="brand-text">GH-CYBER<span class="brand-accent">COMPLY</span></div>
+                    </div>
+                    <div class="confidential-badge">
+                        <i class="fas fa-lock"></i>
+                        Confidential
+                    </div>
+                </div>
+
+                <div class="cover-body">
+                    <div class="cover-copy">
+                        <p class="eyebrow">Enterprise Compliance Assessment</p>
+                        <h1>Cybersecurity Compliance Assessment Report</h1>
+                        <p class="subtitle">ISO 27001 | Ghana Cybersecurity Framework</p>
+
+                        <div class="meta-grid">
+                            <div class="meta-box">
+                                <label>Assessment Date</label>
+                                <span id="assessmentDate">—</span>
+                            </div>
+                            <div class="meta-box">
+                                <label>Organization</label>
+                                <span id="organizationName">Organization Name</span>
+                            </div>
+                            <div class="meta-box">
+                                <label>Report Version</label>
+                                <span>v1.0</span>
+                            </div>
+                            <div class="meta-box">
+                                <label>Assessment Scope</label>
+                                <span id="scopeLabel">Ghana NCF + ISO 27002</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cover-side">
+                        <div class="report-badge">
+                            <div class="report-badge-content">
+                                <i class="fas fa-file-contract"></i>
+                                <strong>Executive Report</strong>
+                            </div>
+                        </div>
+                        <div class="cover-summary">
+                            <strong id="coverOverallScore">0%</strong>
+                            <small>Overall Compliance Score</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="report-section" id="executive-summary">
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="fas fa-chart-pie"></i></div>
+                        <h2>Executive Summary</h2>
+                    </div>
+
+                    <div class="kpi-grid" id="summaryGrid">
+                        <article class="summary-card summary-card--navy">
+                            <div class="summary-head">
+                                <div class="summary-icon"><i class="fas fa-bullseye"></i></div>
+                                <span class="tone-badge tone-badge--navy">Score</span>
+                            </div>
+                            <div class="summary-label">Overall Compliance Score</div>
+                            <div class="summary-value" id="overallScore">0%</div>
+                            <div class="summary-status summary-status--good" id="overallStatus">Compliant</div>
+                        </article>
+
+                        <article class="summary-card summary-card--indigo">
+                            <div class="summary-head">
+                                <div class="summary-icon"><i class="fas fa-triangle-exclamation"></i></div>
+                                <span class="tone-badge tone-badge--indigo">Risk</span>
+                            </div>
+                            <div class="summary-label">Risk Level</div>
+                            <div class="summary-value" id="riskLevel">—</div>
+                            <div class="summary-status summary-status--neutral" id="riskStatus">No Data</div>
+                        </article>
+
+                        <article class="summary-card summary-card--teal">
+                            <div class="summary-head">
+                                <div class="summary-icon"><i class="fas fa-check-double"></i></div>
+                                <span class="tone-badge tone-badge--teal">Maturity</span>
+                            </div>
+                            <div class="summary-label">Compliance Maturity</div>
+                            <div class="summary-value" id="maturityLevel">0</div>
+                            <div class="summary-status summary-status--neutral" id="maturityStatus">Initial</div>
+                        </article>
+
+                        <article class="summary-card summary-card--red">
+                            <div class="summary-head">
+                                <div class="summary-icon"><i class="fas fa-exclamation-circle"></i></div>
+                                <span class="tone-badge tone-badge--red">Findings</span>
+                            </div>
+                            <div class="summary-label">Critical Findings</div>
+                            <div class="summary-value" id="criticalFindings">0</div>
+                            <div class="summary-status summary-status--critical" id="criticalStatus">Review Required</div>
+                        </article>
+
+                        <article class="summary-card summary-card--green">
+                            <div class="summary-head">
+                                <div class="summary-icon"><i class="fas fa-circle-check"></i></div>
+                                <span class="tone-badge tone-badge--green">Passed</span>
+                            </div>
+                            <div class="summary-label">Controls Passed</div>
+                            <div class="summary-value" id="controlsPassed">0</div>
+                            <div class="summary-status summary-status--good" id="passedStatus">Satisfactory</div>
+                        </article>
+
+                        <article class="summary-card summary-card--amber">
+                            <div class="summary-head">
+                                <div class="summary-icon"><i class="fas fa-circle-xmark"></i></div>
+                                <span class="tone-badge tone-badge--amber">Failed</span>
+                            </div>
+                            <div class="summary-label">Controls Failed</div>
+                            <div class="summary-value" id="controlsFailed">0</div>
+                            <div class="summary-status summary-status--high" id="failedStatus">Needs Attention</div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="report-section" id="dashboard">
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="fas fa-gauge-high"></i></div>
+                        <h2>Dashboard</h2>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="panel maturity-panel">
+                            <div class="panel-head">
+                                <h3 class="panel-title">Compliance Maturity Gauge</h3>
+                                <span class="panel-pill">Maturity</span>
+                            </div>
+
+                            <div class="maturity-visual">
+                                <div class="maturity-gauge" id="maturityGauge">
+                                    <div class="maturity-needle" id="maturityNeedle"></div>
+                                </div>
+                                <div class="gauge-score" id="maturityScore">0%</div>
+                                <div class="gauge-label" id="maturityLabel">Critical</div>
+                            </div>
+                        </div>
+
+                        <div class="panel chart-card">
+                            <div class="chart-head">
+                                <h3>Ghana NCF Radar</h3>
+                                <span class="chart-pill chart-pill--ncf">NCF</span>
+                            </div>
+                            <canvas id="ncfRadar"></canvas>
+                        </div>
+
+                        <div class="panel chart-card">
+                            <div class="chart-head">
+                                <h3>ISO 27002 Radar</h3>
+                                <span class="chart-pill chart-pill--iso">ISO</span>
+                            </div>
+                            <canvas id="isoRadar"></canvas>
+                        </div>
+
+                        <div class="panel full-width-panel chart-card">
+                            <div class="chart-head">
+                                <h3>Framework Comparison</h3>
+                                <span class="chart-pill chart-pill--comparison">Horizontal Bar</span>
+                            </div>
+                            <canvas id="compChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="report-section" id="risk-matrix">
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="fas fa-table-cells-large"></i></div>
+                        <h2>Risk Heat Map</h2>
+                    </div>
+
+                    <div class="risk-matrix-panel">
+                        <div class="matrix-layout">
+                            <div class="matrix-y-axis" aria-hidden="true">
+                                <div class="matrix-y-axis-label">Severe</div>
+                                <div class="matrix-y-axis-label">Major</div>
+                                <div class="matrix-y-axis-label">Moderate</div>
+                                <div class="matrix-y-axis-label">Minor</div>
+                                <div class="matrix-y-axis-label">Low</div>
+                            </div>
+
+                            <div>
+                                <div class="matrix-grid" id="riskMatrixGrid" aria-live="polite"></div>
+                                <div class="matrix-x-axis" aria-hidden="true">
+                                    <div></div>
+                                    <div class="matrix-x-axis-label">Rare</div>
+                                    <div class="matrix-x-axis-label">Unlikely</div>
+                                    <div class="matrix-x-axis-label">Possible</div>
+                                    <div class="matrix-x-axis-label">Likely</div>
+                                    <div class="matrix-x-axis-label">Certain</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="report-section" id="domain-scores">
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="fas fa-layer-group"></i></div>
+                        <h2>Compliance Domain Scores</h2>
+                    </div>
+
+                    <div id="domainBreakdown" class="domain-grid"></div>
+                </div>
+            </section>
+
+            <section class="report-section" id="recommendations">
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h2>Findings &amp; Recommendations</h2>
+                    </div>
+
+                    <div id="recommendations" class="findings-list"></div>
+                </div>
+            </section>
+
+            <section class="report-section" id="compliance-controls">
+                <div class="table-panel">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Control</th>
+                                    <th>Framework</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Recommendation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detailBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="report-section" id="conclusion">
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="fas fa-pen-fancy"></i></div>
+                        <h2>Conclusion</h2>
+                    </div>
+
+                    <div class="conclusion-box">
+                        <p id="conclusionText"></p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="report-footer">
+                <div class="footer-brand">
+                    <div class="brand-mark" style="width: 32px; height: 32px; border-radius: 10px;">
+                        <i class="fas fa-shield-halved" style="font-size: 0.85rem;"></i>
+                    </div>
+                    <div class="brand-text" style="font-size: 0.86rem;">GH-CYBER<span class="brand-accent">COMPLY</span></div>
+                </div>
+
+                <div class="footer-center">Cybersecurity Compliance Assessment Report</div>
+
+                <div class="footer-side">
+                    <span class="confidential-badge" style="font-size: 0.62rem;">
+                        <i class="fas fa-lock"></i>
+                        Confidential
+                    </span>
+                    <span class="page-indicator">
+                        <i class="far fa-file-lines"></i>
+                        <span class="page-indicator-label">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                    </span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const maturityLabels = ['Non-existent', 'Initial', 'Repeatable', 'Defined', 'Managed', 'Optimized'];
+        const severityMap = {
+            critical: { text: 'Critical', className: 'severity-badge--critical', cardClass: 'finding-card--critical' },
+            high: { text: 'High', className: 'severity-badge--high', cardClass: 'finding-card--high' },
+            moderate: { text: 'Medium', className: 'severity-badge--moderate', cardClass: 'finding-card--moderate' },
+            low: { text: 'Low', className: 'severity-badge--low', cardClass: 'finding-card--low' }
+        };
+
+        function getMaturityLevel(score) {
+            if (score >= 100) return 5;
+            return Math.min(5, Math.max(0, Math.floor(score / 20)));
+        }
+
+        function getStatusColor(score) {
+            if (score >= 80) return '#22c55e';
+            if (score >= 60) return '#38bdf8';
+            if (score >= 40) return '#f59e0b';
+            if (score >= 20) return '#f97316';
+            return '#ef4444';
+        }
+
+        function getStatusTone(score) {
+            if (score >= 80) return 'good';
+            if (score >= 60) return 'moderate';
+            if (score >= 40) return 'high';
+            return 'critical';
+        }
+
+        function formatDate(val) {
+            if (!val) return '—';
+            const date = new Date(val);
+            if (Number.isNaN(date.getTime())) return val;
+            return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+        }
+
+        function buildDomainMap(source, prefix) {
+            const result = {};
+            Object.entries(source || {}).forEach(([key, value]) => {
+                const parts = key.split('_');
+                const domain = parts.slice(1, -1).join(' ').replace(/_/g, ' ').trim();
+                if (!domain) return;
+                if (!result[domain]) result[domain] = [];
+                result[domain].push(value);
+            });
+
+            return Object.entries(result).map(([domain, values]) => {
+                const avg = values.reduce((sum, item) => sum + Number(item || 0), 0) / values.length;
+                const pct = Math.round((avg / 5) * 100);
+                return {
+                    domain,
+                    framework: prefix === 'ncf' ? 'Ghana NCF' : 'ISO 27002',
+                    values,
+                    avg,
+                    pct,
+                    type: prefix === 'ncf' ? 'ncf' : 'iso'
+                };
+            });
+        }
+
+        function getSeverity(score) {
+            if (score < 25) return 'critical';
+            if (score < 50) return 'high';
+            if (score < 75) return 'moderate';
+            return 'low';
+        }
+
+        function getPriorityText(score) {
+            if (score < 25) return 'Immediate';
+            if (score < 50) return 'High';
+            if (score < 75) return 'Medium';
+            return 'Low';
+        }
+
+        function updateMaturityGauge(score) {
+            const gauge = document.getElementById('maturityGauge');
+            const needle = document.getElementById('maturityNeedle');
+            const clampedScore = Math.max(0, Math.min(100, score));
+            const gaugeAngle = (clampedScore / 100) * 180;
+            gauge.style.setProperty('--gauge-fill-color', getStatusColor(clampedScore));
+            gauge.style.setProperty('--gauge-angle', `${gaugeAngle}deg`);
+            needle.style.setProperty('--gauge-angle', `${gaugeAngle}deg`);
+            needle.style.setProperty('--gauge-fill-color', getStatusColor(clampedScore));
+        }
+
+        function renderSummary(allScores, overallPct) {
+            const controlsPassed = allScores.filter((entry) => entry.pct >= 60).length;
+            const controlsFailed = allScores.length - controlsPassed;
+            const criticalFindings = allScores.filter((entry) => entry.pct < 40).length;
+            const riskLevel = overallPct >= 75 ? 'Compliant' : overallPct >= 50 ? 'Moderate' : overallPct >= 25 ? 'Needs Improvement' : 'Critical';
+            const maturityLevel = maturityLabels[getMaturityLevel(overallPct)];
+
+            document.getElementById('coverOverallScore').textContent = `${overallPct}%`;
+            document.getElementById('overallScore').textContent = `${overallPct}%`;
+            document.getElementById('riskLevel').textContent = riskLevel;
+            document.getElementById('maturityLevel').textContent = maturityLevel;
+            document.getElementById('criticalFindings').textContent = criticalFindings;
+            document.getElementById('controlsPassed').textContent = controlsPassed;
+            document.getElementById('controlsFailed').textContent = controlsFailed;
+
+            const overallTone = getStatusTone(overallPct);
+            const overallStatus = document.getElementById('overallStatus');
+            const riskStatus = document.getElementById('riskStatus');
+            const maturityStatus = document.getElementById('maturityStatus');
+            const criticalStatus = document.getElementById('criticalStatus');
+            const passedStatus = document.getElementById('passedStatus');
+            const failedStatus = document.getElementById('failedStatus');
+
+            overallStatus.className = `summary-status summary-status--${overallTone}`;
+            overallStatus.textContent = overallTone === 'good' ? 'Compliant' : overallTone === 'moderate' ? 'Moderate' : overallTone === 'high' ? 'Watchlist' : 'Critical';
+
+            riskStatus.className = `summary-status summary-status--${overallTone === 'good' ? 'good' : overallTone === 'moderate' ? 'moderate' : overallTone === 'high' ? 'high' : 'critical'}`;
+            riskStatus.textContent = riskLevel;
+
+            maturityStatus.className = `summary-status summary-status--${overallTone === 'good' ? 'good' : overallTone === 'moderate' ? 'moderate' : overallTone === 'high' ? 'high' : 'critical'}`;
+            maturityStatus.textContent = maturityLevel;
+
+            criticalStatus.textContent = criticalFindings > 0 ? `${criticalFindings} Priority` : 'No Critical Findings';
+            passedStatus.textContent = controlsPassed > 0 ? 'Satisfactory' : 'No Passes';
+            failedStatus.textContent = controlsFailed > 0 ? 'Needs Attention' : 'No Failures';
+        }
+
+        function renderCharts(ncfScores, isoScores) {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.96)',
+                        titleColor: '#f8fafc',
+                        bodyColor: '#e2e8f0',
+                        borderColor: 'rgba(148, 163, 184, 0.35)',
+                        borderWidth: 1,
+                        displayColors: false,
+                        padding: 10,
+                        cornerRadius: 10,
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            stepSize: 25,
+                            backdropColor: 'transparent',
+                            color: '#64748b',
+                            font: { size: 10 }
+                        },
+                        grid: { color: 'rgba(148, 163, 184, 0.30)' },
+                        angleLines: { color: 'rgba(148, 163, 184, 0.20)' },
+                        pointLabels: {
+                            color: '#334155',
+                            font: { size: 10, weight: 600 }
+                        }
+                    }
+                }
+            };
+
+            new Chart(document.getElementById('ncfRadar'), {
+                type: 'radar',
+                data: {
+                    labels: ncfScores.map((s) => s.domain.substring(0, 16)),
+                    datasets: [{
+                        data: ncfScores.map((s) => s.pct),
+                        backgroundColor: 'rgba(56, 189, 248, 0.18)',
+                        borderColor: '#0ea5e9',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#0ea5e9',
+                        pointRadius: 3,
+                        pointHoverRadius: 4,
+                        tension: 0.35,
+                        fill: true
+                    }]
+                },
+                options: chartOptions
+            });
+
+            new Chart(document.getElementById('isoRadar'), {
+                type: 'radar',
+                data: {
+                    labels: isoScores.map((s) => s.domain.substring(0, 16)),
+                    datasets: [{
+                        data: isoScores.map((s) => s.pct),
+                        backgroundColor: 'rgba(129, 140, 248, 0.18)',
+                        borderColor: '#4f46e5',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#4f46e5',
+                        pointRadius: 3,
+                        pointHoverRadius: 4,
+                        tension: 0.35,
+                        fill: true
+                    }]
+                },
+                options: chartOptions
+            });
+
+            const comparisonLabels = [...ncfScores.map((s) => s.domain), ...isoScores.map((s) => s.domain)];
+            const comparisonValues = [...ncfScores.map((s) => s.pct), ...isoScores.map((s) => s.pct)];
+            const comparisonColors = [...ncfScores.map(() => 'rgba(14, 165, 233, 0.80)'), ...isoScores.map(() => 'rgba(79, 70, 229, 0.80)')];
+
+            new Chart(document.getElementById('compChart'), {
+                type: 'bar',
+                data: {
+                    labels: comparisonLabels,
+                    datasets: [{
+                        data: comparisonValues,
+                        backgroundColor: comparisonColors,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.96)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#e2e8f0',
+                            borderColor: 'rgba(148, 163, 184, 0.35)',
+                            borderWidth: 1,
+                            callbacks: { label: (context) => `${context.parsed.x}%` }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(148, 163, 184, 0.25)' },
+                            ticks: {
+                                color: '#64748b',
+                                callback: (value) => `${value}%`
+                            }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#334155',
+                                font: { weight: 600 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderRiskMatrix(allScores) {
+            const matrixGrid = document.getElementById('riskMatrixGrid');
+            const cells = Array.from({ length: 25 }, (_, index) => {
+                const row = Math.floor(index / 5);
+                const col = index % 5;
+                return { row, col, item: null };
+            });
+
+            const grouped = allScores
+                .map((entry) => ({
+                    ...entry,
+                    chance: Math.max(0, Math.min(4, Math.round((100 - entry.pct) / 25))),
+                    impact: Math.max(0, Math.min(4, Math.round((100 - entry.pct) / 20)))
+                }))
+                .filter((entry) => entry.pct < 70);
+
+            grouped.forEach((entry) => {
+                const row = Math.max(0, Math.min(4, 4 - entry.impact));
+                const col = Math.max(0, Math.min(4, entry.chance));
+                const position = row * 5 + col;
+                const existing = cells[position].item;
+                const label = entry.domain.length > 12 ? `${entry.domain.slice(0, 11)}…` : entry.domain;
+                const item = {
+                    label,
+                    severity: getSeverity(entry.pct),
+                    value: entry.pct
+                };
+                cells[position].item = existing ? { ...existing, entries: [...(existing.entries || [existing]), item] } : { ...item, entries: [item] };
+            });
+
+            matrixGrid.innerHTML = cells.map(({ item }) => {
+                if (!item) { return '<div class="risk-cell">—</div>'; }
+                const severityClass = `risk-cell--${item.severity}`;
+                const short = item.entries ? item.entries[0].label : item.label;
+                return `<div class="risk-cell has-entry ${severityClass}" title="${(item.entries || [item]).map((entry) => `${entry.label} (${entry.value}%)`).join(', ')}">${short}</div>`;
+            }).join('');
+        }
+
+        function renderDomains(allScores) {
+            const container = document.getElementById('domainBreakdown');
+            container.innerHTML = allScores.map((entry) => {
+                const tone = getStatusTone(entry.pct);
+                const statusText = entry.pct >= 80 ? 'Compliant' : entry.pct >= 60 ? 'Moderate' : entry.pct >= 40 ? 'Watchlist' : 'Critical';
+                const domainClass = `domain-status--${tone}`;
+                return `
+                    <article class="domain-card">
+                        <div class="domain-top">
+                            <span class="framework-chip framework-chip--${entry.type === 'ncf' ? 'ncf' : 'iso'}">${entry.framework}</span>
+                            <span class="domain-status ${domainClass}">${statusText}</span>
+                        </div>
+
+                        <h3 class="domain-headline">${entry.domain}</h3>
+
+                        <div class="domain-meta">
+                            <div class="domain-score">
+                                <strong style="color: ${getStatusColor(entry.pct)};">${entry.pct}</strong>
+                                <span>%</span>
+                            </div>
+                            <span class="priority-label">${maturityLabels[getMaturityLevel(entry.pct)]}</span>
+                        </div>
+
+                        <div class="progress-track">
+                            <span class="progress-fill" style="width: ${entry.pct}%; background: linear-gradient(90deg, ${getStatusColor(entry.pct)}, ${getStatusColor(entry.pct)});"></span>
+                        </div>
+
+                        <p class="domain-description">${entry.domain.toLowerCase().includes('governance') ? 'Align policies, oversight, roles, and governance reporting with enterprise risk and regulatory expectations.' : entry.domain.toLowerCase().includes('asset') ? 'Ensure inventory completeness, ownership clarity, and formal lifecycle controls for business assets and endpoints.' : entry.domain.toLowerCase().includes('incident') || entry.domain.toLowerCase().includes('response') ? 'Strengthen detection, escalation, communication, and recovery procedures for cyber incidents and service disruptions.' : entry.domain.toLowerCase().includes('network') ? 'Improve segmentation, perimeter controls, vulnerability management, and monitoring coverage for network services.' : entry.domain.toLowerCase().includes('data') || entry.domain.toLowerCase().includes('protection') ? 'Formalize encryption, handling standards, data classification, and privacy safeguards for sensitive information.' : entry.domain.toLowerCase().includes('backup') || entry.domain.toLowerCase().includes('recovery') ? 'Verify backup integrity, recovery testing, and resilience plans for critical workloads and essential services.' : entry.domain.toLowerCase().includes('monitoring') || entry.domain.toLowerCase().includes('logging') ? 'Expand visibility, auditability, and alerting to support proactive detection and continuous assurance.' : 'Prioritize documentation, implementation consistency, and measurable control testing for this domain.'}</p>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function renderRecommendations(allScores) {
+            const container = document.getElementById('recommendations');
+            const sorted = [...allScores].sort((a, b) => a.pct - b.pct);
+
+            const cards = sorted.map((entry) => {
+                const severity = getSeverity(entry.pct);
+                const severityMeta = severityMap[severity];
+                const title = `${entry.domain} Control Maturity`;
+                const description = `The ${entry.framework} domain currently measures at ${entry.pct}% and shows material gaps in evidence, ownership, and operational consistency.`;
+                const businessImpact = `This limits assurance over compliance obligations, can increase audit exposure, and may introduce operational disruption across related controls.`;
+                const recommendation = `${entry.framework} should prioritize formal policies, operating procedures, and periodic testing for ${entry.domain.toLowerCase()}, with measurable ownership and evidence of implementation.`;
+
+                return `
+                    <article class="finding-card ${severityMeta.cardClass}">
+                        <div class="finding-head">
+                            <span class="severity-badge ${severityMeta.className}">${severityMeta.text}</span>
+                            <span class="finding-framework">${entry.framework}</span>
+                        </div>
+                        <h4>${title}</h4>
+                        <p class="finding-summary">${description}</p>
+                        <div class="finding-grid">
+                            <div class="finding-grid-item">
+                                <label>Business Impact</label>
+                                <p>${businessImpact}</p>
+                            </div>
+                            <div class="finding-grid-item">
+                                <label>Recommendation</label>
+                                <p>${recommendation}</p>
+                            </div>
+                        </div>
+                        <div class="finding-footer">
+                            <span class="priority-label">Implementation Priority</span>
+                            <span class="priority-value">${getPriorityText(entry.pct)}</span>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            container.innerHTML = cards;
+        }
+
+        function renderControlsTable(allScores) {
+            const tbody = document.getElementById('detailBody');
+            const rows = allScores.map((entry) => {
+                const score = entry.pct;
+                const status = score >= 80 ? 'pass' : score >= 60 ? 'warning' : 'critical';
+                const statusLabel = score >= 80 ? 'Pass' : score >= 60 ? 'Needs Work' : 'Critical';
+                const priority = score >= 80 ? 'Low' : score >= 60 ? 'Medium' : 'High';
+                const priorityClass = priority === 'High' ? 'priority-cell--high' : priority === 'Medium' ? 'priority-cell--medium' : 'priority-cell--low';
+                const statusClass = score >= 80 ? 'table-status--pass' : score >= 60 ? 'table-status--warning' : 'table-status--critical';
+                const shortRecommendation = score >= 80 ? 'Maintain current control evidence and monitoring.' : 'Increase assurance through formal documentation, control ownership, and periodic testing.';
+
+                return `
+                    <tr data-row data-status="${status}">
+                        <td><span class="table-language">${entry.domain}</span></td>
+                        <td>${entry.framework}</td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:0.75rem; min-width:120px;">
+                                <div style="flex:1; height:8px; border-radius:999px; background:rgba(148,163,184,0.24); overflow:hidden;">
+                                    <span style="display:block; height:100%; width:${score}%; border-radius:inherit; background:linear-gradient(90deg, ${getStatusColor(score)}, ${getStatusColor(score)});"></span>
+                                </div>
+                                <strong style="color:${getStatusColor(score)}; min-width:38px; text-align:right;">${score}%</strong>
+                            </div>
+                        </td>
+                        <td><span class="table-status ${statusClass}">${statusLabel}</span></td>
+                        <td><span class="priority-cell ${priorityClass}">${priority}</span></td>
+                        <td>${shortRecommendation}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            tbody.innerHTML = rows;
+        }
+
+        function buildConclusion(allScores, overallPct) {
+            const controlsPassed = allScores.filter((entry) => entry.pct >= 60).length;
+            const controlsFailed = allScores.length - controlsPassed;
+            const criticalDomain = [...allScores].sort((a, b) => a.pct - b.pct)[0];
+            const strongestDomain = [...allScores].sort((a, b) => b.pct - a.pct)[0];
+
+            const narrative = `The organization currently demonstrates an overall compliance score of ${overallPct}% across the assessed frameworks. ${controlsPassed} domains are operating at an acceptable maturity level, while ${controlsFailed} domains require targeted remediation. The most urgent focus area remains ${criticalDomain.domain}, which currently trails the benchmark score significantly. The strongest performing area is ${strongestDomain.domain}, which indicates a solid foundation for broader improvement. Continued governance, evidence-based control testing, and focused remediation across the highest-risk domains will strengthen the organization’s readiness for audits, government review, and enterprise assurance engagements.`;
+            document.getElementById('conclusionText').textContent = narrative;
+        }
+
+        function processResults() {
+            const raw = localStorage.getItem('assessmentData');
+            if (!raw) {
+                document.getElementById('noData').classList.remove('hidden');
+                return;
+            }
+
+            const data = JSON.parse(raw);
+            document.getElementById('resultsContent').classList.remove('hidden');
+            document.getElementById('organizationName').textContent = data.organization?.name || 'Organization Name';
+            document.getElementById('assessmentDate').textContent = formatDate(data.timestamp);
+            document.getElementById('scopeLabel').textContent = 'Ghana NCF + ISO 27002';
+
+            const ncfScores = buildDomainMap(data.ncf || {}, 'ncf');
+            const isoScores = buildDomainMap(data.iso || {}, 'iso');
+            const allScores = [...ncfScores, ...isoScores];
+
+            const allNcfValues = Object.values(data.ncf || {});
+            const allIsoValues = Object.values(data.iso || {});
+            const ncfValues = allNcfValues.length ? allNcfValues.reduce((sum, value) => sum + Number(value || 0), 0) / allNcfValues.length : 0;
+            const isoValues = allIsoValues.length ? allIsoValues.reduce((sum, value) => sum + Number(value || 0), 0) / allIsoValues.length : 0;
+
+            const ncfPct = Math.round((ncfValues / 5) * 100);
+            const isoPct = Math.round((isoValues / 5) * 100);
+            const overallPct = Math.round((ncfPct + isoPct) / 2);
+
+            renderSummary(allScores, overallPct);
+            updateMaturityGauge(overallPct);
+            document.getElementById('maturityScore').textContent = `${overallPct}%`;
+            document.getElementById('maturityLabel').textContent = maturityLabels[getMaturityLevel(overallPct)];
+            document.getElementById('currentPage').textContent = '1';
+            document.getElementById('totalPages').textContent = '1';
+
+            renderCharts(ncfScores, isoScores);
+            renderRiskMatrix(allScores);
+            renderDomains(allScores);
+            renderRecommendations(allScores);
+            renderControlsTable(allScores);
+            buildConclusion(allScores, overallPct);
+        }
+
+        processResults();
+    </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+@page {
+  size: A4 portrait;
+  margin: 15mm;
+}
+
+@media print {
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    margin: 0;
+    font-size: 11pt;
+  }
+
+  .sidebar,
+  .scroll-top,
+  .mobile-overlay,
+  .mobile-drawer,
+  .menu-button,
+  .report-actions,
+  .page-actions,
+  .screen-only,
+  .print-tip,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  .report-content {
+    flex: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .report-page {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .section-card,
+  .panel,
+  .summary-card,
+  .domain-card,
+  .finding-card,
+  .table-panel,
+  .cover-section,
+  .conclusion-box {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+    border-color: rgba(100, 116, 139, 0.35) !important;
+    border-radius: 10px !important;
+    backdrop-filter: none !important;
+  }
+
+  .section-card,
+  .panel,
+  .summary-card,
+  .domain-card,
+  .finding-card,
+  .table-panel {
+    background: #ffffff !important;
+  }
+
+  .summary-card--navy,
+  .summary-card--indigo,
+  .summary-card--teal,
+  .summary-card--red,
+  .summary-card--green,
+  .summary-card--amber {
+    background: #ffffff !important;
+    border-left-width: 3px !important;
+  }
+
+  .summary-card--navy { border-left-color: var(--navy-800) !important; }
+  .summary-card--indigo { border-left-color: #4f46e5 !important; }
+  .summary-card--teal { border-left-color: var(--teal-500) !important; }
+  .summary-card--red { border-left-color: var(--danger-500) !important; }
+  .summary-card--green { border-left-color: var(--success-500) !important; }
+  .summary-card--amber { border-left-color: var(--warning-600) !important; }
+
+  .summary-card::before {
+    display: none !important;
+  }
+
+  .cover-section {
+    background: var(--navy-900) !important;
+    border: none !important;
+  }
+
+  .cover-section::before {
+    display: none !important;
+  }
+
+  .meta-box {
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .report-section,
+  .section-card,
+  .table-panel,
+  .panel,
+  .domain-card,
+  .finding-card,
+  .cover-section {
+    page-break-inside: avoid !important;
+  }
+
+  .cover-section,
+  .report-section {
+    page-break-before: auto;
+  }
+
+  .report-section + .report-section {
+    page-break-before: always;
+  }
+
+  .report-section:nth-child(2) {
+    page-break-before: auto;
+  }
+
+  .table-wrapper {
+    overflow: visible !important;
+  }
+
+  .table-wrapper table {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .table-wrapper thead th {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .table-wrapper tbody tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .chart-card canvas,
+  .chart-card {
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  .chart-card {
+    overflow: visible !important;
+  }
+
+  .kpi-grid {
+    page-break-inside: avoid !important;
+  }
+
+  .domain-grid {
+    page-break-inside: avoid !important;
+  }
+
+  .finding-card {
+    break-inside: avoid;
+  }
+
+  .report-footer {
+    display: flex !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.30) !important;
+    background: transparent !important;
+  }
+
+  .page-indicator-label {
+    display: none !important;
+  }
+
+  .page-indicator::before {
+    content: 'Page ' counter(page) ' of ' counter(pages);
+  }
+
+  .page-indicator {
+    white-space: nowrap;
+  }
+
+  .cover-section {
+    margin-bottom: 1.2rem;
+  }
+
+  .section-title {
+    margin-bottom: 0.9rem;
+  }
+
+  body {
+    counter-reset: page;
+  }
+
+  .page-indicator {
+    display: inline-flex !important;
+  }
+}
