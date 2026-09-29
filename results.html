@@ -2,14 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" />
     <title>GH-CYBERCOMPLY | Results</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="results.css" />
     <link rel="stylesheet" href="print.css" />
+    <script src="mobile.js" defer></script>
 </head>
 <body>
+    <!-- Mobile header + drawer (shown below 980px, where the sidebar is hidden; never printed) -->
+    <header class="mobile-topbar no-print">
+        <a class="mobile-brand" href="index.html">
+            <span class="brand-mark"><i class="fas fa-shield-halved" aria-hidden="true"></i></span>
+            <span class="brand-text">GH-CYBER<span class="brand-accent">COMPLY</span></span>
+        </a>
+        <button type="button" class="menu-button" id="menuBtn" onclick="toggleDrawer()" aria-label="Open menu" aria-controls="drawer" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i></button>
+    </header>
+    <div class="mobile-overlay no-print" id="overlay" onclick="toggleDrawer()"></div>
+    <div class="mobile-drawer no-print" id="drawer" role="dialog" aria-modal="true" aria-label="Site navigation" aria-hidden="true">
+        <div class="drawer-head">
+            <span class="brand-text">GH-CYBER<span class="brand-accent">COMPLY</span></span>
+            <button type="button" class="drawer-close" onclick="toggleDrawer()" aria-label="Close menu"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <nav class="sidebar-nav" aria-label="Site pages">
+            <a href="index.html"><i class="fas fa-house" aria-hidden="true"></i> Dashboard</a>
+            <a href="mapping.html"><i class="fas fa-diagram-project" aria-hidden="true"></i> Control Mapping</a>
+            <a href="assessment.html"><i class="fas fa-clipboard-check" aria-hidden="true"></i> Assessment</a>
+            <a href="results.html" class="active" aria-current="page"><i class="fas fa-chart-pie" aria-hidden="true"></i> Results</a>
+            <a href="gaps.html"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Gap Analysis</a>
+        </nav>
+        <p class="drawer-label">In this report</p>
+        <nav class="sidebar-nav" aria-label="Report sections">
+            <a href="#executive-summary"><i class="fas fa-chart-line" aria-hidden="true"></i> Executive Summary</a>
+            <a href="#dashboard"><i class="fas fa-gauge-high" aria-hidden="true"></i> Dashboard</a>
+            <a href="#risk-matrix"><i class="fas fa-table-cells-large" aria-hidden="true"></i> Risk Matrix</a>
+            <a href="#domain-scores"><i class="fas fa-layer-group" aria-hidden="true"></i> Domain Scores</a>
+            <a href="#recommendations"><i class="fas fa-lightbulb" aria-hidden="true"></i> Recommendations</a>
+            <a href="#compliance-controls"><i class="fas fa-table" aria-hidden="true"></i> Compliance Controls</a>
+            <a href="#conclusion"><i class="fas fa-pen-fancy" aria-hidden="true"></i> Conclusion</a>
+        </nav>
+    </div>
+
     <div class="page-shell">
         <aside class="sidebar">
             <div class="brand">
@@ -232,7 +267,8 @@
                             <h2>Risk Heat Map</h2>
                         </div>
 
-                        <div class="risk-matrix-panel">
+                        <p class="matrix-hint" aria-hidden="true"><i class="fas fa-arrows-left-right"></i> Swipe sideways to see the full heat map</p>
+                        <div class="risk-matrix-panel" role="region" aria-label="Risk heat map" tabindex="0">
                             <div class="matrix-layout">
                                 <div class="matrix-y-axis" aria-hidden="true">
                                     <div class="matrix-y-axis-label">Severe</div>
@@ -297,8 +333,8 @@
                             </div>
                         </div>
 
-                        <div class="table-wrapper">
-                            <table>
+                        <div class="table-wrapper" role="region" aria-label="Compliance controls table" tabindex="0">
+                            <table class="responsive-table rt-title-first">
                                 <thead>
                                     <tr>
                                         <th>Control</th>

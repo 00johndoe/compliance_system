@@ -1209,3 +1209,172 @@ select {
   .meta-grid, .finding-grid { grid-template-columns: 1fr; }
   .matrix-grid { grid-template-columns: repeat(5, minmax(52px, 1fr)); }
 }
+
+/* ==========================================================================
+   Mobile / small-screen layer
+   - Scoped with "screen" because a bare max-width query also matches A4 print
+     width (~794px) and would change printed reports.
+   - Appended last so it wins over the earlier, looser breakpoints above.
+   ========================================================================== */
+
+/* Mobile header + drawer: hidden by default (desktop and print) */
+.mobile-topbar, .mobile-overlay, .mobile-drawer { display: none; }
+.matrix-hint { display: none; }
+body.nav-open { overflow: hidden; }
+
+@media screen and (max-width: 980px) {
+  .mobile-topbar {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: calc(0.5rem + env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px)) 0.5rem max(1rem, env(safe-area-inset-left, 0px));
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.97), rgba(20, 32, 58, 0.97));
+    color: #edf4ff;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .mobile-brand { display: flex; align-items: center; gap: 0.65rem; min-width: 0; text-decoration: none; color: inherit; font-weight: 900; }
+  .mobile-brand .brand-mark { width: 36px; height: 36px; border-radius: 12px; flex-shrink: 0; }
+  .mobile-brand .brand-text, .drawer-head .brand-text { font-size: clamp(0.9rem, 4.2vw, 1.05rem); white-space: nowrap; }
+  .menu-button, .drawer-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.32);
+    background: rgba(255, 255, 255, 0.06);
+    color: #edf4ff;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .menu-button:hover, .drawer-close:hover { background: rgba(56, 189, 248, 0.14); border-color: rgba(56, 189, 248, 0.5); }
+
+  .mobile-overlay.open { display: block; position: fixed; inset: 0; z-index: 60; background: rgba(2, 6, 23, 0.6); animation: mobileOverlayIn 0.25s ease both; }
+  @keyframes mobileOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .mobile-drawer {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 70;
+    width: min(320px, 86vw);
+    height: 100%;
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(20, 32, 58, 0.98));
+    color: #edf4ff;
+    border-left: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: -16px 0 40px rgba(15, 23, 42, 0.3);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateX(100%);
+    visibility: hidden; /* a closed drawer must not be tabbable */
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.35s;
+  }
+  .mobile-drawer.open { transform: none; visibility: visible; transition-delay: 0s; }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.25rem 0.25rem 1rem; border-bottom: 1px solid rgba(148, 163, 184, 0.18); }
+  .mobile-drawer .sidebar-nav { margin-top: 1rem; gap: 0.25rem; }
+  .mobile-drawer .sidebar-nav a { min-height: 48px; }
+  .drawer-label { margin: 1.5rem 0.5rem 0; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(148, 163, 184, 0.95); }
+
+  /* Anchored sections must clear the sticky header */
+  .report-section { scroll-margin-top: 4.5rem; }
+  .report-page { margin-top: 1rem; }
+
+  /* Grids: tracks may shrink below their content (minmax(0, 1fr)) */
+  .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-grid > *, .kpi-grid > *, .domain-grid > *, .cover-body > *, .meta-grid > *, .finding-grid > * { min-width: 0; }
+  .domain-grid { grid-template-columns: minmax(0, 1fr); }
+  .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media screen and (max-width: 760px) {
+  .report-page { width: calc(100% - 16px); }
+  .cover-body { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .cover-topbar { flex-wrap: wrap; row-gap: 0.75rem; }
+  .cover-copy h1 { font-size: clamp(1.6rem, 1.1rem + 3vw, 2.2rem); overflow-wrap: break-word; }
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .summary-card { min-height: 0; }
+  .dashboard-grid { grid-template-columns: minmax(0, 1fr); }
+  .finding-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* Toolbar: search + filter fill the width; 16px text prevents iOS zoom-on-focus */
+  .table-toolbar { padding: 0.85rem 1rem; }
+  .select-box, .select-box select { width: 100%; }
+  .search-box input, .select-box select { font-size: 16px; min-height: 44px; }
+
+  /* The heat map needs ~70px per cell to stay legible, so it scrolls INSIDE its panel */
+  .matrix-hint { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.5rem; font-size: 0.78rem; color: var(--slate-600); }
+  .risk-matrix-panel { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+  .risk-matrix-panel .matrix-layout { min-width: 450px; }
+
+  /* Report actions: full-width, thumb-sized buttons */
+  .report-actions .section-card { flex-direction: column; align-items: stretch; }
+  .action-button { justify-content: center; min-height: 48px; text-align: center; }
+  .report-actions .action-button { width: 100%; }
+}
+
+/* Controls table -> labelled cards on phones (labels are injected by mobile.js) */
+@media screen and (max-width: 640px) {
+  .table-wrapper { overflow-x: visible; }
+  .table-wrapper table.responsive-table { min-width: 0; width: 100%; }
+  .responsive-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td { display: block; width: 100%; }
+  .responsive-table tr { padding: 0.9rem 1rem; border-bottom: 1px solid rgba(148, 163, 184, 0.22); }
+  .responsive-table tr:last-child { border-bottom: 0; }
+  .table-wrapper tbody td { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; padding: 0.35rem 0; border: 0; background: transparent; text-align: right; }
+  .table-wrapper tbody tr:nth-child(even) td, .table-wrapper tbody tr:hover td { background: transparent; }
+  .responsive-table td[data-label]::before {
+    content: attr(data-label);
+    flex: 0 0 34%;
+    max-width: 34%;
+    text-align: left;
+    padding-top: 0.2rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--slate-500);
+  }
+  .rt-title-first td:first-child { display: block; text-align: left; padding-bottom: 0.5rem; margin-bottom: 0.25rem; border-bottom: 1px solid rgba(148, 163, 184, 0.22); }
+  .rt-title-first td:first-child::before { display: none; }
+  .responsive-table td[colspan] { display: block; text-align: center; }
+  /* the score cell carries an inline min-width for the wide table layout */
+  .responsive-table td > div[style*="min-width"] { min-width: 0 !important; width: 100%; max-width: 200px; }
+}
+
+@media screen and (max-width: 520px) {
+  .kpi-grid { gap: 0.6rem; }
+  .summary-value { font-size: clamp(1.45rem, 6.2vw, 1.8rem); overflow-wrap: anywhere; }
+  .cover-topbar, .cover-body, .section-card { padding-left: 1rem; padding-right: 1rem; }
+  .meta-grid, .finding-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media screen and (max-width: 359px) {
+  .kpi-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Touch devices: no sticky hover lift */
+@media (hover: none) {
+  .action-button:hover, .sidebar-nav a:hover { transform: none; }
+}
+
+/* Keyboard focus is always visible */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
