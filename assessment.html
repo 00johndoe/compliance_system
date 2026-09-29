@@ -283,7 +283,7 @@
 
     <script>
         window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300); });
-        const observer = new IntersectionObserver((entries) => { entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); }); }, { threshold: 0.1 });
+        const observer = new IntersectionObserver((entries) => { entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); }); }, { threshold: 0 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
         // ── SME-focused assessment ──
