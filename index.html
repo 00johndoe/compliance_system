@@ -57,8 +57,91 @@
         .scroll-top:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(56,189,248,0.4); }
         .badge-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.85rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
 
+        /* ---- Dashboard: personal status, how it works, glossary ---- */
+        .btn-mini { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 44px; padding: 0.55rem 1.1rem; border-radius: 12px; border: 1px solid rgba(80,80,80,0.55); background: transparent; color: #cbd5e1; font: 600 0.85rem 'Inter', sans-serif; text-decoration: none; cursor: pointer; transition: border-color 0.2s, color 0.2s, transform 0.2s; }
+        .btn-mini:hover { border-color: rgba(56,189,248,0.45); color: #fff; }
+        .btn-mini.primary { border: 0; color: #fff; background: linear-gradient(135deg, #38bdf8, #818cf8); box-shadow: 0 4px 15px rgba(56,189,248,0.25); }
+        .btn-mini.primary:hover { transform: translateY(-1px); }
+        .btn-mini.danger { color: #fca5a5; border-color: rgba(239,68,68,0.35); }
+        .btn-mini.danger.confirm { background: rgba(239,68,68,0.15); border-color: #ef4444; color: #fff; }
+
+        .status-panel { margin-bottom: 1.5rem; }
+        .sp-empty { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 1rem 1.25rem; align-items: center; }
+        .sp-empty-icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 1.3rem; color: #38bdf8; background: rgba(56,189,248,0.1); }
+        .sp-empty h2, .sp-title h2 { font-size: 1.1rem; font-weight: 700; color: #fff; }
+        .sp-empty p { margin-top: 0.3rem; font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
+        @media (max-width: 639px) { .sp-empty { grid-template-columns: minmax(0, 1fr); text-align: left; } .sp-empty .btn-mini { width: 100%; } }
+
+        .sp-draft { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem; padding: 0.75rem 1rem; border-radius: 12px; background: rgba(255,234,0,0.07); border: 1px solid rgba(255,234,0,0.25); font-size: 0.88rem; color: #fde68a; }
+        .sp-draft .acts { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .sp-draft .btn-mini { min-height: 40px; padding: 0.35rem 0.9rem; }
+        @media (max-width: 479px) { .sp-draft .acts, .sp-draft .btn-mini { width: 100%; } }
+
+        .sp-top { display: flex; gap: 1.5rem; align-items: center; }
+        .ring { width: 120px; height: 120px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; background: conic-gradient(var(--c) calc(var(--p) * 1%), rgba(80,80,80,0.35) 0); }
+        .ring-in { width: calc(100% - 16px); height: calc(100% - 16px); border-radius: 50%; background: #191919; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ring-in b { font-size: 1.7rem; font-weight: 800; color: #fff; line-height: 1; }
+        .ring-in small { margin-top: 0.2rem; font-size: 0.7rem; color: #8393aa; }
+        .sp-info { flex: 1; min-width: 0; display: grid; gap: 0.85rem; }
+        .sp-meta { margin-top: 0.2rem; font-size: 0.82rem; color: #8393aa; overflow-wrap: anywhere; }
+        .sp-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .sp-bars { display: grid; gap: 0.6rem; max-width: 560px; }
+        .sp-bar { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) auto; gap: 0.75rem; align-items: center; font-size: 0.82rem; color: #94a3b8; }
+        .sp-bar b { color: #fff; text-align: right; white-space: nowrap; min-width: 3.5ch; }
+        .sp-track { height: 8px; border-radius: 4px; background: rgba(80,80,80,0.4); overflow: hidden; }
+        .sp-track i { display: block; height: 100%; border-radius: 4px; }
+        @media (max-width: 559px) { .sp-top { flex-direction: column; align-items: stretch; text-align: left; } .ring { align-self: center; } }
+
+        .sp-section { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid rgba(80,80,80,0.3); }
+        .sp-section h3 { margin-bottom: 0.75rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8393aa; }
+        .gap-list { list-style: none; display: grid; gap: 0.5rem; }
+        .gap-item { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: 0.75rem; align-items: center; padding: 0.65rem 0.85rem; min-height: 48px; border-radius: 10px; background: rgba(30,30,30,0.5); border: 1px solid rgba(80,80,80,0.3); text-decoration: none; color: #e2e8f0; font-size: 0.88rem; transition: border-color 0.2s; }
+        .gap-item:hover { border-color: rgba(56,189,248,0.4); }
+        .gap-item em { display: block; font-style: normal; font-size: 0.72rem; color: #8393aa; }
+        .gap-item b { text-align: right; white-space: nowrap; min-width: 3.5ch; }
+        @media (max-width: 479px) { .gap-item { grid-template-columns: minmax(0, 1fr) auto; } .gap-item .sp-track { grid-column: 1 / -1; grid-row: 2; } }
+        .sp-good { font-size: 0.9rem; color: #86efac; }
+
+        .trend { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .trend svg { width: 140px; height: 40px; flex-shrink: 0; }
+        .trend p { font-size: 0.88rem; color: #cbd5e1; }
+        .history { margin-top: 0.75rem; font-size: 0.85rem; }
+        .history summary { cursor: pointer; color: #38bdf8; min-height: 32px; display: flex; align-items: center; }
+        .history ul { list-style: none; margin-top: 0.5rem; display: grid; gap: 0.35rem; }
+        .history li { display: grid; grid-template-columns: 7rem minmax(0, 1fr) auto; gap: 0.75rem; padding: 0.45rem 0.75rem; border-radius: 8px; background: rgba(30,30,30,0.5); color: #cbd5e1; }
+        .history li span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #94a3b8; }
+        @media (max-width: 479px) { .history li { grid-template-columns: minmax(0, 1fr) auto; } .history li span:nth-child(2) { display: none; } }
+
+        .sp-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+        @media (max-width: 479px) { .sp-actions .btn-mini { flex: 1 1 100%; } }
+        .sp-privacy { margin-top: 1rem; font-size: 0.78rem; color: #8393aa; line-height: 1.5; }
+        .sp-privacy i { margin-right: 0.4rem; }
+
+        .how { margin-bottom: 2rem; }
+        .how-title { margin-bottom: 0.75rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8393aa; }
+        .how-steps { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+        @media (min-width: 768px) { .how-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; } }
+        .how-steps li { display: flex; gap: 0.85rem; align-items: flex-start; padding: 1rem; border-radius: 14px; background: rgba(30,30,30,0.5); border: 1px solid rgba(80,80,80,0.35); }
+        .how-n { flex: 0 0 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 0.85rem; color: #fff; background: linear-gradient(135deg, #38bdf8, #818cf8); }
+        .how-steps strong { color: #fff; font-size: 0.95rem; }
+        .how-steps p { margin-top: 0.25rem; font-size: 0.85rem; color: #94a3b8; line-height: 1.55; }
+
+        .kv-link { text-decoration: none; color: inherit; transition: border-color 0.2s, background 0.2s; }
+        .kv-link:hover { border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.05); }
+        .card-hint { margin-top: 0.15rem; font-size: 0.78rem; color: #8393aa; }
+
+        .glossary { padding: 0; }
+        .glossary summary { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 56px; padding: 0.9rem 1.25rem; cursor: pointer; list-style: none; font-weight: 700; color: #fff; }
+        .glossary summary::-webkit-details-marker { display: none; }
+        .glossary .chev { color: #8393aa; transition: transform 0.2s; }
+        .glossary[open] .chev { transform: rotate(180deg); }
+        .gloss-list { display: grid; gap: 0.85rem; padding: 0 1.25rem 1.25rem; }
+        .gloss-list dt { font-weight: 700; color: #e2e8f0; font-size: 0.9rem; }
+        .gloss-list dd { margin-top: 0.15rem; font-size: 0.85rem; color: #94a3b8; line-height: 1.55; }
+        @media (min-width: 768px) { .gloss-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; } }
     </style>
     <link rel="stylesheet" href="mobile.css">
+    <script src="gh-data.js"></script>
     <script src="mobile.js" defer></script>
 </head>
 <body>
@@ -123,6 +206,28 @@
                 Automated compliance measurement system for structured comparative evaluation between Ghana's National Cybersecurity Framework and ISO/IEC 27002:2022 security controls.
             </p>
         </div>
+
+        <!-- Your status (rendered from this browser's saved assessment; the markup below is the no-data default) -->
+        <section id="statusPanel" class="card status-panel reveal" aria-labelledby="spTitle">
+            <div class="sp-empty">
+                <div class="sp-empty-icon"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
+                <div class="sp-empty-copy">
+                    <h2 id="spTitle">Your compliance status</h2>
+                    <p>You haven't completed an assessment yet. A short questionnaire gives you an overall score, a maturity level and the areas that need attention.</p>
+                </div>
+                <a class="btn-mini primary" href="assessment.html"><i class="fas fa-play" aria-hidden="true"></i> Start assessment</a>
+            </div>
+        </section>
+
+        <!-- How it works -->
+        <section class="how reveal" aria-labelledby="howTitle">
+            <h2 id="howTitle" class="how-title">How it works</h2>
+            <ol class="how-steps">
+                <li><span class="how-n" aria-hidden="true">1</span><div><strong>Assess</strong><p>Answer a short questionnaire about the security controls your organization has in place.</p></div></li>
+                <li><span class="how-n" aria-hidden="true">2</span><div><strong>See your gaps</strong><p>Get an overall score, a maturity level and the domains that need the most attention.</p></div></li>
+                <li><span class="how-n" aria-hidden="true">3</span><div><strong>Act and track</strong><p>Follow the recommendations, then reassess to see your progress over time.</p></div></li>
+            </ol>
+        </section>
 
         <!-- Stats -->
         <div class="stats-grid reveal" id="statsGrid">
@@ -240,33 +345,33 @@
                     <div style="width:40px;height:40px;background:rgba(56,189,248,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
                         <i class="fas fa-flag" style="color:#38bdf8;"></i>
                     </div>
-                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana NCF Domains</h2>
+                    <div><h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana NCF Domains</h2><p class="card-hint">Select a domain to see its control mappings.</p></div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                    <div class="kv-row">
+                    <a class="kv-row kv-link" href="mapping.html?d=Governance%20%26%20Leadership" title="See the control mappings for Governance & Leadership">
                         <span style="font-size:0.85rem;color:#cbd5e1;">Governance & Leadership</span>
                         <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">8 controls</span>
-                    </div>
-                    <div class="kv-row">
+                    </a>
+                    <a class="kv-row kv-link" href="mapping.html?d=Legal%20%26%20Regulatory" title="See the control mappings for Legal & Regulatory">
                         <span style="font-size:0.85rem;color:#cbd5e1;">Legal & Regulatory</span>
                         <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">6 controls</span>
-                    </div>
-                    <div class="kv-row">
+                    </a>
+                    <a class="kv-row kv-link" href="mapping.html?d=Incident%20Response" title="See the control mappings for Incident Response">
                         <span style="font-size:0.85rem;color:#cbd5e1;">Incident Response</span>
                         <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">7 controls</span>
-                    </div>
-                    <div class="kv-row">
+                    </a>
+                    <a class="kv-row kv-link" href="mapping.html?d=Critical%20Infrastructure" title="See the control mappings for Critical Infrastructure">
                         <span style="font-size:0.85rem;color:#cbd5e1;">Critical Infrastructure</span>
                         <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">5 controls</span>
-                    </div>
-                    <div class="kv-row">
+                    </a>
+                    <a class="kv-row kv-link" href="mapping.html?d=Capacity%20Building" title="See the control mappings for Capacity Building">
                         <span style="font-size:0.85rem;color:#cbd5e1;">Capacity Building</span>
                         <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">6 controls</span>
-                    </div>
-                    <div class="kv-row">
+                    </a>
+                    <a class="kv-row kv-link" href="mapping.html?d=International%20Cooperation" title="See the control mappings for International Cooperation">
                         <span style="font-size:0.85rem;color:#cbd5e1;">International Cooperation</span>
                         <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">5 controls</span>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="card reveal">
@@ -274,25 +379,25 @@
                     <div style="width:40px;height:40px;background:rgba(129,140,248,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
                         <i class="fas fa-globe" style="color:#818cf8;"></i>
                     </div>
-                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">ISO 27002 Themes</h2>
+                    <div><h2 style="font-size:1.1rem;font-weight:700;color:white;">ISO 27002 Themes</h2><p class="card-hint">Select a theme to see how it maps to the NCF.</p></div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                    <div class="kv-row">
+                    <a class="kv-row kv-link" href="mapping.html?t=Organizational" title="See mappings for this theme">
                         <span style="font-size:0.85rem;color:#cbd5e1;">Organizational Controls</span>
                         <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">37 controls</span>
-                    </div>
-                    <div class="kv-row">
+                    </a>
+                    <a class="kv-row kv-link" href="mapping.html?t=People" title="See mappings for this theme">
                         <span style="font-size:0.85rem;color:#cbd5e1;">People Controls</span>
                         <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">8 controls</span>
-                    </div>
-                    <div class="kv-row">
+                    </a>
+                    <a class="kv-row kv-link" href="gaps.html" title="This theme has no mapped Ghana NCF controls - see Gap Analysis">
                         <span style="font-size:0.85rem;color:#cbd5e1;">Physical Controls</span>
                         <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">14 controls</span>
-                    </div>
-                    <div class="kv-row">
+                    </a>
+                    <a class="kv-row kv-link" href="mapping.html?t=Technological" title="See mappings for this theme">
                         <span style="font-size:0.85rem;color:#cbd5e1;">Technological Controls</span>
                         <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">34 controls</span>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -327,6 +432,20 @@
                 </a>
             </div>
         </div>
+
+        <!-- Glossary -->
+        <details class="card glossary reveal" style="margin-bottom:2rem;">
+            <summary><span><i class="fas fa-book-open" aria-hidden="true" style="color:#38bdf8;margin-right:0.6rem;"></i>Glossary</span><i class="fas fa-chevron-down chev" aria-hidden="true"></i></summary>
+            <dl class="gloss-list">
+                <div><dt>Ghana NCF</dt><dd>Ghana's National Cybersecurity Framework.</dd></div>
+                <div><dt>ISO/IEC 27002:2022</dt><dd>An international standard of information security controls and guidance.</dd></div>
+                <div><dt>Control</dt><dd>A safeguard or measure an organization puts in place to manage a security risk.</dd></div>
+                <div><dt>Control mapping</dt><dd>Matching each Ghana NCF control to the ISO 27002 control(s) that address a similar requirement.</dd></div>
+                <div><dt>Alignment</dt><dd>How closely two mapped controls match: strong, moderate or partial.</dd></div>
+                <div><dt>CMM</dt><dd>Capability Maturity Model, the 0–5 scale used here to rate how mature a control is.</dd></div>
+                <div><dt>Gap analysis</dt><dd>Finding controls in one framework that have no equivalent in the other.</dd></div>
+            </dl>
+        </details>
     </main>
 
     <!-- Footer -->
@@ -362,6 +481,92 @@
                 el.textContent = current;
             }, 40);
         });
+
+        // ── Personal status: latest result, gaps, trend, history, resume (browser-only) ──
+        (function renderStatus() {
+            if (!window.GHData) return;
+            const G = window.GHData;
+            const host = document.getElementById('statusPanel');
+            const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            try { G.seedHistory(); } catch (e) { /* optional */ }
+
+            const latest = G.loadLatest();
+            const hist = G.loadHistory();
+            const draft = G.loadDraft();
+            const answered = draft && draft.answered > 0 ? draft.answered : 0;
+
+            const draftHtml = answered ? `<div class="sp-draft">
+                    <span><i class="fas fa-pen-to-square" aria-hidden="true" style="margin-right:0.5rem;"></i>Unfinished assessment — ${answered}${draft.total ? ' of ' + Number(draft.total) : ''} questions answered.</span>
+                    <span class="acts"><a class="btn-mini primary" href="assessment.html">Continue</a><button type="button" class="btn-mini" data-discard>Discard</button></span>
+                </div>` : '';
+
+            if (!latest) {
+                if (answered) host.insertAdjacentHTML('afterbegin', draftHtml);
+                wire();
+                return;
+            }
+
+            const bar = (label, pct) => `<div class="sp-bar"><span>${label}</span><span class="sp-track" aria-hidden="true"><i style="width:${pct}%;background:${G.color(pct)}"></i></span><b>${pct}%</b></div>`;
+            const gaps = latest.domains.filter((d) => d.pct < 75).sort((a, b) => a.pct - b.pct).slice(0, 3);
+            const gapsHtml = `<div class="sp-section"><h3>Biggest gaps</h3>` + (gaps.length
+                ? `<ul class="gap-list">${gaps.map((d) => `<li><a class="gap-item" href="results.html#recommendations"><span>${esc(d.domain)}<em>${esc(d.framework)}</em></span><span class="sp-track" aria-hidden="true"><i style="width:${d.pct}%;background:${G.color(d.pct)}"></i></span><b>${d.pct}%</b></a></li>`).join('')}</ul>`
+                : '<p class="sp-good"><i class="fas fa-circle-check" aria-hidden="true"></i> Every area scored 75% or above.</p>') + '</div>';
+
+            let trendHtml = '';
+            if (hist.length >= 2) {
+                const pts = hist.slice(-10);
+                const xs = (i) => (pts.length === 1 ? 60 : 4 + (i * 132) / (pts.length - 1));
+                const ys = (v) => 36 - (Math.max(0, Math.min(100, v)) / 100) * 32;
+                const line = pts.map((h, i) => `${xs(i).toFixed(1)},${ys(h.overall).toFixed(1)}`).join(' ');
+                const last = pts[pts.length - 1], prev = pts[pts.length - 2], diff = last.overall - prev.overall;
+                const msg = diff > 0 ? `Up ${diff} point${diff === 1 ? '' : 's'} since your previous assessment.` : diff < 0 ? `Down ${-diff} point${diff === -1 ? '' : 's'} since your previous assessment.` : 'No change since your previous assessment.';
+                const colr = diff > 0 ? '#22c55e' : diff < 0 ? '#f97316' : '#94a3b8';
+                const rows = hist.slice().reverse().slice(0, 10).map((h, i, arr) => {
+                    const older = hist[hist.length - 2 - i];
+                    const d = older ? h.overall - older.overall : null;
+                    return `<li><span>${esc(G.formatDate(h.t))}</span><span>${esc(h.org || '')}</span><span><b style="color:${G.color(h.overall)}">${h.overall}%</b>${d === null ? '' : ` <small style="color:${d > 0 ? '#22c55e' : d < 0 ? '#f97316' : '#94a3b8'}">${d > 0 ? '▲' : d < 0 ? '▼' : '–'}${d === 0 ? '' : Math.abs(d)}</small>`}</span></li>`;
+                }).join('');
+                trendHtml = `<div class="sp-section"><h3>Progress</h3>
+                    <div class="trend"><svg viewBox="0 0 140 40" role="img" aria-label="Score trend: ${pts.map((h) => h.overall + '%').join(', ')}"><polyline points="${line}" fill="none" stroke="${colr}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${xs(pts.length - 1).toFixed(1)}" cy="${ys(last.overall).toFixed(1)}" r="3.5" fill="${colr}"/></svg><p>${msg}</p></div>
+                    <details class="history"><summary>Past assessments (${hist.length})</summary><ul>${rows}</ul></details></div>`;
+            }
+
+            host.innerHTML = `${draftHtml}
+                <div class="sp-top">
+                    <div class="ring" style="--p:${latest.overallPct};--c:${G.color(latest.overallPct)}" role="img" aria-label="Overall compliance ${latest.overallPct} percent"><div class="ring-in"><b>${latest.overallPct}%</b><small>Overall</small></div></div>
+                    <div class="sp-info">
+                        <div class="sp-title"><h2 id="spTitle">Your compliance status</h2><p class="sp-meta">${esc([latest.org, G.formatDate(latest.timestamp)].filter(Boolean).join(' · '))}</p></div>
+                        <div class="sp-chips">
+                            <span class="badge-pill" style="background:rgba(129,140,248,0.12);color:#a5b4fc;">Maturity: ${esc(latest.maturity)}</span>
+                            <span class="badge-pill" style="background:${G.color(latest.overallPct)}22;color:${G.color(latest.overallPct)};">Risk: ${esc(latest.risk)}</span>
+                        </div>
+                        <div class="sp-bars">${bar('Ghana NCF', latest.ncfPct)}${bar('ISO 27002', latest.isoPct)}</div>
+                    </div>
+                </div>
+                ${gapsHtml}${trendHtml}
+                <div class="sp-actions">
+                    <a class="btn-mini primary" href="results.html"><i class="fas fa-chart-pie" aria-hidden="true"></i> View full report</a>
+                    <a class="btn-mini" href="assessment.html"><i class="fas fa-rotate-right" aria-hidden="true"></i> Retake assessment</a>
+                    <button type="button" class="btn-mini danger" data-clear-all><i class="fas fa-trash-can" aria-hidden="true"></i> Clear saved data</button>
+                </div>
+                <p class="sp-privacy"><i class="fas fa-lock" aria-hidden="true"></i>Your assessments are stored only in this browser on this device and are not sent anywhere. Clearing your browser data removes them.</p>`;
+            wire();
+
+            function wire() {
+                const d = host.querySelector('[data-discard]');
+                if (d) d.addEventListener('click', () => { G.clearDraft(); window.location.reload(); });
+                const c = host.querySelector('[data-clear-all]');
+                if (c) {
+                    let armed = false, t;
+                    c.addEventListener('click', () => {
+                        if (!armed) {
+                            armed = true; c.classList.add('confirm'); c.lastChild.textContent = ' Click again to confirm';
+                            t = setTimeout(() => { armed = false; c.classList.remove('confirm'); c.lastChild.textContent = ' Clear saved data'; }, 4000);
+                        } else { clearTimeout(t); G.clearAll(); window.location.reload(); }
+                    });
+                }
+            }
+        })();
     </script>
 </body>
 </html>

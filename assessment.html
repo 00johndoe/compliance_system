@@ -74,6 +74,7 @@
         .app-modal-message { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
     </style>
     <link rel="stylesheet" href="mobile.css">
+    <script src="gh-data.js"></script>
     <script src="mobile.js" defer></script>
 </head>
 <body>
@@ -376,6 +377,7 @@
             inputs.forEach(s => { if (parseFloat(s.value) >= 0) filled++; });
             const total = inputs.length;
             const pct = total ? Math.round((filled / total) * 100) : 0;
+            saveDraftSoon();
             if (prefix === 'ncf') {
                 document.getElementById('ncfProgress').textContent = filled;
                 document.getElementById('ncfTotal').textContent = total;
@@ -506,6 +508,7 @@
             }
             document.getElementById('line1').className = 'step-line' + (step >= 2 ? ' active' : '');
             document.getElementById('line2').className = 'step-line' + (step >= 3 ? ' active' : '');
+            saveDraftSoon();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -521,13 +524,74 @@
             document.querySelectorAll('input[type="hidden"][id^="ncf_"]').forEach(s => { data.ncf[s.id] = parseInt(s.value); });
             document.querySelectorAll('input[type="hidden"][id^="iso_"]').forEach(s => { data.iso[s.id] = parseInt(s.value); });
             localStorage.setItem('assessmentData', JSON.stringify(data));
+            try { draftReady = false; GHData.seedHistory(); GHData.addHistory(data); GHData.clearDraft(); } catch (e) { /* history is optional */ }
             window.location.href = 'results.html';
+        }
+
+        // ── Progress autosave / resume (browser-only) ──
+        let draftReady = false, draftTimer = null;
+        const ANSWER_INPUTS = 'input[type="hidden"][id^="ncf_"], input[type="hidden"][id^="iso_"]';
+
+        function collectDraft() {
+            const answers = {};
+            document.querySelectorAll(ANSWER_INPUTS).forEach((h) => { if (parseFloat(h.value) >= 0) answers[h.id] = parseFloat(h.value); });
+            return {
+                org: { name: document.getElementById('orgName').value, sector: document.getElementById('orgSector').value, size: document.getElementById('orgSize').value, email: document.getElementById('orgEmail').value },
+                answers, answered: Object.keys(answers).length, total: document.querySelectorAll(ANSWER_INPUTS).length,
+                step: currentStep, updated: Date.now()
+            };
+        }
+        function saveDraftSoon() {
+            if (!draftReady || !window.GHData) return;
+            clearTimeout(draftTimer);
+            draftTimer = setTimeout(() => { try { GHData.saveDraft(collectDraft()); } catch (e) { /* optional */ } }, 300);
+        }
+        function restoreDraft() {
+            if (!window.GHData) return;
+            let d = null;
+            try { d = GHData.loadDraft(); } catch (e) { return; }
+            if (!d) return;
+            const o = d.org || {};
+            if (o.name) document.getElementById('orgName').value = String(o.name).slice(0, 200);
+            if (ALLOWED_SECTORS.includes(o.sector)) document.getElementById('orgSector').value = o.sector;
+            if (ALLOWED_SIZES.includes(o.size)) document.getElementById('orgSize').value = o.size;
+            if (o.email) document.getElementById('orgEmail').value = String(o.email).slice(0, 254);
+            let restored = 0;
+            Object.entries(d.answers || {}).forEach(([id, val]) => {
+                const h = document.getElementById(id);
+                if (!h || ![0, 2.5, 5].includes(Number(val))) return;
+                h.value = val;
+                const radio = [...document.querySelectorAll(`input[name="${id}_q"]`)].find((r) => parseFloat(r.value) === Number(val));
+                if (radio) radio.checked = true;
+                restored++;
+            });
+            if (!restored && !o.name) return;
+            const total = document.querySelectorAll(ANSWER_INPUTS).length;
+            const note = document.createElement('div');
+            note.className = 'card';
+            note.setAttribute('role', 'status');
+            note.style.cssText = 'margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;';
+            note.innerHTML = '<span style="font-size:0.9rem;color:#cbd5e1;"><i class="fas fa-rotate-left" aria-hidden="true" style="color:#38bdf8;margin-right:0.5rem;"></i>Restored your saved progress (' + restored + ' of ' + total + ' questions answered).</span>' +
+                '<button type="button" class="btn-secondary" style="padding:0.5rem 1rem;font-size:0.8rem;">Start over</button>';
+            note.querySelector('button').addEventListener('click', () => { try { GHData.clearDraft(); } catch (e) { /* optional */ } window.location.replace('assessment.html'); });
+            const main = document.querySelector('main');
+            main.insertBefore(note, main.children[2] || null);
+            // Resume on the step the user had reached, but only if the organization details are complete
+            const orgOk = document.getElementById('orgName').value.trim().length >= 2 && document.getElementById('orgSector').value && document.getElementById('orgSize').value && isValidEmail(document.getElementById('orgEmail').value);
+            if (orgOk && (d.step === 2 || d.step === 3)) goToStep(d.step);
         }
 
         renderControls(ncfDomains, 'ncf', 'ncfControls');
         renderControls(isoThemes, 'iso', 'isoControls');
+        restoreDraft();
         updateProgress('ncf');
         updateProgress('iso');
+        ['orgName', 'orgSector', 'orgSize', 'orgEmail'].forEach((id) => {
+            const el = document.getElementById(id);
+            el.addEventListener('input', saveDraftSoon);
+            el.addEventListener('change', saveDraftSoon);
+        });
+        draftReady = true;
     </script>
 </body>
 </html>
