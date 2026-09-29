@@ -60,6 +60,129 @@
         .search-input:focus { border-color: #38bdf8; }
         .search-input::placeholder { color: #475569; }
 
+        /* ---- Control mapping: interactive features ---- */
+        [hidden] { display: none !important; }
+        .stat-btn { font: inherit; color: inherit; width: 100%; cursor: pointer; appearance: none; -webkit-appearance: none; text-align: center; }
+        .stat-btn[aria-pressed="true"] { border-color: #38bdf8; box-shadow: 0 0 0 1px rgba(56,189,248,0.5), 0 8px 32px rgba(56,189,248,0.12); }
+
+        .legend { margin-bottom: 1rem; padding: 0; }
+        .legend summary { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.9rem 1.125rem; cursor: pointer; list-style: none; font-size: 0.9rem; font-weight: 600; color: #e2e8f0; min-height: 44px; }
+        .legend summary::-webkit-details-marker { display: none; }
+        .legend .chev { color: #8393aa; transition: transform 0.2s; }
+        .legend[open] .chev { transform: rotate(180deg); }
+        .legend-list { display: grid; gap: 0.75rem; padding: 0 1.125rem 1.125rem; }
+        .legend-list > div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.75rem; align-items: start; }
+        .legend-list dd { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+        @media (max-width: 479px) { .legend-list > div { grid-template-columns: minmax(0, 1fr); gap: 0.35rem; } }
+
+        .map-controls { margin-bottom: 1rem; }
+        .filter-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; margin-top: 1rem; }
+        @media (min-width: 640px) { .filter-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        .sel span { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #8393aa; margin-bottom: 0.35rem; }
+        .sel select { width: 100%; padding: 0.65rem 0.9rem; background: rgba(30,30,30,0.6); border: 1px solid rgba(80,80,80,0.5); border-radius: 12px; color: #f3f4f6; font-size: 0.9rem; font-family: 'Inter', sans-serif; }
+        .sel select:focus { border-color: #38bdf8; }
+        .sel select option { background: #1e1e1e; color: #f3f4f6; }
+
+        .result-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(80,80,80,0.3); }
+        #resultCount { font-size: 0.85rem; color: #cbd5e1; }
+        .bar-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .ghost-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; min-height: 40px; padding: 0.4rem 0.9rem; border-radius: 10px; border: 1px solid rgba(80,80,80,0.5); background: transparent; color: #94a3b8; font: 600 0.8rem 'Inter', sans-serif; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+        .ghost-btn:hover:not(:disabled) { border-color: rgba(56,189,248,0.4); color: #f3f4f6; }
+        .ghost-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        @media (max-width: 639px) {
+            .bar-actions { width: 100%; }
+            .bar-actions .ghost-btn { flex: 1 1 calc(50% - 0.25rem); min-height: 44px; }
+        }
+
+        .view-tabs { display: flex; gap: 0.25rem; padding: 0.25rem; margin-bottom: 1.25rem; background: rgba(30,30,30,0.6); border: 1px solid rgba(80,80,80,0.4); border-radius: 14px; }
+        .view-tab { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 44px; padding: 0.4rem 0.5rem; border: 0; border-radius: 10px; background: transparent; color: #94a3b8; font: 600 0.85rem 'Inter', sans-serif; cursor: pointer; transition: background 0.2s, color 0.2s; }
+        .view-tab:hover { color: #f3f4f6; }
+        .view-tab[aria-selected="true"] { background: rgba(56,189,248,0.15); color: #38bdf8; }
+        @media (max-width: 399px) { .view-tab i { display: none; } }
+
+        .link-btn { background: none; border: 0; padding: 0; font: inherit; font-weight: 500; color: #e2e8f0; text-align: inherit; cursor: pointer; text-decoration: underline; text-decoration-color: rgba(56,189,248,0.4); text-underline-offset: 3px; }
+        .link-btn:hover { color: #38bdf8; }
+        #tableBody tr[data-i] { cursor: pointer; }
+        mark { background: rgba(255,234,0,0.25); color: inherit; border-radius: 3px; padding: 0 2px; }
+        .empty { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1.5rem 1rem; color: #8393aa; }
+
+        /* Grouped view */
+        .group { margin-bottom: 1rem; padding: 0; overflow: hidden; }
+        .group summary { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.125rem; cursor: pointer; list-style: none; min-height: 56px; }
+        .group summary::-webkit-details-marker { display: none; }
+        .group .chev { color: #8393aa; transition: transform 0.2s; flex-shrink: 0; }
+        .group[open] .chev { transform: rotate(90deg); }
+        .group-title { flex: 1; min-width: 0; font-size: 1rem; font-weight: 700; color: #fff; }
+        .group-sub { display: block; margin-top: 0.15rem; font-size: 0.75rem; font-weight: 500; color: #8393aa; }
+        .group-list { display: flex; flex-direction: column; gap: 0.5rem; padding: 0 1rem 1rem; }
+        .map-item { display: grid; gap: 0.45rem; width: 100%; padding: 0.85rem 1rem; text-align: left; background: rgba(30,30,30,0.5); border: 1px solid rgba(80,80,80,0.3); border-radius: 12px; font: inherit; color: inherit; cursor: pointer; transition: border-color 0.2s; }
+        .map-item:hover { border-color: rgba(56,189,248,0.35); }
+        .map-item .m-ncf { font-size: 0.9rem; font-weight: 600; color: #fff; line-height: 1.4; }
+        .map-item .m-iso { font-size: 0.82rem; color: #94a3b8; line-height: 1.4; }
+        .map-item .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+        /* Coverage view */
+        .cov-head { padding: 1.25rem 1.25rem 0.75rem; }
+        .cov-head h2 { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem; }
+        .cov-head p { font-size: 0.85rem; color: #94a3b8; line-height: 1.6; }
+        .cov-key { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 0.75rem; font-size: 0.75rem; color: #94a3b8; }
+        .cov-key i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 0.4rem; }
+        .cov-cell { display: inline-flex; align-items: center; gap: 0.55rem; min-height: 40px; padding: 0.35rem 0.75rem; border-radius: 10px; border: 1px solid rgba(56,189,248,0.25); background: rgba(56,189,248,calc(0.05 + var(--i, 0) * 0.25)); color: #fff; font: 700 0.9rem 'Inter', sans-serif; cursor: pointer; transition: border-color 0.2s; }
+        .cov-cell:hover, .cov-cell[aria-pressed="true"] { border-color: #38bdf8; }
+        .cov-cell[aria-pressed="true"] { box-shadow: 0 0 0 1px #38bdf8; }
+        .cov-zero { color: #8393aa; }
+        .mini-bars { display: inline-flex; width: 44px; height: 6px; border-radius: 3px; overflow: hidden; background: rgba(80,80,80,0.4); }
+        .mini-bars i { display: block; height: 100%; }
+        .score-chip { display: inline-block; margin-left: 0.5rem; padding: 0.1rem 0.5rem; border-radius: 999px; background: rgba(129,140,248,0.15); color: #a5b4fc; font-size: 0.7rem; font-weight: 700; vertical-align: middle; }
+        .cov-foot { padding: 1rem 1.25rem 1.25rem; font-size: 0.85rem; color: #94a3b8; line-height: 1.6; display: grid; gap: 0.5rem; }
+        .cov-foot a { color: #38bdf8; }
+        #coverageTable td:not(:first-child), #coverageTable th:not(:first-child) { text-align: center; }
+        @media (max-width: 639px) { #coverageTable td:not(:first-child) { text-align: right; } }
+
+        /* Detail sheet */
+        body.sheet-open { overflow: hidden; }
+        .sheet-overlay { position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,0.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity 0.25s, visibility 0s linear 0.25s; }
+        .sheet-overlay.open { opacity: 1; visibility: visible; transition-delay: 0s; }
+        .sheet { position: fixed; z-index: 90; left: 0; right: 0; bottom: 0; max-height: 88dvh; display: flex; flex-direction: column; background: rgba(20,20,20,0.98); border: 1px solid rgba(56,189,248,0.18); border-bottom: 0; border-radius: 20px 20px 0 0; box-shadow: 0 -12px 40px rgba(0,0,0,0.5); padding-bottom: env(safe-area-inset-bottom, 0px); transform: translateY(100%); visibility: hidden; transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0.35s; outline: none; }
+        .sheet.open { transform: none; visibility: visible; transition-delay: 0s; }
+        @media (min-width: 768px) {
+            .sheet { left: auto; top: 0; width: min(440px, 100vw); max-height: none; border-radius: 0; border: 0; border-left: 1px solid rgba(56,189,248,0.18); box-shadow: -12px 0 40px rgba(0,0,0,0.5); transform: translateX(100%); }
+        }
+        .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.875rem 1.125rem; border-bottom: 1px solid rgba(80,80,80,0.35); }
+        .sheet-head h2 { font-size: 1.05rem; font-weight: 700; color: #fff; }
+        .sheet-body { overflow-y: auto; overscroll-behavior: contain; padding: 1.125rem; display: flex; flex-direction: column; gap: 1rem; }
+        .sheet-block { padding: 0.9rem 1rem; background: rgba(30,30,30,0.6); border: 1px solid rgba(80,80,80,0.35); border-radius: 12px; }
+        .sheet-block h3 { margin-bottom: 0.4rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8393aa; }
+        .sheet-block p, .sheet-block li { font-size: 0.9rem; line-height: 1.55; color: #e2e8f0; }
+        .sheet-block .sub { margin-top: 0.35rem; font-size: 0.8rem; color: #94a3b8; }
+        .sheet-block ul { list-style: none; display: grid; gap: 0.4rem; }
+        .sheet-block .meter { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.4rem; font-size: 0.8rem; color: #94a3b8; }
+        .sheet-block .meter b { min-width: 3ch; text-align: right; color: #fff; }
+        .sheet-block .bar { flex: 1; height: 8px; border-radius: 4px; background: rgba(80,80,80,0.4); overflow: hidden; }
+        .sheet-block .bar > span { display: block; height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8); }
+        .sheet-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .sheet-actions .ghost-btn { flex: 1 1 12rem; min-height: 44px; }
+
+        .toast { position: fixed; left: 50%; bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); z-index: 100; max-width: calc(100vw - 2rem); padding: 0.6rem 1rem; border-radius: 12px; background: rgba(20,20,20,0.96); border: 1px solid rgba(56,189,248,0.3); color: #e2e8f0; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+        /* Print: only the mapping table, on white */
+        @media print {
+            .bg-grid, .orb, nav, .mobile-overlay, .mobile-drawer, .scroll-top, .stats-grid, .legend, .map-controls, .view-tabs,
+            #view-grouped, #view-coverage, .sheet, .sheet-overlay, .toast, .site-footer, .breadcrumb { display: none !important; }
+            #view-table { display: block !important; }
+            html, body { background: #fff !important; color: #000 !important; }
+            .reveal { opacity: 1 !important; transform: none !important; }
+            .hero-border, .card { background: #fff !important; border: 1px solid #bbb !important; box-shadow: none !important; backdrop-filter: none !important; }
+            .hero-border::before { display: none; }
+            .hero-border h1, .hero-border p { color: #000 !important; }
+            th { background: #eee !important; color: #000 !important; }
+            td, .link-btn { color: #000 !important; text-decoration: none; }
+            .badge-pill { border: 1px solid #999 !important; color: #000 !important; background: #fff !important; }
+            tr { break-inside: avoid; }
+            .table-scroll { overflow: visible !important; }
+            .responsive-table { min-width: 0 !important; }
+        }
     </style>
     <link rel="stylesheet" href="mobile.css">
     <script src="mobile.js" defer></script>
@@ -120,57 +243,133 @@
             <p style="color:#94a3b8;max-width:600px;margin:auto;">Detailed mapping between Ghana NCF controls and their corresponding ISO/IEC 27002:2022 controls with alignment levels.</p>
         </div>
 
-        <!-- Stats Row -->
-        <div class="stats-grid stats-grid--3 reveal" id="mapStats">
-            <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" style="color:#00ff88;">19</div>
+        <!-- Stats: click a card to filter by alignment strength (counts are computed from the data) -->
+        <div class="stats-grid stats-grid--3 reveal" id="mapStats" role="group" aria-label="Filter by alignment strength">
+            <button type="button" class="stat-card stat-btn" data-align="strong" aria-pressed="false">
+                <div class="stat-num" style="color:#00ff88;" id="cntStrong">0</div>
                 <div class="stat-label">Strong Alignment</div>
-            </div>
-            <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" style="color:#ffea00;">18</div>
+            </button>
+            <button type="button" class="stat-card stat-btn" data-align="moderate" aria-pressed="false">
+                <div class="stat-num" style="color:#ffea00;" id="cntModerate">0</div>
                 <div class="stat-label">Moderate Alignment</div>
-            </div>
-            <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" style="color:#f97316;">10</div>
+            </button>
+            <button type="button" class="stat-card stat-btn" data-align="partial" aria-pressed="false">
+                <div class="stat-num" style="color:#f97316;" id="cntPartial">0</div>
                 <div class="stat-label">Partial Alignment</div>
-            </div>
+            </button>
         </div>
 
-        <!-- Search and Filters -->
-        <div class="card reveal" style="margin-bottom:1.5rem;">
+        <!-- Legend -->
+        <details class="card legend reveal">
+            <summary><span><i class="fas fa-circle-info" aria-hidden="true" style="color:#38bdf8;margin-right:0.5rem;"></i>How alignment is rated</span><i class="fas fa-chevron-down chev" aria-hidden="true"></i></summary>
+            <dl class="legend-list">
+                <div><dt><span class="badge-pill" style="background:rgba(0,255,136,0.1);color:#00ff88;border:1px solid rgba(0,255,136,0.3);">Strong</span></dt><dd id="lgStrong"></dd></div>
+                <div><dt><span class="badge-pill" style="background:rgba(255,234,0,0.1);color:#ffea00;border:1px solid rgba(255,234,0,0.3);">Moderate</span></dt><dd id="lgModerate"></dd></div>
+                <div><dt><span class="badge-pill" style="background:rgba(249,115,22,0.1);color:#f97316;border:1px solid rgba(249,115,22,0.3);">Partial</span></dt><dd id="lgPartial"></dd></div>
+            </dl>
+        </details>
+
+        <!-- Search, filters, sort -->
+        <div class="card reveal map-controls">
             <div class="toolbar">
                 <div class="search-wrap">
-                    <i class="fas fa-search" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#64748b;"></i>
-                    <input type="text" class="search-input" placeholder="Search controls..." id="searchInput" aria-label="Search controls" oninput="filterTable()">
+                    <i class="fas fa-search" aria-hidden="true" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#64748b;"></i>
+                    <input type="text" class="search-input" placeholder="Search controls..." id="searchInput" aria-label="Search controls" autocomplete="off">
                 </div>
-                <div class="filter-group" role="group" aria-label="Filter by alignment">
-                    <button class="filter-btn active" onclick="setFilter('all',this)">All (47)</button>
-                    <button class="filter-btn" onclick="setFilter('strong',this)">Strong</button>
-                    <button class="filter-btn" onclick="setFilter('moderate',this)">Moderate</button>
-                    <button class="filter-btn" onclick="setFilter('partial',this)">Partial</button>
+                <div class="filter-group" role="group" aria-label="Filter by alignment" id="alignChips">
+                    <button type="button" class="filter-btn active" data-align="all" aria-pressed="true" id="chipAll">All</button>
+                    <button type="button" class="filter-btn" data-align="strong" aria-pressed="false">Strong</button>
+                    <button type="button" class="filter-btn" data-align="moderate" aria-pressed="false">Moderate</button>
+                    <button type="button" class="filter-btn" data-align="partial" aria-pressed="false">Partial</button>
+                </div>
+            </div>
+            <div class="filter-row">
+                <label class="sel"><span>NCF domain</span><select id="domainFilter"></select></label>
+                <label class="sel"><span>ISO theme</span><select id="themeFilter"></select></label>
+                <label class="sel"><span>Sort by</span>
+                    <select id="sortSelect">
+                        <option value="default">Default order</option>
+                        <option value="ncf">NCF control (A–Z)</option>
+                        <option value="domain">NCF domain</option>
+                        <option value="iso">ISO control number</option>
+                        <option value="alignment">Alignment (strongest first)</option>
+                    </select>
+                </label>
+            </div>
+            <div class="result-bar">
+                <p id="resultCount" aria-live="polite" aria-atomic="true"></p>
+                <div class="bar-actions">
+                    <button type="button" class="ghost-btn" id="clearBtn"><i class="fas fa-rotate-left" aria-hidden="true"></i> Clear filters</button>
+                    <button type="button" class="ghost-btn" id="copyBtn"><i class="fas fa-link" aria-hidden="true"></i> Copy link</button>
+                    <button type="button" class="ghost-btn" id="exportBtn"><i class="fas fa-file-csv" aria-hidden="true"></i> Export CSV</button>
+                    <button type="button" class="ghost-btn" id="printBtn"><i class="fas fa-print" aria-hidden="true"></i> Print</button>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <div class="card reveal" style="padding:0;overflow:hidden;">
-            <div class="table-scroll">
-                <table id="mappingTable" class="responsive-table" style="--rt-min:760px;">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Ghana NCF Control</th>
-                            <th>NCF Domain</th>
-                            <th>ISO 27002 Control</th>
-                            <th>ISO Theme</th>
-                            <th>Alignment</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
+        <!-- View switcher -->
+        <div class="view-tabs" role="tablist" aria-label="Choose a view">
+            <button type="button" class="view-tab" role="tab" id="tab-table" data-view="table" aria-controls="view-table" aria-selected="true"><i class="fas fa-table-list" aria-hidden="true"></i> Table</button>
+            <button type="button" class="view-tab" role="tab" id="tab-grouped" data-view="grouped" aria-controls="view-grouped" aria-selected="false" tabindex="-1"><i class="fas fa-layer-group" aria-hidden="true"></i> By domain</button>
+            <button type="button" class="view-tab" role="tab" id="tab-coverage" data-view="coverage" aria-controls="view-coverage" aria-selected="false" tabindex="-1"><i class="fas fa-table-cells-large" aria-hidden="true"></i> Coverage</button>
+        </div>
+
+        <!-- Table view -->
+        <div id="view-table" role="tabpanel" aria-labelledby="tab-table">
+            <div class="card reveal" style="padding:0;overflow:hidden;">
+                <div class="table-scroll">
+                    <table id="mappingTable" class="responsive-table" style="--rt-min:760px;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Ghana NCF Control</th>
+                                <th>NCF Domain</th>
+                                <th>ISO 27002 Control</th>
+                                <th>ISO Theme</th>
+                                <th>Alignment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
+        <!-- Grouped view -->
+        <div id="view-grouped" role="tabpanel" aria-labelledby="tab-grouped" hidden></div>
+
+        <!-- Coverage view -->
+        <div id="view-coverage" role="tabpanel" aria-labelledby="tab-coverage" hidden>
+            <div class="card" style="padding:0;overflow:hidden;">
+                <div class="cov-head">
+                    <h2>Coverage by domain and theme</h2>
+                    <p>Number of mappings between each Ghana NCF domain and ISO/IEC 27002 theme, across all mappings. Select a cell to see those mappings.</p>
+                    <div class="cov-key" aria-hidden="true">
+                        <span><i style="background:#00ff88"></i>Strong</span><span><i style="background:#ffea00"></i>Moderate</span><span><i style="background:#f97316"></i>Partial</span>
+                    </div>
+                </div>
+                <div class="table-scroll">
+                    <table id="coverageTable" class="responsive-table rt-title-first" style="--rt-min:640px;">
+                        <thead><tr id="covHeadRow"></tr></thead>
+                        <tbody id="covBody"></tbody>
+                    </table>
+                </div>
+                <div class="cov-foot" id="covFoot"></div>
+            </div>
+        </div>
+
+        <p id="toast" class="toast" role="status" aria-live="polite"></p>
     </main>
+
+    <!-- Mapping detail (bottom sheet on phones, side panel on larger screens) -->
+    <div class="sheet-overlay" id="sheetOverlay"></div>
+    <aside class="sheet" id="detailSheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true" tabindex="-1">
+        <div class="sheet-head">
+            <h2 id="sheetTitle">Mapping detail</h2>
+            <button type="button" class="drawer-close" id="sheetClose" aria-label="Close details"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="sheet-body" id="sheetBody"></div>
+    </aside>
 
     <footer class="site-footer">
         <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.5rem;">
@@ -236,36 +435,367 @@
             { ncf: "Security testing requirements", domain: "Governance & Leadership", iso: "8.34 Protection during audit testing", theme: "Technological", alignment: "moderate" },
         ];
 
-        let currentFilter = 'all';
-        function renderTable() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const tbody = document.getElementById('tableBody');
-            let html = '', count = 0;
-            mappings.forEach((m, i) => {
-                if (currentFilter !== 'all' && m.alignment !== currentFilter) return;
-                if (search && !m.ncf.toLowerCase().includes(search) && !m.iso.toLowerCase().includes(search) && !m.domain.toLowerCase().includes(search)) return;
-                count++;
-                const colors = { strong: { bg: 'rgba(0,255,136,0.1)', text: '#00ff88', border: 'rgba(0,255,136,0.3)' }, moderate: { bg: 'rgba(255,234,0,0.1)', text: '#ffea00', border: 'rgba(255,234,0,0.3)' }, partial: { bg: 'rgba(249,115,22,0.1)', text: '#f97316', border: 'rgba(249,115,22,0.3)' } };
-                const c = colors[m.alignment];
-                html += `<tr>
-                    <td style="color:#64748b;font-weight:600;">${count}</td>
-                    <td style="font-weight:500;">${m.ncf}</td>
-                    <td><span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">${m.domain}</span></td>
-                    <td style="font-weight:500;">${m.iso}</td>
-                    <td><span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">${m.theme}</span></td>
-                    <td><span class="badge-pill" style="background:${c.bg};color:${c.text};border:1px solid ${c.border};">${m.alignment.charAt(0).toUpperCase() + m.alignment.slice(1)}</span></td>
-                </tr>`;
+        // ── Control mapping: filtering, views, detail, export ─────────────────
+        // (The `mappings` data above is unchanged; everything below only reads it.)
+        const $ = (id) => document.getElementById(id);
+        const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        mappings.forEach((m, i) => { m.i = i; });
+
+        const ALIGN = {
+            strong:   { label: 'Strong',   rank: 0, bg: 'rgba(0,255,136,0.1)',  text: '#00ff88', border: 'rgba(0,255,136,0.3)',  bar: '#00ff88' },
+            moderate: { label: 'Moderate', rank: 1, bg: 'rgba(255,234,0,0.1)',  text: '#ffea00', border: 'rgba(255,234,0,0.3)',  bar: '#ffea00' },
+            partial:  { label: 'Partial',  rank: 2, bg: 'rgba(249,115,22,0.1)', text: '#f97316', border: 'rgba(249,115,22,0.3)', bar: '#f97316' }
+        };
+        // Plain-language meaning of each rating (editorial wording; adjust to your methodology).
+        const MEANING = {
+            strong:   'The two controls address substantially the same requirement.',
+            moderate: 'The controls overlap in intent but differ in scope or depth.',
+            partial:  'Only part of the requirement is covered by the mapped control.'
+        };
+        const THEMES = ['Organizational', 'People', 'Physical', 'Technological'];
+        const DOMAINS = [...new Set(mappings.map((m) => m.domain))];
+        const VIEWS = ['table', 'grouped', 'coverage'];
+        const SORTS = ['default', 'ncf', 'domain', 'iso', 'alignment'];
+        const state = { q: '', a: 'all', d: 'all', t: 'all', s: 'default', v: 'table' };
+
+        // ── Optional: the user's own assessment scores (domain / theme level) ──
+        function loadScores() {
+            try {
+                const data = JSON.parse(localStorage.getItem('assessmentData') || 'null');
+                if (!data) return null;
+                const avg = (obj) => {
+                    const groups = {};
+                    Object.entries(obj || {}).forEach(([key, val]) => {
+                        const name = key.split('_').slice(1, -1).join(' ').trim();
+                        const n = Number(val);
+                        if (!name || !(n >= 0)) return;
+                        (groups[name] = groups[name] || []).push(n);
+                    });
+                    const out = {};
+                    Object.entries(groups).forEach(([name, vals]) => { out[name] = Math.round((vals.reduce((a, b) => a + b, 0) / vals.length / 5) * 100); });
+                    return out;
+                };
+                return { org: (data.organization && data.organization.name) || '', ncf: avg(data.ncf), iso: avg(data.iso) };
+            } catch (e) { return null; }
+        }
+        const scores = loadScores();
+        const ncfScore = (domain) => (scores && domain in scores.ncf ? scores.ncf[domain] : null);
+        const isoScore = (theme) => (scores && (theme + ' Controls') in scores.iso ? scores.iso[theme + ' Controls'] : null);
+
+        // ── Filtering & sorting ──
+        const isoKey = (iso) => { const m = iso.match(/^(\d+)(?:\.(\d+))?/); return m ? [Number(m[1]), Number(m[2] || 0)] : [999, 0]; };
+        const SORTERS = {
+            default:   (a, b) => a.i - b.i,
+            ncf:       (a, b) => a.ncf.localeCompare(b.ncf),
+            domain:    (a, b) => a.domain.localeCompare(b.domain) || a.ncf.localeCompare(b.ncf),
+            iso:       (a, b) => { const x = isoKey(a.iso), y = isoKey(b.iso); return x[0] - y[0] || x[1] - y[1] || a.i - b.i; },
+            alignment: (a, b) => ALIGN[a.alignment].rank - ALIGN[b.alignment].rank || a.i - b.i
+        };
+        function getFiltered() {
+            const q = state.q.trim().toLowerCase();
+            return mappings
+                .filter((m) => (state.a === 'all' || m.alignment === state.a)
+                    && (state.d === 'all' || m.domain === state.d)
+                    && (state.t === 'all' || m.theme === state.t)
+                    && (!q || [m.ncf, m.iso, m.domain, m.theme].some((x) => x.toLowerCase().includes(q))))
+                .sort(SORTERS[state.s]);
+        }
+        const filtersActive = () => !!(state.q.trim() || state.a !== 'all' || state.d !== 'all' || state.t !== 'all');
+
+        // Highlight matches of the search text (input is escaped piece by piece)
+        function hl(text) {
+            const q = state.q.trim();
+            if (!q) return esc(text);
+            const lower = text.toLowerCase(), needle = q.toLowerCase();
+            let out = '', from = 0, at;
+            while ((at = lower.indexOf(needle, from)) !== -1) {
+                out += esc(text.slice(from, at)) + '<mark>' + esc(text.slice(at, at + needle.length)) + '</mark>';
+                from = at + needle.length;
+            }
+            return out + esc(text.slice(from));
+        }
+        const pill = (m) => { const c = ALIGN[m.alignment]; return `<span class="badge-pill" style="background:${c.bg};color:${c.text};border:1px solid ${c.border};">${c.label}</span>`; };
+
+        // ── Views ──
+        function renderTable(list) {
+            const tbody = $('tableBody');
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><span>No mappings match your search or filters.</span><button type="button" class="ghost-btn" data-clear><i class="fas fa-rotate-left" aria-hidden="true"></i> Clear filters</button></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = list.map((m, n) => `<tr data-i="${m.i}">
+                <td style="color:#64748b;font-weight:600;">${n + 1}</td>
+                <td><button type="button" class="link-btn" data-open="${m.i}">${hl(m.ncf)}</button></td>
+                <td><span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">${hl(m.domain)}</span></td>
+                <td style="font-weight:500;">${hl(m.iso)}</td>
+                <td><span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">${hl(m.theme)}</span></td>
+                <td>${pill(m)}</td>
+            </tr>`).join('');
+        }
+
+        function renderGrouped(list) {
+            const host = $('view-grouped');
+            if (!list.length) { host.innerHTML = '<div class="card"><div class="empty"><span>No mappings match your search or filters.</span><button type="button" class="ghost-btn" data-clear><i class="fas fa-rotate-left" aria-hidden="true"></i> Clear filters</button></div></div>'; return; }
+            host.innerHTML = DOMAINS.map((domain) => {
+                const items = list.filter((m) => m.domain === domain);
+                if (!items.length) return '';
+                const tally = ['strong', 'moderate', 'partial'].map((k) => [k, items.filter((m) => m.alignment === k).length]).filter((x) => x[1]).map((x) => `${x[1]} ${ALIGN[x[0]].label.toLowerCase()}`).join(' · ');
+                const sc = ncfScore(domain);
+                return `<details class="card group" open>
+                    <summary><i class="fas fa-chevron-right chev" aria-hidden="true"></i>
+                        <span class="group-title">${esc(domain)}${sc !== null ? `<span class="score-chip" title="Your assessment score">You: ${sc}%</span>` : ''}<span class="group-sub">${items.length} mapping${items.length === 1 ? '' : 's'} · ${tally}</span></span>
+                    </summary>
+                    <div class="group-list">${items.map((m) => `<button type="button" class="map-item" data-open="${m.i}">
+                        <span class="m-ncf">${hl(m.ncf)}</span>
+                        <span class="m-iso"><i class="fas fa-arrow-right" aria-hidden="true" style="font-size:0.7rem;margin-right:0.4rem;"></i>${hl(m.iso)}</span>
+                        <span class="tags">${pill(m)}<span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">${hl(m.theme)}</span></span>
+                    </button>`).join('')}</div>
+                </details>`;
+            }).join('');
+        }
+
+        function renderCoverage() {
+            $('covHeadRow').innerHTML = '<th>NCF domain</th>' + THEMES.map((t) => `<th>${t}</th>`).join('') + '<th>Total</th>';
+            const cell = (domain, theme) => {
+                const items = mappings.filter((m) => m.domain === domain && (theme === null || m.theme === theme));
+                if (!items.length) return '<span class="cov-zero" aria-label="No mappings">—</span>';
+                const cnt = (k) => items.filter((m) => m.alignment === k).length;
+                const seg = ['strong', 'moderate', 'partial'].map((k) => `<i style="width:${(cnt(k) / items.length) * 100}%;background:${ALIGN[k].bar}"></i>`).join('');
+                const pressed = state.d === domain && state.t === (theme === null ? 'all' : theme);
+                const label = `${items.length} mapping${items.length === 1 ? '' : 's'}: ${cnt('strong')} strong, ${cnt('moderate')} moderate, ${cnt('partial')} partial. Show them.`;
+                return `<button type="button" class="cov-cell" style="--i:${Math.min(1, items.length / 8)}" data-cov-d="${esc(domain)}" data-cov-t="${theme === null ? 'all' : theme}" aria-pressed="${pressed}" aria-label="${esc(domain)}, ${theme === null ? 'all themes' : theme}: ${label}">${items.length}<span class="mini-bars" aria-hidden="true">${seg}</span></button>`;
+            };
+            $('covBody').innerHTML = DOMAINS.map((d) => {
+                const sc = ncfScore(d);
+                return `<tr><td style="font-weight:600;color:#fff;">${esc(d)}${sc !== null ? `<span class="score-chip" title="Your assessment score">You: ${sc}%</span>` : ''}</td>${THEMES.map((t) => `<td>${cell(d, t)}</td>`).join('')}<td>${cell(d, null)}</td></tr>`;
+            }).join('');
+
+            const foot = [];
+            const empty = THEMES.filter((t) => !mappings.some((m) => m.theme === t));
+            if (empty.length) foot.push(`<span><i class="fas fa-triangle-exclamation" aria-hidden="true" style="color:#ffea00;margin-right:0.4rem;"></i>No Ghana NCF controls are mapped to the ISO <strong>${empty.join(', ')}</strong> theme${empty.length === 1 ? '' : 's'}. See <a href="gaps.html">Gap Analysis</a>.</span>`);
+            if (scores) {
+                const parts = THEMES.map((t) => [t, isoScore(t)]).filter((x) => x[1] !== null).map((x) => `${x[0]} ${x[1]}%`);
+                foot.push(`<span><i class="fas fa-clipboard-check" aria-hidden="true" style="color:#38bdf8;margin-right:0.4rem;"></i>Your latest assessment${scores.org ? ` (${esc(scores.org)})` : ''} — ISO themes: ${parts.join(' · ')}. Domain scores appear beside each NCF domain.</span>`);
+            } else {
+                foot.push('<span><i class="fas fa-clipboard-check" aria-hidden="true" style="color:#38bdf8;margin-right:0.4rem;"></i><a href="assessment.html">Complete an assessment</a> to see your own scores beside each domain here.</span>');
+            }
+            $('covFoot').innerHTML = foot.join('');
+        }
+
+        // ── Main render ──
+        function render() {
+            const list = getFiltered();
+            $('cntStrong').textContent = mappings.filter((m) => m.alignment === 'strong').length;
+            $('cntModerate').textContent = mappings.filter((m) => m.alignment === 'moderate').length;
+            $('cntPartial').textContent = mappings.filter((m) => m.alignment === 'partial').length;
+            $('chipAll').textContent = `All (${mappings.length})`;
+
+            document.querySelectorAll('[data-align]').forEach((el) => {
+                const on = el.dataset.align === state.a;
+                el.setAttribute('aria-pressed', on);
+                if (el.classList.contains('filter-btn')) el.classList.toggle('active', on);
             });
-            tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#8393aa;">No mappings found.</td></tr>';
+            if ($('searchInput').value !== state.q) $('searchInput').value = state.q;
+            $('domainFilter').value = state.d;
+            $('themeFilter').value = state.t;
+            $('sortSelect').value = state.s;
+            $('clearBtn').disabled = !filtersActive();
+            $('exportBtn').disabled = !list.length;
+            $('resultCount').textContent = `Showing ${list.length} of ${mappings.length} mappings${filtersActive() ? ' (filtered)' : ''}`;
+
+            VIEWS.forEach((v) => {
+                const on = v === state.v;
+                $('view-' + v).hidden = !on;
+                const tab = $('tab-' + v);
+                tab.setAttribute('aria-selected', on);
+                tab.tabIndex = on ? 0 : -1;
+            });
+            if (state.v === 'table') renderTable(list);
+            else if (state.v === 'grouped') renderGrouped(list);
+            else renderCoverage();
+            syncURL();
         }
-        function setFilter(f, btn) {
-            currentFilter = f;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderTable();
+
+        // ── URL state (shareable filters) ──
+        function syncURL() {
+            try {
+                const p = new URLSearchParams();
+                if (state.q.trim()) p.set('q', state.q.trim());
+                if (state.a !== 'all') p.set('a', state.a);
+                if (state.d !== 'all') p.set('d', state.d);
+                if (state.t !== 'all') p.set('t', state.t);
+                if (state.s !== 'default') p.set('s', state.s);
+                if (state.v !== 'table') p.set('v', state.v);
+                const qs = p.toString();
+                history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+            } catch (e) { /* non-critical (e.g. sandboxed frame) */ }
         }
-        function filterTable() { renderTable(); }
-        renderTable();
+        function readURL() {
+            const p = new URLSearchParams(location.search);
+            state.q = (p.get('q') || '').slice(0, 100);
+            if (['strong', 'moderate', 'partial'].includes(p.get('a'))) state.a = p.get('a');
+            if (DOMAINS.includes(p.get('d'))) state.d = p.get('d');
+            if (THEMES.includes(p.get('t'))) state.t = p.get('t');
+            if (SORTS.includes(p.get('s'))) state.s = p.get('s');
+            if (VIEWS.includes(p.get('v'))) state.v = p.get('v');
+        }
+
+        // ── Detail sheet ──
+        let sheetTrigger = null;
+        function scoreBlock(title, name, sc) {
+            if (sc === null) return '';
+            return `<div class="meter"><span style="min-width:0;flex:0 1 auto;">${esc(name)}</span><span class="bar" aria-hidden="true"><span style="width:${sc}%"></span></span><b>${sc}%</b></div>`;
+        }
+        function openSheet(i, trigger) {
+            const m = mappings[i];
+            if (!m) return;
+            const related = mappings.filter((x) => x.iso === m.iso && x.i !== m.i);
+            const nS = ncfScore(m.domain), iS = isoScore(m.theme);
+            $('sheetTitle').textContent = 'Mapping detail';
+            $('sheetBody').innerHTML = `
+                <div class="sheet-block">
+                    <h3>Alignment</h3>
+                    <p>${pill(m)}</p>
+                    <p class="sub">${esc(MEANING[m.alignment])}</p>
+                </div>
+                <div class="sheet-block">
+                    <h3>Ghana NCF</h3>
+                    <p><strong>${esc(m.ncf)}</strong></p>
+                    <p class="sub">Domain: ${esc(m.domain)}</p>
+                </div>
+                <div class="sheet-block">
+                    <h3>ISO/IEC 27002:2022</h3>
+                    <p><strong>${esc(m.iso)}</strong></p>
+                    <p class="sub">Theme: ${esc(m.theme)}</p>
+                </div>
+                <div class="sheet-block">
+                    <h3>Your assessment</h3>
+                    ${scores ? `<p class="sub" style="margin:0 0 0.25rem;">Domain and theme level${scores.org ? ' — ' + esc(scores.org) : ''}</p>
+                        ${scoreBlock('NCF', m.domain, nS) || '<p class="sub">No score for this domain.</p>'}
+                        ${scoreBlock('ISO', m.theme + ' controls', iS) || '<p class="sub">No score for this ISO theme.</p>'}`
+                        : '<p class="sub"><a href="assessment.html" style="color:#38bdf8;">Complete an assessment</a> to see how your organization scores on this domain and theme.</p>'}
+                </div>
+                <div class="sheet-block">
+                    <h3>Other NCF controls mapped to this ISO control</h3>
+                    ${related.length ? `<ul>${related.map((x) => `<li><button type="button" class="link-btn" data-open="${x.i}">${esc(x.ncf)}</button> <span class="sub">— ${ALIGN[x.alignment].label}</span></li>`).join('')}</ul>` : '<p class="sub">No other NCF controls map to this ISO control.</p>'}
+                </div>
+                <div class="sheet-actions">
+                    <button type="button" class="ghost-btn" data-act="iso" data-i="${m.i}"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Show this ISO control</button>
+                    <button type="button" class="ghost-btn" data-act="domain" data-i="${m.i}"><i class="fas fa-filter" aria-hidden="true"></i> Filter by this domain</button>
+                </div>`;
+            if (!$('detailSheet').classList.contains('open')) sheetTrigger = trigger || document.activeElement;
+            $('detailSheet').classList.add('open');
+            $('sheetOverlay').classList.add('open');
+            $('detailSheet').setAttribute('aria-hidden', 'false');
+            document.body.classList.add('sheet-open');
+            $('sheetBody').scrollTop = 0;
+            setTimeout(() => $('sheetClose').focus(), 50);
+        }
+        function closeSheet() {
+            if (!$('detailSheet').classList.contains('open')) return;
+            $('detailSheet').classList.remove('open');
+            $('sheetOverlay').classList.remove('open');
+            $('detailSheet').setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('sheet-open');
+            if (sheetTrigger && sheetTrigger.isConnected && sheetTrigger.focus) sheetTrigger.focus();
+            sheetTrigger = null;
+        }
+
+        // ── Actions ──
+        function toast(msg) {
+            const t = $('toast'); t.textContent = msg; t.classList.add('show');
+            clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 2200);
+        }
+        function csvCell(v) {
+            let s = String(v);
+            if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // neutralise spreadsheet formulas
+            return '"' + s.replace(/"/g, '""') + '"';
+        }
+        function exportCSV() {
+            const list = getFiltered();
+            if (!list.length) return;
+            const rows = [['#', 'Ghana NCF Control', 'NCF Domain', 'ISO 27002 Control', 'ISO Theme', 'Alignment']]
+                .concat(list.map((m, n) => [n + 1, m.ncf, m.domain, m.iso, m.theme, ALIGN[m.alignment].label]));
+            const blob = new Blob(['﻿' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'ghana-ncf-iso27002-mapping.csv';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+            toast(`Exported ${list.length} mapping${list.length === 1 ? '' : 's'}`);
+        }
+        function copyLink() {
+            const done = () => toast('Link copied');
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(location.href).then(done, () => toast('Copy failed — copy the address bar instead'));
+            else { try { const t = document.createElement('textarea'); t.value = location.href; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); done(); } catch (e) { toast('Copy failed — copy the address bar instead'); } }
+        }
+        function clearFilters() { state.q = ''; state.a = 'all'; state.d = 'all'; state.t = 'all'; render(); }
+        function jumpToResults() { setTimeout(() => $('resultCount').scrollIntoView({ behavior: 'smooth', block: 'center' }), 60); }
+
+        // ── Wire up ──
+        $('domainFilter').innerHTML = '<option value="all">All domains</option>' + DOMAINS.map((d) => `<option value="${esc(d)}">${esc(d)} (${mappings.filter((m) => m.domain === d).length})</option>`).join('');
+        $('themeFilter').innerHTML = '<option value="all">All themes</option>' + THEMES.filter((t) => mappings.some((m) => m.theme === t)).map((t) => `<option value="${t}">${t} (${mappings.filter((m) => m.theme === t).length})</option>`).join('');
+        Object.keys(MEANING).forEach((k) => { $('lg' + k[0].toUpperCase() + k.slice(1)).textContent = MEANING[k]; });
+
+        $('searchInput').addEventListener('input', (e) => { state.q = e.target.value; render(); });
+        $('domainFilter').addEventListener('change', (e) => { state.d = e.target.value; render(); });
+        $('themeFilter').addEventListener('change', (e) => { state.t = e.target.value; render(); });
+        $('sortSelect').addEventListener('change', (e) => { state.s = e.target.value; render(); });
+        $('clearBtn').addEventListener('click', clearFilters);
+        $('exportBtn').addEventListener('click', exportCSV);
+        $('copyBtn').addEventListener('click', copyLink);
+        $('printBtn').addEventListener('click', () => window.print());
+        $('sheetClose').addEventListener('click', closeSheet);
+        $('sheetOverlay').addEventListener('click', closeSheet);
+
+        document.addEventListener('click', (e) => {
+            const t = e.target.closest ? e.target : e.target.parentElement;
+            const align = t.closest('[data-align]');
+            if (align) { state.a = (align.classList.contains('stat-btn') && state.a === align.dataset.align) ? 'all' : align.dataset.align; render(); return; }
+            if (t.closest('[data-clear]')) { clearFilters(); return; }
+            const cov = t.closest('[data-cov-d]');
+            if (cov) { state.d = cov.dataset.covD; state.t = cov.dataset.covT; state.v = 'table'; render(); jumpToResults(); return; }
+            const act = t.closest('[data-act]');
+            if (act) {
+                const m = mappings[Number(act.dataset.i)];
+                if (act.dataset.act === 'iso') { state.q = m.iso; state.a = 'all'; state.d = 'all'; state.t = 'all'; }
+                else { state.d = m.domain; }
+                state.v = 'table';
+                closeSheet(); render(); jumpToResults(); return;
+            }
+            const open = t.closest('[data-open]');
+            if (open) { openSheet(Number(open.dataset.open), open); return; }
+            const row = t.closest('#tableBody tr[data-i]');
+            if (row) openSheet(Number(row.dataset.i), row.querySelector('[data-open]'));
+        });
+        document.querySelectorAll('.view-tab').forEach((tab) => {
+            tab.addEventListener('click', () => { state.v = tab.dataset.view; render(); });
+            tab.addEventListener('keydown', (e) => {
+                const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+                if (!k) return;
+                e.preventDefault();
+                state.v = VIEWS[(VIEWS.indexOf(state.v) + k + VIEWS.length) % VIEWS.length];
+                render(); $('tab-' + state.v).focus();
+            });
+        });
+        document.addEventListener('keydown', (e) => {
+            const sheet = $('detailSheet');
+            if (!sheet.classList.contains('open')) return;
+            if (e.key === 'Escape') { closeSheet(); return; }
+            if (e.key !== 'Tab') return;
+            const f = sheet.querySelectorAll('a[href], button:not([disabled])');
+            if (!f.length) return;
+            const first = f[0], last = f[f.length - 1];
+            if (e.shiftKey && (document.activeElement === first || document.activeElement === sheet)) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        });
+        // Printing always prints the table, whichever view is showing
+        let viewBeforePrint = null;
+        window.addEventListener('beforeprint', () => { viewBeforePrint = state.v; if (state.v !== 'table') { state.v = 'table'; render(); } });
+        window.addEventListener('afterprint', () => { if (viewBeforePrint && viewBeforePrint !== state.v) { state.v = viewBeforePrint; render(); } viewBeforePrint = null; });
+
+        readURL();
+        render();
     </script>
 </body>
 </html>
