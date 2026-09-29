@@ -1378,3 +1378,25 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Custom dropdown (gh-select.css) — light report theme */
+:root {
+  --gs-bg: rgba(255, 255, 255, 0.92);
+  --gs-border: rgba(148, 163, 184, 0.32);
+  --gs-border-hover: rgba(56, 189, 248, 0.55);
+  --gs-text: var(--slate-800);
+  --gs-muted: var(--slate-500);
+  --gs-accent: #0ea5e9;
+  --gs-ring: rgba(56, 189, 248, 0.16);
+  --gs-panel-bg: #ffffff;
+  --gs-panel-border: rgba(148, 163, 184, 0.35);
+  --gs-shadow: 0 18px 44px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.03);
+  --gs-hover: rgba(56, 189, 248, 0.09);
+  --gs-selected: rgba(56, 189, 248, 0.14);
+  --gs-selected-text: #0369a1;
+  --gs-count-bg: rgba(148, 163, 184, 0.2);
+  --gs-count-text: var(--slate-600);
+  --gs-scroll: rgba(100, 116, 139, 0.4);
+}
+.select-box .gs { min-width: 12rem; }
+@media screen and (max-width: 760px) { .select-box .gs { min-width: 0; } }

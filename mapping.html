@@ -78,7 +78,7 @@
         .map-controls { margin-bottom: 1rem; }
         .filter-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; margin-top: 1rem; }
         @media (min-width: 640px) { .filter-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-        .sel span { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #8393aa; margin-bottom: 0.35rem; }
+        .sel > span { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #8393aa; margin-bottom: 0.35rem; }
         .sel select { width: 100%; padding: 0.65rem 0.9rem; background: rgba(30,30,30,0.6); border: 1px solid rgba(80,80,80,0.5); border-radius: 12px; color: #f3f4f6; font-size: 0.9rem; font-family: 'Inter', sans-serif; }
         .sel select:focus { border-color: #38bdf8; }
         .sel select option { background: #1e1e1e; color: #f3f4f6; }
@@ -185,7 +185,9 @@
         }
     </style>
     <link rel="stylesheet" href="mobile.css">
+    <link rel="stylesheet" href="gh-select.css">
     <script src="mobile.js" defer></script>
+    <script src="gh-select.js" defer></script>
 </head>
 <body>
     <div class="bg-grid"></div>
