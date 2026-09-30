@@ -75,6 +75,7 @@
     <link rel="stylesheet" href="mobile.css">
     <link rel="stylesheet" href="gh-select.css">
     <script src="gh-data.js"></script>
+    <script src="gh-requirements.js"></script>
     <script src="mobile.js" defer></script>
     <script src="gh-select.js" defer></script>
 </head>
@@ -157,7 +158,7 @@
             </div>
             <div style="display:flex;justify-content:space-between;max-width:500px;margin:0.75rem auto 0;">
                 <span class="step-label">Organization</span>
-                <span class="step-label">Ghana NCF</span>
+                <span class="step-label">Ghana requirements</span>
                 <span class="step-label">ISO 27002</span>
             </div>
         </div>
@@ -205,14 +206,33 @@
                         <label style="font-size:0.85rem;color:#94a3b8;display:block;margin-bottom:0.4rem;">Contact Email *</label>
                         <input type="email" id="orgEmail" placeholder="assessor@company.com" maxlength="254" required>
                     </div>
+                    <fieldset class="gate" id="gateFieldset" style="border:0;padding:0;margin:0;">
+                        <legend style="font-size:0.85rem;color:#94a3b8;margin-bottom:0.6rem;padding:0;">Which Ghana requirements apply to you? *</legend>
+                        <p style="font-size:0.8rem;color:#8393aa;margin-bottom:0.9rem;line-height:1.5;">Some legal duties only apply to certain organizations. Your answers decide which requirements you are asked about. Incident-reporting duties apply to everyone.</p>
+                        <div class="gate-q" style="margin-bottom:1rem;">
+                            <div id="gatePdLabel" style="font-size:0.9rem;color:white;font-weight:600;margin-bottom:0.5rem;line-height:1.5;">Does your organization collect, store or use personal information about individuals (for example customers, staff, patients or students)?</div>
+                            <div role="radiogroup" aria-labelledby="gatePdLabel" style="display:flex;flex-direction:column;gap:0.5rem;">
+                                <label class="opt"><input type="radio" name="gatePd" value="yes"><span class="opt-title">Yes</span><span class="opt-hint">Data Protection Act requirements are added</span></label>
+                                <label class="opt"><input type="radio" name="gatePd" value="no"><span class="opt-title">No</span></label>
+                            </div>
+                        </div>
+                        <div class="gate-q">
+                            <div id="gateCiiLabel" style="font-size:0.9rem;color:white;font-weight:600;margin-bottom:0.5rem;line-height:1.5;">Has the Cyber Security Authority (CSA) formally designated any of your systems as Critical Information Infrastructure (CII)?</div>
+                            <div role="radiogroup" aria-labelledby="gateCiiLabel" style="display:flex;flex-direction:column;gap:0.5rem;">
+                                <label class="opt"><input type="radio" name="gateCii" value="yes"><span class="opt-title">Yes</span><span class="opt-hint">CII Directive requirements are added</span></label>
+                                <label class="opt"><input type="radio" name="gateCii" value="no"><span class="opt-title">No</span><span class="opt-hint">If you have not been formally notified of a designation, answer No</span></label>
+                            </div>
+                        </div>
+                        <p id="gateSummary" role="status" style="font-size:0.8rem;color:#38bdf8;margin-top:1rem;"></p>
+                    </fieldset>
                     <div class="form-actions">
-                        <button class="btn-primary" onclick="goToStep(2)">Next: Ghana NCF <i class="fas fa-arrow-right" style="margin-left:0.5rem;"></i></button>
+                        <button class="btn-primary" onclick="goToStep(2)">Next: Ghana requirements <i class="fas fa-arrow-right" style="margin-left:0.5rem;"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Step 2: Ghana NCF Assessment -->
+        <!-- Step 2: Ghana requirements -->
         <div id="step2" style="display:none;">
             <div class="card" style="margin-bottom:1.5rem;">
                 <div class="step-head">
@@ -221,8 +241,8 @@
                             <i class="fas fa-flag" style="color:#38bdf8;"></i>
                         </div>
                         <div>
-                            <h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana NCF Controls</h2>
-                            <p style="font-size:0.8rem;color:#8393aa;">Rate each control 0-5</p>
+                            <h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana requirements</h2>
+                            <p style="font-size:0.8rem;color:#8393aa;" id="ghanaSubtitle">Requirements that apply to your organization</p>
                         </div>
                     </div>
                     <div class="step-tools">
@@ -236,7 +256,7 @@
                     </div>
                 </div>
             </div>
-            <div id="ncfControls"></div>
+            <div id="ghanaControls"></div>
             <div class="step-actions">
                 <button class="btn-secondary" onclick="goToStep(1)"><i class="fas fa-arrow-left" style="margin-right:0.5rem;"></i> Back</button>
                 <button class="btn-primary" onclick="goToStep(3)">Next: ISO 27002 <i class="fas fa-arrow-right" style="margin-left:0.5rem;"></i></button>
@@ -280,30 +300,23 @@
             <i class="fas fa-shield-halved" style="color:#38bdf8;"></i>
             <span style="font-weight:700;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
         </div>
-        <p style="font-size:0.8rem;color:#8393aa;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
+        <p style="font-size:0.8rem;color:#8393aa;">Ghana requirements vs ISO/IEC 27002 Compliance Measurement System</p>
         <p style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;">&copy; 2026 All rights reserved.</p>
-        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana NCF control set is project-defined and is not an official publication of the Cyber Security Authority (CSA). Your assessments are stored only in this browser.</p>
+        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana requirements are this project's plain-language summary of the Cybersecurity Act 2020 (Act 1038), the Data Protection Act 2012 (Act 843) and the CSA Directive for Critical Information Infrastructure. They are not an official publication of the Cyber Security Authority (CSA) and are still awaiting review. Your assessments are stored only in this browser.</p>
     </footer>
 
     <script>
         window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300); });
 
-        // ── SME-focused assessment ──
-        // A concise subset of the two frameworks (24 questions instead of 130).
-        // Controls are drawn directly from the Ghana NCF and ISO/IEC 27002 sets
-        // in use, selecting the highest-impact controls so a small/medium
-        // business can complete the assessment in a few minutes while still
-        // covering every essential security & risk-reduction topic:
-        // governance, risk, data protection, access & authentication, malware,
-        // patching, backups, continuity, monitoring, incident response,
-        // supply-chain, awareness, network and physical security.
-        const ncfDomains = {
-            "Governance & Leadership": ["Cybersecurity governance structure","Risk management framework"],
-            "Legal & Regulatory": ["Data protection legislation","Regulatory compliance monitoring"],
-            "Incident Response": ["Incident response procedures","Incident reporting mechanisms"],
-            "Critical Infrastructure": ["Supply chain security"],
-            "Capacity Building": ["Cybersecurity awareness programs","Skills gap assessment"],
-            "International Cooperation": ["Information sharing with partners"]
+        // ── Ghana requirements (from gh-requirements.js, cited) and a concise ISO/IEC 27002 subset ──
+        // Ghana side: every requirement is a paraphrase of a cited legal duty; which ones are asked
+        // depends on the applicability answers on step 1. ISO side: the highest-impact controls so a
+        // small or medium business can finish in a few minutes.
+        const GHR = window.GHRequirements;
+        const TIER_STYLE = {
+            '1A': { label: 'All organizations', color: '#38bdf8' },
+            '1B': { label: 'Personal data', color: '#a78bfa' },
+            '2':  { label: 'CII owners', color: '#f59e0b' }
         };
         const isoThemes = {
             "Organizational Controls": ["5.1 Policies for information security","5.15 Access control","5.24 Incident management planning","5.30 ICT readiness for continuity","5.34 Privacy and PII protection"],
@@ -314,6 +327,112 @@
 
         const maturityLabels = ['Non-existent','Initial','Repeatable','Defined','Managed','Optimized'];
         const maturityColors = ['#ff3366','#f97316','#ffea00','#38bdf8','#00ff88','#818cf8'];
+
+        function esc(t) {
+            return String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        // Which tiers apply, from the two gate questions (null = not answered yet).
+        function readApplicability() {
+            const v = (name) => { const r = document.querySelector('input[name="' + name + '"]:checked'); return r ? r.value === 'yes' : null; };
+            return { personalData: v('gatePd'), ciiOwner: v('gateCii') };
+        }
+        function tierApplies(tier, a) {
+            const t = GHR.tiers.find((x) => x.id === tier);
+            return t.gate === 'always' || a[t.gate] === true;
+        }
+        // Stable field id per requirement: ncf_<Group_name>_<index in group>. Kept in the older format
+        // so the report and dashboard can still derive per-group scores from it.
+        const GHANA_FIELD = {};
+        GHR.groups.forEach((g) => {
+            GHR.requirements.filter((r) => r.group === g.id).forEach((r, i) => {
+                GHANA_FIELD[r.id] = 'ncf_' + g.name.replace(/\s+/g, '_') + '_' + i;
+            });
+        });
+        const FIELD_TO_REQ = Object.fromEntries(Object.entries(GHANA_FIELD).map(([r, f]) => [f, r]));
+        // Answers are kept here so they survive when a requirement is hidden by a gate change.
+        const ghanaStore = {};
+
+        function applicableRequirements() {
+            const a = readApplicability();
+            return GHR.requirements.filter((r) => tierApplies(r.tier, a));
+        }
+
+        function updateGateSummary() {
+            const a = readApplicability();
+            const el = document.getElementById('gateSummary');
+            if (a.personalData === null || a.ciiOwner === null) { el.textContent = ''; return; }
+            const n = applicableRequirements().length;
+            el.textContent = 'You will be asked ' + n + ' Ghana requirement' + (n === 1 ? '' : 's') + ' and ' + Object.values(isoThemes).reduce((t, c) => t + c.length, 0) + ' ISO/IEC 27002 controls.';
+        }
+
+        const optionsHtml = (id, prefix) => `
+                        <div class="questions-container" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                            <label class="opt">
+                                <input type="radio" name="${id}_q" value="5" onchange="calculateScore('${id}', '${prefix}', 5)" style="accent-color:#00ff88;">
+                                <span class="opt-title" style="color:#00ff88;">Fully Implemented</span>
+                                <span class="opt-hint">(Documented, enforced, and monitored)</span>
+                            </label>
+                            <label class="opt">
+                                <input type="radio" name="${id}_q" value="2.5" onchange="calculateScore('${id}', '${prefix}', 2.5)" style="accent-color:#ffea00;">
+                                <span class="opt-title" style="color:#ffea00;">Partially Implemented</span>
+                                <span class="opt-hint">(Some processes exist but aren't formalized)</span>
+                            </label>
+                            <label class="opt">
+                                <input type="radio" name="${id}_q" value="0" onchange="calculateScore('${id}', '${prefix}', 0)" style="accent-color:#ff3366;">
+                                <span class="opt-title" style="color:#ff3366;">Not Implemented</span>
+                                <span class="opt-hint">(No active measures in place)</span>
+                            </label>
+                        </div>
+                        <input type="hidden" id="${id}" value="-1">`;
+
+        function renderGhana() {
+            const container = document.getElementById('ghanaControls');
+            const a = readApplicability();
+            const list = GHR.requirements.filter((r) => tierApplies(r.tier, a));
+            let html = '';
+            GHR.groups.forEach((g) => {
+                const items = list.filter((r) => r.group === g.id);
+                if (!items.length) return;
+                html += `<div class="card" style="margin-bottom:1rem;">
+                    <h3 style="font-size:0.95rem;font-weight:700;color:white;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                        <i class="fas fa-folder" style="color:#38bdf8;font-size:0.85rem;"></i> ${esc(g.name)}
+                        <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">${items.length}</span>
+                    </h3>
+                    <div style="display:flex;flex-direction:column;gap:1.5rem;">`;
+                items.forEach((r) => {
+                    const id = GHANA_FIELD[r.id];
+                    const t = TIER_STYLE[r.tier];
+                    const scopeNote = (r.flags || []).includes('scope-needs-confirmation')
+                        ? `<p class="req-note" style="font-size:0.78rem;color:#f59e0b;margin-top:0.5rem;line-height:1.5;"><i class="fas fa-circle-info" aria-hidden="true"></i> The law does not define which organizations count as an &ldquo;institution&rdquo;. Ask legal counsel if you are unsure this applies to you.</p>` : '';
+                    html += `<div class="ctrl-item" data-req="${esc(r.id)}">
+                        <div style="margin-bottom:1rem;">
+                            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+                                <span class="req-id" style="font-family:'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;color:${t.color};background:rgba(255,255,255,0.05);padding:0.15rem 0.4rem;border-radius:4px;border:1px solid ${t.color}55;font-size:0.8em;font-weight:600;">${esc(r.id)}</span>
+                                <span style="font-size:0.75rem;color:${t.color};">${esc(t.label)}</span>
+                                <span style="font-size:0.75rem;color:#8393aa;">&middot; ${esc(r.source)}</span>
+                            </div>
+                            <span style="font-size:0.95rem;color:white;font-weight:600;line-height:1.5;">${esc(r.assessmentQuestion)}</span>
+                            ${scopeNote}
+                        </div>
+                        ${optionsHtml(id, 'ncf')}
+                    </div>`;
+                });
+                html += '</div></div>';
+            });
+            container.innerHTML = html;
+            // Put remembered answers back.
+            list.forEach((r) => {
+                const id = GHANA_FIELD[r.id];
+                const v = ghanaStore[id];
+                if (v === undefined) return;
+                document.getElementById(id).value = v;
+                const radio = [...document.querySelectorAll(`input[name="${id}_q"]`)].find((x) => parseFloat(x.value) === v);
+                if (radio) radio.checked = true;
+            });
+            document.getElementById('ghanaSubtitle').textContent = list.length + ' requirement' + (list.length === 1 ? '' : 's') + ' apply to your organization.';
+            updateProgress('ncf');
+        }
 
         function renderControls(domains, prefix, containerId) {
             const container = document.getElementById(containerId);
@@ -339,25 +458,7 @@
                         <div style="margin-bottom:1rem;">
                             <span style="font-size:0.95rem;color:white;font-weight:600;line-height:1.5;">To what extent has your organization implemented policies and controls for <strong>${ctrlClean}</strong>?</span>
                         </div>
-                        
-                        <div class="questions-container" style="display: flex; flex-direction: column; gap: 0.6rem;">
-                            <label class="opt">
-                                <input type="radio" name="${id}_q" value="5" onchange="calculateScore('${id}', '${prefix}', 5)" style="accent-color:#00ff88;">
-                                <span class="opt-title" style="color:#00ff88;">Fully Implemented</span>
-                                <span class="opt-hint">(Documented, enforced, and monitored)</span>
-                            </label>
-                            <label class="opt">
-                                <input type="radio" name="${id}_q" value="2.5" onchange="calculateScore('${id}', '${prefix}', 2.5)" style="accent-color:#ffea00;">
-                                <span class="opt-title" style="color:#ffea00;">Partially Implemented</span>
-                                <span class="opt-hint">(Some processes exist but aren't formalized)</span>
-                            </label>
-                            <label class="opt">
-                                <input type="radio" name="${id}_q" value="0" onchange="calculateScore('${id}', '${prefix}', 0)" style="accent-color:#ff3366;">
-                                <span class="opt-title" style="color:#ff3366;">Not Implemented</span>
-                                <span class="opt-hint">(No active measures in place)</span>
-                            </label>
-                        </div>
-                        <input type="hidden" id="${id}" value="-1">
+                        ${optionsHtml(id, prefix)}
                     </div>`;
                 });
                 html += '</div></div>';
@@ -368,6 +469,7 @@
         function calculateScore(id, prefix, score) {
             const input = document.getElementById(id);
             input.value = score;
+            if (prefix === 'ncf') ghanaStore[id] = score;
             // Clear the "unanswered" highlight on this control once it's answered.
             if (input.parentElement) input.parentElement.classList.remove('control-missing');
             updateProgress(prefix);
@@ -396,6 +498,7 @@
             document.querySelectorAll(`input[type="hidden"][id^="${prefix}_"]`).forEach(s => {
                 const randomScore = radioOptions[Math.floor(Math.random() * radioOptions.length)];
                 s.value = randomScore;
+                if (prefix === 'ncf') ghanaStore[s.id] = randomScore;
                 
                 const radios = document.querySelectorAll(`input[name="${s.id}_q"]`);
                 radios.forEach(radio => {
@@ -494,13 +597,27 @@
             return true;
         }
 
+        // Both applicability questions must be answered before the Ghana requirements are chosen.
+        function validateGate() {
+            const a = readApplicability();
+            if (a.personalData === null || a.ciiOwner === null) {
+                showModal('Please answer both questions about which Ghana requirements apply to your organization.', { title: 'All Fields Required', type: 'warning' });
+                const first = document.querySelector(a.personalData === null ? 'input[name="gatePd"]' : 'input[name="gateCii"]');
+                if (first) first.focus();
+                return false;
+            }
+            return true;
+        }
+
         function goToStep(step) {
             // Validate the current step's fields when moving forward.
             if (step > currentStep) {
                 if (currentStep === 1 && !validateOrg()) return;
-                if (currentStep === 2 && !validateControls('ncf', 'Ghana NCF')) return;
+                if (currentStep === 1 && !validateGate()) return;
+                if (currentStep === 2 && !validateControls('ncf', 'Ghana requirements')) return;
             }
             currentStep = step;
+            if (step === 2) renderGhana();
             document.getElementById('step1').style.display = step === 1 ? 'block' : 'none';
             document.getElementById('step2').style.display = step === 2 ? 'block' : 'none';
             document.getElementById('step3').style.display = step === 3 ? 'block' : 'none';
@@ -516,14 +633,16 @@
 
         function submitAssessment() {
             // Final gate: all organization fields and all questions must be complete.
-            if (!validateOrg()) { goToStep(1); return; }
-            if (!validateControls('ncf', 'Ghana NCF')) { goToStep(2); return; }
+            if (!validateOrg() || !validateGate()) { goToStep(1); return; }
+            if (currentStep !== 2) renderGhana();
+            if (!validateControls('ncf', 'Ghana requirements')) { goToStep(2); return; }
             if (!validateControls('iso', 'ISO 27002')) return;
             const data = {
                 organization: { name: document.getElementById('orgName').value, sector: document.getElementById('orgSector').value, size: document.getElementById('orgSize').value, email: document.getElementById('orgEmail').value },
-                ncf: {}, iso: {}, timestamp: new Date().toISOString()
+                applicability: { personalData: readApplicability().personalData === true, ciiOwner: readApplicability().ciiOwner === true },
+                ncf: {}, requirements: {}, iso: {}, timestamp: new Date().toISOString()
             };
-            document.querySelectorAll('input[type="hidden"][id^="ncf_"]').forEach(s => { data.ncf[s.id] = parseFloat(s.value); });
+            document.querySelectorAll('input[type="hidden"][id^="ncf_"]').forEach(s => { data.ncf[s.id] = parseFloat(s.value); data.requirements[FIELD_TO_REQ[s.id]] = parseFloat(s.value); });
             document.querySelectorAll('input[type="hidden"][id^="iso_"]').forEach(s => { data.iso[s.id] = parseFloat(s.value); });
             localStorage.setItem('assessmentData', JSON.stringify(data));
             try { draftReady = false; GHData.seedHistory(); GHData.addHistory(data); GHData.clearDraft(); } catch (e) { /* history is optional */ }
@@ -536,10 +655,12 @@
 
         function collectDraft() {
             const answers = {};
+            Object.entries(ghanaStore).forEach(([id, v]) => { answers[id] = v; });
             document.querySelectorAll(ANSWER_INPUTS).forEach((h) => { if (parseFloat(h.value) >= 0) answers[h.id] = parseFloat(h.value); });
             return {
                 org: { name: document.getElementById('orgName').value, sector: document.getElementById('orgSector').value, size: document.getElementById('orgSize').value, email: document.getElementById('orgEmail').value },
-                answers, answered: Object.keys(answers).length, total: document.querySelectorAll(ANSWER_INPUTS).length,
+                applicability: readApplicability(),
+                answers, answered: document.querySelectorAll(ANSWER_INPUTS).length ? [...document.querySelectorAll(ANSWER_INPUTS)].filter((h) => parseFloat(h.value) >= 0).length : 0, total: document.querySelectorAll(ANSWER_INPUTS).length,
                 step: currentStep, updated: Date.now()
             };
         }
@@ -558,6 +679,15 @@
             if (ALLOWED_SECTORS.includes(o.sector)) document.getElementById('orgSector').value = o.sector;
             if (ALLOWED_SIZES.includes(o.size)) document.getElementById('orgSize').value = o.size;
             if (o.email) document.getElementById('orgEmail').value = String(o.email).slice(0, 254);
+            const ap = d.applicability || {};
+            [['gatePd', ap.personalData], ['gateCii', ap.ciiOwner]].forEach(([name, val]) => {
+                if (typeof val !== 'boolean') return;
+                const r = document.querySelector('input[name="' + name + '"][value="' + (val ? 'yes' : 'no') + '"]');
+                if (r) r.checked = true;
+            });
+            updateGateSummary();
+            Object.entries(d.answers || {}).forEach(([id, val]) => { if (id in FIELD_TO_REQ && [0, 2.5, 5].includes(Number(val))) ghanaStore[id] = Number(val); });
+            renderGhana();
             let restored = 0;
             Object.entries(d.answers || {}).forEach(([id, val]) => {
                 const h = document.getElementById(id);
@@ -580,12 +710,15 @@
             main.insertBefore(note, main.children[2] || null);
             // Resume on the step the user had reached, but only if the organization details are complete
             const orgOk = document.getElementById('orgName').value.trim().length >= 2 && document.getElementById('orgSector').value && document.getElementById('orgSize').value && isValidEmail(document.getElementById('orgEmail').value);
-            if (orgOk && (d.step === 2 || d.step === 3)) goToStep(d.step);
+            const gateOk = ap.personalData !== undefined && ap.personalData !== null && typeof ap.personalData === 'boolean' && typeof ap.ciiOwner === 'boolean';
+            if (orgOk && gateOk && (d.step === 2 || d.step === 3)) goToStep(d.step);
         }
 
-        renderControls(ncfDomains, 'ncf', 'ncfControls');
         renderControls(isoThemes, 'iso', 'isoControls');
         restoreDraft();
+        renderGhana();
+        updateGateSummary();
+        document.querySelectorAll('input[name="gatePd"], input[name="gateCii"]').forEach((r) => r.addEventListener('change', () => { updateGateSummary(); saveDraftSoon(); }));
         updateProgress('ncf');
         updateProgress('iso');
         ['orgName', 'orgSector', 'orgSize', 'orgEmail'].forEach((id) => {

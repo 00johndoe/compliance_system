@@ -4,8 +4,8 @@
    Scoring mirrors results.html exactly (same formulas and labels) so the
    dashboard and the report can never disagree:
      domain % = round(mean(answers) / 5 * 100)
-     NCF % / ISO % = round(mean of all answers in that framework / 5 * 100)
-     overall % = round((NCF % + ISO %) / 2)
+     Ghana % / ISO % = round(mean of all answers in that framework / 5 * 100)   (Ghana % is stored as ncfPct)
+     overall % = round((Ghana % + ISO %) / 2)
 
    Keys:
      assessmentData     latest completed assessment (written by assessment.html, read by results.html)
@@ -32,7 +32,7 @@
     return v.length ? v.reduce(function (s, x) { return s + x; }, 0) / v.length : 0;
   }
 
-  // Keys look like "ncf_Governance_&_Leadership_0" -> domain "Governance & Leadership"
+  // Keys look like "ncf_Incident_reporting_&_response_0" -> group "Incident reporting & response"
   function domainScores(obj, framework) {
     var groups = {};
     Object.keys(obj || {}).forEach(function (key) {
@@ -47,6 +47,36 @@
     });
   }
 
+  // Assessments saved before the Ghana requirements rebuild used a retired control set ("Ghana NCF").
+  function isRequirementsData(data) { return !!(data && data.requirements && typeof data.requirements === 'object'); }
+  function ghanaLabel(data) { return isRequirementsData(data) ? 'Ghana requirements' : 'Ghana NCF (retired control set)'; }
+
+  function scopeLabel(data) {
+    if (!isRequirementsData(data)) return 'Ghana NCF (retired control set) + ISO 27002';
+    var a = data.applicability || {}, parts = ['all organizations'];
+    if (a.personalData) parts.push('personal-data processors');
+    if (a.ciiOwner) parts.push('CII owners');
+    return 'Ghana requirements (' + parts.join(', ') + ') + ISO 27002';
+  }
+
+  var ANSWER = { 5: 'Fully implemented', 2.5: 'Partially implemented', 0: 'Not implemented' };
+
+  // One row per answered Ghana requirement, weakest first; needs gh-requirements.js.
+  function requirementRows(data) {
+    var R = w.GHRequirements;
+    if (!R || !isRequirementsData(data)) return [];
+    var byId = {};
+    R.requirements.forEach(function (r) { byId[r.id] = r; });
+    var order = {};
+    R.requirements.forEach(function (r, i) { order[r.id] = i; });
+    return Object.keys(data.requirements).filter(function (id) { return byId[id]; }).map(function (id) {
+      var r = byId[id], v = Number(data.requirements[id]) || 0;
+      return { id: id, title: r.title, tier: r.tier, group: (R.groups.filter(function (g) { return g.id === r.group; })[0] || {}).name || '',
+        source: r.source, score: v, pct: Math.round((v / 5) * 100), answer: ANSWER[v] || 'Not implemented',
+        scopeCaveat: (r.flags || []).indexOf('scope-needs-confirmation') !== -1 };
+    }).sort(function (a, b) { return a.pct - b.pct || order[a.id] - order[b.id]; });
+  }
+
   function summarize(data) {
     if (!data || typeof data !== 'object') return null;
     var ncfPct = Math.round((mean(data.ncf) / 5) * 100);
@@ -57,7 +87,8 @@
       timestamp: data.timestamp || '',
       ncfPct: ncfPct, isoPct: isoPct, overallPct: overall,
       maturity: MATURITY[level(overall)], risk: risk(overall),
-      domains: domainScores(data.ncf, 'Ghana NCF').concat(domainScores(data.iso, 'ISO 27002'))
+      ghanaLabel: ghanaLabel(data),
+      domains: domainScores(data.ncf, ghanaLabel(data)).concat(domainScores(data.iso, 'ISO 27002'))
     };
   }
 
@@ -108,7 +139,7 @@
   }
 
   w.GHData = {
-    MATURITY: MATURITY, level: level, risk: risk, color: color, summarize: summarize,
+    MATURITY: MATURITY, level: level, risk: risk, color: color, summarize: summarize, ghanaLabel: ghanaLabel, scopeLabel: scopeLabel, requirementRows: requirementRows,
     loadLatest: loadLatest, loadHistory: loadHistory, addHistory: addHistory, seedHistory: seedHistory,
     saveDraft: saveDraft, loadDraft: loadDraft, clearDraft: clearDraft, clearAll: clearAll, formatDate: formatDate
   };

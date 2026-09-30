@@ -151,8 +151,8 @@
         @media (max-width: 479px) { .pc-head .btn-mini { width: 100%; } }
     </style>
     <link rel="stylesheet" href="mobile.css">
-    <script src="mapping-data.js"></script>
     <script src="gh-data.js"></script>
+    <script src="gh-requirements.js"></script>
     <script src="gh-plan.js"></script>
     <script src="mobile.js" defer></script>
 </head>
@@ -214,10 +214,10 @@
                 <i class="fas fa-sparkles"></i> Compliance Measurement System
             </div>
             <h1 style="font-weight:900;color:white;margin-bottom:0.75rem;">
-                Ghana NCF vs ISO/IEC 27002
+                Ghana requirements vs ISO/IEC 27002
             </h1>
             <p style="color:#94a3b8;max-width:700px;margin:auto;line-height:1.7;">
-                Automated compliance measurement system for structured comparative evaluation between Ghana's National Cybersecurity Framework and ISO/IEC 27002:2022 security controls.
+                Measure how your organization meets Ghana's cybersecurity and data-protection requirements (Act 1038, Act 843 and the CSA CII Directive) and how that compares with the ISO/IEC 27002:2022 security controls.
             </p>
         </div>
 
@@ -252,8 +252,8 @@
                 <div style="width:44px;height:44px;background:rgba(56,189,248,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
                     <i class="fas fa-shield-halved" style="color:#38bdf8;font-size:1.1rem;"></i>
                 </div>
-                <div class="stat-num" id="statDomains" style="color:white;" data-count="6">0</div>
-                <div class="stat-label">NCF Domains</div>
+                <div class="stat-num" id="statDomains" style="color:white;" data-count="53">0</div>
+                <div class="stat-label">Ghana Requirements</div>
             </div>
             <div class="stat-card" style="text-align:center;">
                 <div style="width:44px;height:44px;background:rgba(129,140,248,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
@@ -266,8 +266,8 @@
                 <div style="width:44px;height:44px;background:rgba(0,255,136,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
                     <i class="fas fa-link" style="color:#00ff88;font-size:1.1rem;"></i>
                 </div>
-                <div class="stat-num" id="statMappings" style="color:white;" data-count="47">0</div>
-                <div class="stat-label">Cross-Mappings</div>
+                <div class="stat-num" id="statMappings" style="color:white;" data-count="153">0</div>
+                <div class="stat-label">Proposed ISO Links</div>
             </div>
             <div class="stat-card" style="text-align:center;">
                 <div style="width:44px;height:44px;background:rgba(255,234,0,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
@@ -291,7 +291,7 @@
                 <ul style="list-style:none;display:flex;flex-direction:column;gap:0.75rem;">
                     <li style="display:flex;gap:0.75rem;align-items:start;">
                         <i class="fas fa-check-circle" style="color:#00ff88;margin-top:3px;flex-shrink:0;"></i>
-                        <span style="font-size:0.9rem;color:#cbd5e1;line-height:1.6;">Analyze and compare Ghana's NCF with ISO/IEC 27002 through detailed control mapping to identify similarities, differences, and gaps.</span>
+                        <span style="font-size:0.9rem;color:#cbd5e1;line-height:1.6;">Compare Ghana's cited legal and directive requirements with ISO/IEC 27002 through control links, to identify overlaps and gaps.</span>
                     </li>
                     <li style="display:flex;gap:0.75rem;align-items:start;">
                         <i class="fas fa-check-circle" style="color:#00ff88;margin-top:3px;flex-shrink:0;"></i>
@@ -362,60 +362,18 @@
                     <div style="width:40px;height:40px;background:rgba(56,189,248,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
                         <i class="fas fa-flag" style="color:#38bdf8;"></i>
                     </div>
-                    <div><h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana NCF Domains</h2><p class="card-hint">Select a domain to see its control mappings.</p></div>
+                    <div><h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana Requirement Groups</h2><p class="card-hint">Select a group to see its requirements and proposed ISO links.</p></div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                    <a class="kv-row kv-link" href="mapping.html?d=Governance%20%26%20Leadership" title="See the control mappings for Governance & Leadership">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">Governance & Leadership</span>
-                        <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">8 controls</span>
-                    </a>
-                    <a class="kv-row kv-link" href="mapping.html?d=Legal%20%26%20Regulatory" title="See the control mappings for Legal & Regulatory">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">Legal & Regulatory</span>
-                        <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">6 controls</span>
-                    </a>
-                    <a class="kv-row kv-link" href="mapping.html?d=Incident%20Response" title="See the control mappings for Incident Response">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">Incident Response</span>
-                        <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">7 controls</span>
-                    </a>
-                    <a class="kv-row kv-link" href="mapping.html?d=Critical%20Infrastructure" title="See the control mappings for Critical Infrastructure">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">Critical Infrastructure</span>
-                        <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">5 controls</span>
-                    </a>
-                    <a class="kv-row kv-link" href="mapping.html?d=Capacity%20Building" title="See the control mappings for Capacity Building">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">Capacity Building</span>
-                        <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">6 controls</span>
-                    </a>
-                    <a class="kv-row kv-link" href="mapping.html?d=International%20Cooperation" title="See the control mappings for International Cooperation">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">International Cooperation</span>
-                        <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">5 controls</span>
-                    </a>
-                </div>
+                <div id="groupList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
             </div>
             <div class="card reveal">
                 <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
                     <div style="width:40px;height:40px;background:rgba(129,140,248,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
                         <i class="fas fa-globe" style="color:#818cf8;"></i>
                     </div>
-                    <div><h2 style="font-size:1.1rem;font-weight:700;color:white;">ISO 27002 Themes</h2><p class="card-hint">Select a theme to see how it maps to the NCF.</p></div>
+                    <div><h2 style="font-size:1.1rem;font-weight:700;color:white;">ISO 27002 Themes</h2><p class="card-hint">Select a theme to see which requirements link to it.</p></div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                    <a class="kv-row kv-link" href="mapping.html?t=Organizational" title="See mappings for this theme">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">Organizational Controls</span>
-                        <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">37 controls</span>
-                    </a>
-                    <a class="kv-row kv-link" href="mapping.html?t=People" title="See mappings for this theme">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">People Controls</span>
-                        <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">8 controls</span>
-                    </a>
-                    <a class="kv-row kv-link" href="gaps.html" title="This theme has no mapped Ghana NCF controls - see Gap Analysis">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">Physical Controls</span>
-                        <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">14 controls</span>
-                    </a>
-                    <a class="kv-row kv-link" href="mapping.html?t=Technological" title="See mappings for this theme">
-                        <span style="font-size:0.85rem;color:#cbd5e1;">Technological Controls</span>
-                        <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">34 controls</span>
-                    </a>
-                </div>
+                <div id="themeList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
             </div>
         </div>
         <!-- Quick Actions -->
@@ -454,13 +412,13 @@
         <details class="card glossary reveal" style="margin-bottom:2rem;">
             <summary><span><i class="fas fa-book-open" aria-hidden="true" style="color:#38bdf8;margin-right:0.6rem;"></i>Glossary</span><i class="fas fa-chevron-down chev" aria-hidden="true"></i></summary>
             <dl class="gloss-list">
-                <div><dt>Ghana NCF</dt><dd>The project-defined set of Ghana-oriented cybersecurity controls used in this tool. It is not an official CSA publication.</dd></div>
+                <div><dt>Ghana requirements</dt><dd>This project's plain-language summary of duties in the Cybersecurity Act 2020 (Act 1038), the Data Protection Act 2012 (Act 843) and the CSA Directive for Critical Information Infrastructure, each with its citation. It is not an official CSA publication.</dd></div>
+                <div><dt>CII</dt><dd>Critical Information Infrastructure: systems the CSA has formally designated as critical. The CII Directive applies only to their owners.</dd></div>
                 <div><dt>ISO/IEC 27002:2022</dt><dd>An international standard of information security controls and guidance.</dd></div>
                 <div><dt>Control</dt><dd>A safeguard or measure an organization puts in place to manage a security risk.</dd></div>
-                <div><dt>Control mapping</dt><dd>Matching each Ghana NCF control to the ISO 27002 control(s) that address a similar requirement.</dd></div>
-                <div><dt>Alignment</dt><dd>How closely two mapped controls match: strong, moderate or partial.</dd></div>
+                <div><dt>Control mapping</dt><dd>Linking each Ghana requirement to the ISO 27002 control(s) that address a similar need. The links are proposals that have not yet been validated.</dd></div>
                 <div><dt>CMM</dt><dd>Capability Maturity Model, the 0–5 scale used here to rate how mature a control is.</dd></div>
-                <div><dt>Gap analysis</dt><dd>Finding controls in one framework that have no equivalent in the other.</dd></div>
+                <div><dt>Gap analysis</dt><dd>Finding requirements with no ISO control linked to them, and ISO controls that no Ghana requirement refers to.</dd></div>
             </dl>
         </details>
     </main>
@@ -471,9 +429,9 @@
             <i class="fas fa-shield-halved" style="color:#38bdf8;"></i>
             <span style="font-weight:700;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
         </div>
-        <p style="font-size:0.8rem;color:#8393aa;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
+        <p style="font-size:0.8rem;color:#8393aa;">Ghana requirements vs ISO/IEC 27002 Compliance Measurement System</p>
         <p style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;">&copy; 2026 All rights reserved.</p>
-        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana NCF control set is project-defined and is not an official publication of the Cyber Security Authority (CSA). Your assessments are stored only in this browser.</p>
+        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana requirements are this project&rsquo;s plain-language summary of the Cybersecurity Act 2020 (Act 1038), the Data Protection Act 2012 (Act 843) and the CSA Directive for Critical Information Infrastructure. They are not an official publication of the Cyber Security Authority (CSA) and have not yet been reviewed. Your assessments are stored only in this browser.</p>
     </footer>
 
     <script>
@@ -483,19 +441,32 @@
         });
 
 
-        // Figures derived from the shared mapping data so every page agrees
+        // Figures and explorer lists come from gh-requirements.js, the same dataset the assessment, API and mapping use
         (function () {
-            const M = window.GH_MAPPINGS || [];
-            if (!M.length) return;
-            document.getElementById('statDomains').dataset.count = new Set(M.map((m) => m.domain)).size;
-            document.getElementById('statMappings').dataset.count = M.length;
+            const R = window.GHRequirements;
+            if (!R) return;
+            const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const links = R.requirements.flatMap((r) => r.iso27002Links.map((iso) => ({ req: r.id, iso })));
+            document.getElementById('statDomains').dataset.count = R.requirements.length;
+            document.getElementById('statMappings').dataset.count = links.length;
             document.getElementById('statLevels').dataset.count = document.querySelectorAll('#cmmGrid > div').length || 6;
-            document.querySelectorAll('a.kv-link[href^="mapping.html?d="]').forEach((a) => {
-                const d = new URL(a.href, location.href).searchParams.get('d') || '';
-                const n = M.filter((m) => m.domain === d).length;
-                const badge = a.querySelector('.badge-pill');
-                if (badge && n) badge.textContent = n + (n === 1 ? ' mapping' : ' mappings');
-            });
+
+            document.getElementById('groupList').innerHTML = R.groups.map((g) => {
+                const n = R.requirements.filter((r) => r.group === g.id).length;
+                return `<a class="kv-row kv-link" href="mapping.html?g=${encodeURIComponent(g.id)}" title="See the requirements and proposed ISO links for ${esc(g.name)}">
+                    <span style="font-size:0.85rem;color:#cbd5e1;">${esc(g.name)}</span>
+                    <span class="badge-pill" style="background:rgba(56,189,248,0.15);color:#38bdf8;">${n} ${n === 1 ? 'requirement' : 'requirements'}</span></a>`;
+            }).join('');
+
+            const THEMES = [['Organizational', 'Organizational Controls', 37, /^5\./], ['People', 'People Controls', 8, /^6\./], ['Physical', 'Physical Controls', 14, /^7\./], ['Technological', 'Technological Controls', 34, /^8\./]];
+            document.getElementById('themeList').innerHTML = THEMES.map(([key, name, total, re]) => {
+                const linked = new Set(links.filter((l) => re.test(l.iso)).map((l) => l.iso)).size;
+                const href = linked ? 'mapping.html?t=' + key : 'gaps.html';
+                const title = linked ? 'See the requirements linked to this theme' : 'No Ghana requirement links to this theme - see Gap Analysis';
+                return `<a class="kv-row kv-link" href="${href}" title="${title}">
+                    <span style="font-size:0.85rem;color:#cbd5e1;">${name}</span>
+                    <span class="badge-pill" style="background:rgba(129,140,248,0.15);color:#818cf8;">${linked} of ${total} linked</span></a>`;
+            }).join('');
         })();
 
         // Counter animation
@@ -568,7 +539,7 @@
                             <span class="badge-pill" style="background:rgba(129,140,248,0.12);color:#a5b4fc;">Maturity: ${esc(latest.maturity)}</span>
                             <span class="badge-pill" style="background:${G.color(latest.overallPct)}22;color:${G.color(latest.overallPct)};">Risk: ${esc(latest.risk)}</span>
                         </div>
-                        <div class="sp-bars">${bar('Ghana NCF', latest.ncfPct)}${bar('ISO 27002', latest.isoPct)}</div>
+                        <div class="sp-bars">${bar(esc(latest.ghanaLabel), latest.ncfPct)}${bar('ISO 27002', latest.isoPct)}</div>
                     </div>
                 </div>
                 ${gapsHtml}${trendHtml}

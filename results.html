@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="results.css" />
     <link rel="stylesheet" href="print.css" />
     <script src="gh-data.js"></script>
+    <script src="gh-requirements.js"></script>
     <script src="gh-plan.js"></script>
     <script src="mobile.js" defer></script>
     <script src="gh-select.js" defer></script>
@@ -107,7 +108,7 @@
                         <div class="cover-copy">
                             <p class="eyebrow">Enterprise Compliance Assessment</p>
                             <h1>Cybersecurity Compliance Assessment Report</h1>
-                            <p class="subtitle">ISO/IEC 27002:2022 | Ghana NCF (project-defined)</p>
+                            <p class="subtitle">ISO/IEC 27002:2022 | Ghana requirements (project summary of the law)</p>
 
                             <div class="meta-grid">
                                 <div class="meta-box">
@@ -124,7 +125,7 @@
                                 </div>
                                 <div class="meta-box">
                                     <label>Assessment Scope</label>
-                                    <span id="scopeLabel">Ghana NCF + ISO 27002</span>
+                                    <span id="scopeLabel">Ghana requirements + ISO 27002</span>
                                 </div>
                             </div>
                         </div>
@@ -240,8 +241,8 @@
 
                             <div class="panel chart-card">
                                 <div class="chart-head">
-                                    <h3>Ghana NCF Radar</h3>
-                                    <span class="chart-pill chart-pill--ncf">NCF</span>
+                                    <h3>Ghana requirements radar</h3>
+                                    <span class="chart-pill chart-pill--ncf">GH</span>
                                 </div>
                                 <canvas id="ncfRadar"></canvas>
                             </div>
@@ -321,6 +322,22 @@
                     </div>
                 </section>
 
+                <section class="report-section" id="ghana-requirements" hidden>
+                    <div class="section-card">
+                        <div class="section-title">
+                            <div class="section-icon"><i class="fas fa-scale-balanced"></i></div>
+                            <h2>Ghana requirements in detail</h2>
+                        </div>
+                        <p id="reqIntro" class="req-intro" style="font-size:0.85rem;line-height:1.6;color:#64748b;margin-bottom:1rem;"></p>
+                        <div class="table-wrapper" role="region" aria-label="Ghana requirements table" tabindex="0">
+                            <table class="responsive-table rt-title-first">
+                                <thead><tr><th>Requirement</th><th>Applies to</th><th>Source</th><th>Your answer</th><th>Score</th></tr></thead>
+                                <tbody id="reqBody"></tbody>
+                            </table>
+                        </div>
+                        <p id="reqCaveat" style="font-size:0.78rem;line-height:1.55;color:#64748b;margin-top:0.75rem;"></p>
+                    </div>
+                </section>
                 <section class="report-section" id="compliance-controls">
                     <div class="table-panel">
                         <div class="table-toolbar">
@@ -398,7 +415,7 @@
                     </p>
                 </section>
 
-                <p class="report-disclaimer" style="margin:1.25rem 0 0.75rem;font-size:0.78rem;line-height:1.55;color:#64748b;text-align:center;">This report is generated from a self-assessment and is indicative only. It is not legal advice or a compliance certification. The Ghana NCF control set used is project-defined and is not an official publication of the Cyber Security Authority (CSA).</p>
+                <p class="report-disclaimer" style="margin:1.25rem 0 0.75rem;font-size:0.78rem;line-height:1.55;color:#64748b;text-align:center;">This report is generated from a self-assessment and is indicative only. It is not legal advice or a compliance certification. The Ghana requirements are this project&rsquo;s plain-language summary of the Cybersecurity Act 2020 (Act 1038), the Data Protection Act 2012 (Act 843) and the CSA Directive for Critical Information Infrastructure. They are not an official publication of the Cyber Security Authority (CSA) and have not yet been reviewed.</p>
                 <footer class="report-footer">
                     <div class="footer-brand">
                         <div class="brand-mark" style="width: 32px; height: 32px; border-radius: 10px;">
@@ -454,7 +471,43 @@
             return 'critical';
         }
 
+        const TIER_LABEL = { '1A': 'All organizations', '1B': 'Personal-data processors', '2': 'CII owners' };
+        function escHtml(t) { return String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+        function renderRequirements(data) {
+            const section = document.getElementById('ghana-requirements');
+            const rows = window.GHData ? GHData.requirementRows(data) : [];
+            if (!rows.length) { section.hidden = true; return; }
+            section.hidden = false;
+            document.getElementById('reqIntro').textContent = rows.length + ' Ghana requirement' + (rows.length === 1 ? '' : 's') + ' applied to this organization. The weakest are listed first. These are plain-language summaries of the cited law and directive, not official wording.';
+            document.getElementById('reqBody').innerHTML = rows.map((r) => {
+                const tone = r.pct >= 80 ? 'pass' : r.pct >= 60 ? 'warning' : 'critical';
+                return `<tr>
+                    <td><span class="table-language">${escHtml(r.id)} &middot; ${escHtml(r.title)}</span></td>
+                    <td>${escHtml(TIER_LABEL[r.tier] || r.tier)}</td>
+                    <td>${escHtml(r.source)}</td>
+                    <td><span class="table-status table-status--${tone}">${escHtml(r.answer)}</span></td>
+                    <td><strong style="color:${getStatusColor(r.pct)};">${r.pct}%</strong></td>
+                </tr>`;
+            }).join('');
+            document.getElementById('reqCaveat').textContent = rows.some((r) => r.scopeCaveat)
+                ? 'Note: the 24-hour incident-reporting duty applies to an "institution", a term the Cybersecurity Act 2020 does not define. Ask legal counsel whether it applies to your organization.'
+                : '';
+        }
+
+        const GROUP_DESCRIPTIONS = {
+            'incident reporting & response': 'Be able to detect incidents and report them to the CSA or your CERT and, where personal data is involved, to the Data Protection Commission and affected people within the required time.',
+            'data protection principles': 'Register with the Data Protection Commission and apply the Act 843 principles: lawful, purpose-limited collection, consent, accuracy, retention limits and respect for data subjects.',
+            'security safeguards & risk': 'Identify risks to personal data and critical assets, apply appropriate technical and organizational safeguards, and verify that they work.',
+            'governance & accountability': 'Have an approved cybersecurity policy, a named senior accountable officer, and regular policy review, as the CII Directive requires.',
+            'people': 'Screen staff who handle critical information and give everyone appropriate cybersecurity awareness and training.',
+            'technical, physical & continuity': 'Control access, monitor for incidents, secure premises, and keep tested continuity and disaster-recovery plans for critical systems.',
+            'audit & regulator engagement': 'Complete yearly audits, share reports and the risk register with the CSA, take part in exercises and follow CSA directives.'
+        };
+
         function getDomainDescription(domain) {
+            const known = GROUP_DESCRIPTIONS[(domain || '').toLowerCase()];
+            if (known) return known;
             const domainText = (domain || '').toLowerCase();
             if (domainText.includes('identity') || domainText.includes('access')) {
                 return 'Review access provisioning, authentication controls, and least-privilege enforcement across critical business systems.';
@@ -494,6 +547,8 @@
             return `${framework} should prioritize formal policies, operating procedures, and periodic testing for ${domain.toLowerCase()}, with measurable ownership and evidence of implementation.`;
         }
 
+        let ghanaLabel = 'Ghana requirements';
+
         function buildDomainMap(source, prefix) {
             const result = {};
             Object.entries(source || {}).forEach(([key, value]) => {
@@ -509,7 +564,7 @@
                 const pct = Math.round((avg / 5) * 100);
                 return {
                     domain,
-                    framework: prefix === 'ncf' ? 'Ghana NCF' : 'ISO 27002',
+                    framework: prefix === 'ncf' ? ghanaLabel : 'ISO 27002',
                     values,
                     avg,
                     pct,
@@ -623,8 +678,10 @@
                 }
             };
 
+            // A radar needs at least three axes; with fewer (e.g. only incident reporting applies) use bars.
+            const fewAreas = ncfScores.length < 3;
             new Chart(document.getElementById('ncfRadar'), {
-                type: 'radar',
+                type: fewAreas ? 'bar' : 'radar',
                 data: {
                     labels: ncfScores.map((s) => s.domain.substring(0, 16)),
                     datasets: [{
@@ -639,7 +696,7 @@
                         fill: true
                     }]
                 },
-                options: chartOptions
+                options: fewAreas ? { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: chartOptions.plugins, scales: { x: { min: 0, max: 100, ticks: { color: '#64748b' } }, y: { ticks: { color: '#334155' } } } } : chartOptions
             });
 
             new Chart(document.getElementById('isoRadar'), {
@@ -953,7 +1010,8 @@
             document.getElementById('resultsContent').classList.remove('hidden');
             document.getElementById('organizationName').textContent = data.organization?.name || 'Organization Name';
             document.getElementById('assessmentDate').textContent = formatDate(data.timestamp);
-            document.getElementById('scopeLabel').textContent = 'Ghana NCF + ISO 27002';
+            ghanaLabel = GHData.ghanaLabel(data);
+            document.getElementById('scopeLabel').textContent = GHData.scopeLabel(data);
 
             const ncfScores = buildDomainMap(data.ncf || {}, 'ncf');
             const isoScores = buildDomainMap(data.iso || {}, 'iso');
@@ -978,6 +1036,7 @@
             renderCharts(ncfScores, isoScores);
             renderRiskMatrix(allScores);
             renderDomains(allScores);
+            renderRequirements(data);
             renderRecommendations(allScores);
             renderControlsTable(allScores);
             buildConclusion(allScores, overallPct);
