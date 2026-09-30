@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  # Drives the real pages in headless Chrome: layout at phone/tablet/desktop widths, scroll-reveal,
+  # dropdowns, assessment scoring and autosave, mapping features, report, and data consistency.
+  browser-tests:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22        # tests use Node's built-in WebSocket/fetch (no dependencies to install)
+      - name: Run end-to-end tests
+        run: node tests/e2e/run.mjs
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+
+  # Starts the real server against MongoDB and runs the API smoke test, which also checks the
+  # Content-Security-Policy header and that backend source files are not served.
+  api-and-security:
+    name: API and security headers
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - name: Start the server
+        run: |
+          MONGODB_URI=mongodb://127.0.0.1:27017/compliance_ci PORT=8000 NODE_ENV=test node server.js > server.log 2>&1 &
+          for i in $(seq 1 45); do curl -sf http://127.0.0.1:8000/api/health && break; sleep 2; done
+          curl -sf http://127.0.0.1:8000/api/health
+      - name: API and security smoke test
+        run: BASE=http://127.0.0.1:8000 node scripts/smoke-test.js
+      - name: Server log (on failure)
+        if: failure()
+        run: cat server.log

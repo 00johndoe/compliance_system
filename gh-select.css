@@ -28,7 +28,7 @@
 /* The native select is kept for value/events/validation but is not shown */
 .gs-native {
   position: absolute !important;
-  width: 1px !important; height: 1px !important;
+  width: 1px !important; height: 1px !important; min-height: 0 !important;
   margin: -1px !important; padding: 0 !important; border: 0 !important;
   overflow: hidden !important;
   clip: rect(0 0 0 0) !important; clip-path: inset(50%) !important;

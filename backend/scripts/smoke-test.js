@@ -107,6 +107,25 @@ async function run() {
   const badReport = await post('/api/report', { assessment_id: '' });
   ok(badReport.status === 400, 'reject empty assessment_id -> 400');
 
+  // ── Front-end security: CSP, self-hosted assets, and no repository exposure ──
+  const page = await fetch(`${BASE}/index.html`);
+  const csp = page.headers.get('content-security-policy') || '';
+  ok(page.status === 200, 'GET /index.html');
+  ok(csp.includes("default-src 'self'") && csp.includes("object-src 'none'") && csp.includes("frame-ancestors 'none'"), 'Content-Security-Policy is set');
+  ok(!/unsafe-eval/.test(csp), "CSP does not allow 'unsafe-eval'");
+  ok(!/https?:\/\//.test(csp), 'CSP allows no third-party origins');
+  ok(page.headers.get('x-content-type-options') === 'nosniff', 'X-Content-Type-Options: nosniff');
+  const indexHtml = await page.text();
+  ok(!/(cdn\.|cdnjs|googleapis|gstatic|unpkg)/i.test(indexHtml), 'index.html references no CDN assets');
+  for (const p of ['/backend/server.js', '/backend/package.json', '/backend/src/data/frameworks.js', '/server.py', '/docs/ghana-obligations-draft.md', '/.env']) {
+    const r = await fetch(`${BASE}${p}`);
+    ok(r.status === 404, `not publicly served: ${p} (got ${r.status})`);
+  }
+  for (const p of ['/vendor/chart.umd.min.js', '/vendor/fontawesome/css/all.min.css', '/mobile.js', '/mapping', '/favicon.ico']) {
+    const r = await fetch(`${BASE}${p}`);
+    ok(r.status === 200, `served: ${p} (got ${r.status})`);
+  }
+
   console.log(`\n${passed} passed, ${failed} failed\n`);
   process.exit(failed ? 1 : 0);
 }

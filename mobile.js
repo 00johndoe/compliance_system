@@ -26,7 +26,10 @@
     if (open) {
       lastFocus = document.activeElement;
       var first = drawer.querySelector('.drawer-close') || drawer.querySelector('a, button');
-      if (first) setTimeout(function () { first.focus(); }, 50);
+      if (first) {
+        first.focus({ preventScroll: true });
+        setTimeout(function () { if (document.activeElement !== first) first.focus({ preventScroll: true }); }, 80);
+      }
     } else {
       // Return focus to whatever opened the drawer (falls back to the menu button)
       var target = lastFocus && lastFocus !== document.body ? lastFocus : btn;
@@ -68,6 +71,25 @@
     });
   }
 
+  /* Scroll reveal: sections fade in as they reach the viewport. threshold 0 (any pixel visible) on purpose:
+     a ratio like 0.1 can never be met by an element taller than ten screens (e.g. the mapping table as
+     phone cards), which used to leave it invisible. */
+  var revealObserver = null;
+  function initReveal() {
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { Array.prototype.forEach.call(els, function (e) { e.classList.add('visible'); }); return; }
+    revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry, i) {
+        if (!entry.isIntersecting) return;
+        setTimeout(function () { entry.target.classList.add('visible'); }, i * 100);
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0 });
+    Array.prototype.forEach.call(els, function (e) { revealObserver.observe(e); });
+  }
+  // Public: pages/tests can register elements added later.
+  window.GHReveal = { observe: function (el) { if (!revealObserver) initReveal(); else revealObserver.observe(el); } };
+
   function init() {
     var drawer = $('drawer');
     if (drawer) {
@@ -77,6 +99,8 @@
         if (e.target.closest && e.target.closest('a')) setOpen(false);
       });
     }
+
+    initReveal();
 
     Array.prototype.forEach.call(document.querySelectorAll('table.responsive-table'), function (table) {
       // Table semantics are dropped by some browsers once CSS sets display:block; restore them.
