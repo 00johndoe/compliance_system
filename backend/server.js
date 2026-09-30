@@ -88,7 +88,7 @@ app.use(errorHandler);
 async function start() {
   const banner = '='.repeat(60);
   console.log(`\n${banner}`);
-  console.log('  Ghana NCF vs ISO/IEC 27002 Compliance System');
+  console.log('  Ghana requirements vs ISO/IEC 27002 Compliance System');
   console.log(banner);
 
   const uri = await connectDB();

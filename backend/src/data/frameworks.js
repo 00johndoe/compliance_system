@@ -3,93 +3,43 @@
 /**
  * Canonical framework reference data.
  *
- * Ported faithfully from the original server.py reference model so the Node
- * backend is a drop-in, superset replacement. These structures are seeded into
+ * The Ghana side is built from data/ghana-requirements.json; the ISO/IEC 27002 side
+ * was ported from the retired server.py. These structures are seeded into
  * MongoDB (see src/seed.js) and also serve as the fallback source of truth when
  * the DB is empty.
  */
 
-// ─── Ghana National Cybersecurity Framework ───
-const GHANA_NCF = {
+// ─── Ghana requirements ───
+// Built from data/ghana-requirements.json (the single source of truth shared
+// with the browser via gh-requirements.js). Not an official CSA control
+// catalogue: each item is a paraphrase of a cited legal or directive requirement.
+const REQUIREMENTS = require('../../../data/ghana-requirements.json');
+
+// Every requirement is a legal obligation, so all carry the same criticality
+// weight. The weight only influences recommendation priority, never the score.
+const REQUIREMENT_WEIGHT = 4;
+
+const GHANA_REQUIREMENTS = {
   key: 'ghana',
-  name: 'Ghana Cybersecurity Controls (project-defined, not an official CSA publication)',
-  version: 'draft-1',
+  name: REQUIREMENTS.name,
+  version: REQUIREMENTS.version,
   groupLabel: 'domains',
-  domains: [
-    {
-      id: 'GOV',
-      name: 'Governance & Leadership',
-      controls: [
-        { id: 'GOV-01', title: 'Cybersecurity Governance Structure', description: 'Establish a governance structure with clear roles, responsibilities, and accountability for cybersecurity.', weight: 5 },
-        { id: 'GOV-02', title: 'National Cybersecurity Strategy Alignment', description: "Align organizational strategy with Ghana's national cybersecurity policy objectives.", weight: 4 },
-        { id: 'GOV-03', title: 'Regulatory Compliance Management', description: "Ensure compliance with Ghana's Cybersecurity Act (Act 1038) and related regulations.", weight: 5 },
-        { id: 'GOV-04', title: 'Cybersecurity Budget & Resource Allocation', description: 'Allocate adequate budget and resources for cybersecurity programs.', weight: 4 },
-        { id: 'GOV-05', title: 'Board-Level Cybersecurity Oversight', description: 'Ensure board-level awareness and oversight of cybersecurity risks.', weight: 4 },
-        { id: 'GOV-06', title: 'Stakeholder Engagement', description: 'Engage with national and international cybersecurity stakeholders.', weight: 3 },
-      ],
-    },
-    {
-      id: 'RISK',
-      name: 'Risk Management',
-      controls: [
-        { id: 'RISK-01', title: 'Risk Assessment Framework', description: 'Implement a structured risk assessment framework aligned with national standards.', weight: 5 },
-        { id: 'RISK-02', title: 'Threat Intelligence Integration', description: 'Integrate threat intelligence from Ghana CERT and other sources.', weight: 4 },
-        { id: 'RISK-03', title: 'Risk Treatment & Mitigation', description: 'Develop and implement risk treatment plans with defined acceptance criteria.', weight: 5 },
-        { id: 'RISK-04', title: 'Third-Party Risk Management', description: 'Assess and manage cybersecurity risks from third-party vendors and suppliers.', weight: 4 },
-        { id: 'RISK-05', title: 'Risk Monitoring & Review', description: 'Continuously monitor and review cybersecurity risks.', weight: 4 },
-        { id: 'RISK-06', title: 'Critical Infrastructure Risk Assessment', description: 'Conduct specific risk assessments for critical national infrastructure.', weight: 5 },
-      ],
-    },
-    {
-      id: 'PROT',
-      name: 'Protection & Defense',
-      controls: [
-        { id: 'PROT-01', title: 'Access Control Management', description: 'Implement role-based access controls and identity management systems.', weight: 5 },
-        { id: 'PROT-02', title: 'Data Protection & Privacy', description: "Protect personal and sensitive data in compliance with Ghana's Data Protection Act.", weight: 5 },
-        { id: 'PROT-03', title: 'Network Security Architecture', description: 'Design and maintain secure network architectures with defense-in-depth.', weight: 5 },
-        { id: 'PROT-04', title: 'Encryption & Cryptographic Controls', description: 'Implement encryption for data at rest and in transit.', weight: 4 },
-        { id: 'PROT-05', title: 'Endpoint Security', description: 'Deploy and manage endpoint protection solutions across all devices.', weight: 4 },
-        { id: 'PROT-06', title: 'Application Security', description: 'Ensure secure development and deployment of applications.', weight: 4 },
-        { id: 'PROT-07', title: 'Physical Security of IT Assets', description: 'Protect physical IT infrastructure from unauthorized access and environmental threats.', weight: 3 },
-      ],
-    },
-    {
-      id: 'DETECT',
-      name: 'Detection & Monitoring',
-      controls: [
-        { id: 'DETECT-01', title: 'Security Event Monitoring', description: 'Implement continuous security event monitoring and logging.', weight: 5 },
-        { id: 'DETECT-02', title: 'Intrusion Detection Systems', description: 'Deploy and maintain intrusion detection and prevention systems.', weight: 4 },
-        { id: 'DETECT-03', title: 'Security Audit & Assessment', description: 'Conduct regular security audits, vulnerability assessments, and penetration testing.', weight: 5 },
-        { id: 'DETECT-04', title: 'Anomaly Detection', description: 'Implement behavioral analytics and anomaly detection capabilities.', weight: 3 },
-        { id: 'DETECT-05', title: 'Log Management & Analysis', description: 'Centralize and analyze security logs for threat identification.', weight: 4 },
-        { id: 'DETECT-06', title: 'Threat Hunting', description: 'Proactively search for threats that evade existing detection mechanisms.', weight: 3 },
-      ],
-    },
-    {
-      id: 'RESP',
-      name: 'Incident Response & Recovery',
-      controls: [
-        { id: 'RESP-01', title: 'Incident Response Plan', description: 'Develop and maintain a comprehensive incident response plan.', weight: 5 },
-        { id: 'RESP-02', title: 'Incident Reporting to Cyber Security Authority', description: "Report cybersecurity incidents to Ghana's Cyber Security Authority as required.", weight: 5 },
-        { id: 'RESP-03', title: 'Digital Forensics Capability', description: 'Maintain digital forensics capabilities for incident investigation.', weight: 4 },
-        { id: 'RESP-04', title: 'Business Continuity Planning', description: 'Develop and test business continuity and disaster recovery plans.', weight: 5 },
-        { id: 'RESP-05', title: 'Incident Communication Protocol', description: 'Establish communication protocols for incident notification and escalation.', weight: 4 },
-        { id: 'RESP-06', title: 'Post-Incident Review', description: 'Conduct post-incident reviews and implement lessons learned.', weight: 4 },
-      ],
-    },
-    {
-      id: 'CAP',
-      name: 'Capacity Building & Awareness',
-      controls: [
-        { id: 'CAP-01', title: 'Cybersecurity Awareness Program', description: 'Implement organization-wide cybersecurity awareness training.', weight: 5 },
-        { id: 'CAP-02', title: 'Technical Skills Development', description: 'Develop and maintain technical cybersecurity skills within the organization.', weight: 4 },
-        { id: 'CAP-03', title: 'Cybersecurity Culture', description: 'Foster a culture of cybersecurity responsibility across the organization.', weight: 4 },
-        { id: 'CAP-04', title: 'Local Talent Pipeline', description: 'Support development of local cybersecurity talent and expertise.', weight: 3 },
-        { id: 'CAP-05', title: 'Knowledge Sharing & Collaboration', description: 'Participate in cybersecurity knowledge sharing and collaboration initiatives.', weight: 3 },
-        { id: 'CAP-06', title: 'Certification & Professional Development', description: 'Support cybersecurity certification and continuous professional development.', weight: 3 },
-      ],
-    },
-  ],
+  domains: REQUIREMENTS.groups
+    .map((g) => ({
+      id: g.id,
+      name: g.name,
+      controls: REQUIREMENTS.requirements
+        .filter((r) => r.group === g.id)
+        .map((r) => ({
+          id: r.id,
+          title: r.title,
+          description: r.requirement,
+          weight: REQUIREMENT_WEIGHT,
+          tier: r.tier,
+          source: r.source,
+        })),
+    }))
+    .filter((g) => g.controls.length > 0),
 };
 
 // ─── ISO/IEC 27002:2022 ───
@@ -236,4 +186,4 @@ function flattenControls(framework) {
   return out;
 }
 
-module.exports = { GHANA_NCF, ISO27002, getGroups, flattenControls };
+module.exports = { GHANA_REQUIREMENTS, ISO27002, REQUIREMENTS, getGroups, flattenControls };

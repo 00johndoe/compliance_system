@@ -7,13 +7,15 @@ const {
   calculateScores,
   getMaturityLabel,
   generateRecommendations,
+  filterApplicable,
   round1,
 } = require('../services/scoring');
+const { REQUIREMENTS } = require('../data/frameworks');
 
 /**
  * Accept the responses map under several possible keys so the endpoint works
  * with both the canonical contract (ghana_responses / iso_responses) and
- * shorter aliases (ghana / iso / ncf).
+ * shorter aliases (ghana / iso). `ncf` is kept as a legacy alias for the Ghana answers.
  */
 function pickResponses(body, keys) {
   for (const k of keys) {
@@ -28,6 +30,12 @@ function responsesToArray(obj) {
     id,
     maturity: Number(maturity) || 0,
   }));
+}
+
+/** Booleans only; anything else counts as "does not apply". */
+function normalizeApplicability(a) {
+  const src = a && typeof a === 'object' ? a : {};
+  return { personalData: src.personalData === true, ciiOwner: src.ciiOwner === true };
 }
 
 /** Coerce arbitrary organization input into the known shape. */
@@ -57,7 +65,15 @@ const createAssessment = asyncHandler(async (req, res) => {
     throw err;
   }
 
-  const ghanaScores = calculateScores(ghanaFw.groups, ghanaResponses);
+  const applicability = normalizeApplicability(body.applicability);
+  const ghanaGroups = filterApplicable(ghanaFw.groups, REQUIREMENTS.tiers, applicability);
+  const applicableIds = new Set(ghanaGroups.flatMap((g) => g.controls.map((c) => c.id)));
+  // Answers for requirements that do not apply to this organisation are not stored or scored.
+  const applicableResponses = Object.fromEntries(
+    Object.entries(ghanaResponses).filter(([id]) => applicableIds.has(id))
+  );
+
+  const ghanaScores = calculateScores(ghanaGroups, applicableResponses);
   const isoScores = calculateScores(isoFw.groups, isoResponses);
   const recommendations = generateRecommendations(ghanaScores, isoScores);
 
@@ -70,7 +86,8 @@ const createAssessment = asyncHandler(async (req, res) => {
     alignment_score: round1((ghanaScores.overall + isoScores.overall) / 2),
     ghana_maturity: getMaturityLabel(ghanaScores.overall),
     iso_maturity: getMaturityLabel(isoScores.overall),
-    ghana_responses: responsesToArray(ghanaResponses),
+    applicability,
+    ghana_responses: responsesToArray(applicableResponses),
     iso_responses: responsesToArray(isoResponses),
   });
 

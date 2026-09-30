@@ -1,7 +1,7 @@
 {
   "name": "gh-cybercomply-backend",
   "version": "1.0.0",
-  "description": "Node.js + MongoDB backend for the Ghana NCF vs ISO/IEC 27002 Compliance Measurement System (GH-CYBERCOMPLY).",
+  "description": "Node.js + MongoDB backend for the Ghana requirements vs ISO/IEC 27002 Compliance Measurement System (GH-CYBERCOMPLY).",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
@@ -15,7 +15,7 @@
   "keywords": [
     "compliance",
     "iso27002",
-    "ghana-ncf",
+    "ghana-cybersecurity-act",
     "cybersecurity",
     "express",
     "mongodb"

@@ -1,12 +1,9 @@
 'use strict';
 
 const Framework = require('../models/Framework');
-const Mapping = require('../models/Mapping');
-const GapAnalysis = require('../models/GapAnalysis');
 const asyncHandler = require('../middleware/asyncHandler');
-const { GHANA_NCF, ISO27002 } = require('../data/frameworks');
-const { CONTROL_MAPPING } = require('../data/mapping');
-const { GAP_ANALYSIS } = require('../data/gaps');
+const { GHANA_REQUIREMENTS, ISO27002 } = require('../data/frameworks');
+const { REQUIREMENT_LINKS, GAP_ANALYSIS } = require('../data/derived');
 
 /** Serialize a framework document to the legacy API shape (domains/themes). */
 function frameworkDocToApi(doc) {
@@ -21,6 +18,7 @@ function frameworkDocToApi(doc) {
         title: c.title,
         ...(c.description ? { description: c.description } : {}),
         weight: c.weight,
+        ...(c.tier ? { tier: c.tier, source: c.source } : {}),
       })),
     })),
   };
@@ -39,6 +37,7 @@ function staticFrameworkApi(fw) {
         title: c.title,
         ...(c.description ? { description: c.description } : {}),
         weight: c.weight,
+        ...(c.tier ? { tier: c.tier, source: c.source } : {}),
       })),
     })),
   };
@@ -47,7 +46,7 @@ function staticFrameworkApi(fw) {
 // GET /api/frameworks/ghana
 const getGhana = asyncHandler(async (req, res) => {
   const doc = await Framework.findOne({ key: 'ghana' }).lean();
-  res.json(doc ? frameworkDocToApi(doc) : staticFrameworkApi(GHANA_NCF));
+  res.json(doc ? frameworkDocToApi(doc) : staticFrameworkApi(GHANA_REQUIREMENTS));
 });
 
 // GET /api/frameworks/iso27002
@@ -61,7 +60,7 @@ const listFrameworks = asyncHandler(async (req, res) => {
   const docs = await Framework.find().lean();
   const source = docs.length
     ? docs.map((d) => ({ key: d.key, name: d.name, version: d.version, groups: d.groups.length }))
-    : [GHANA_NCF, ISO27002].map((f) => ({
+    : [GHANA_REQUIREMENTS, ISO27002].map((f) => ({
         key: f.key,
         name: f.name,
         version: f.version,
@@ -70,17 +69,14 @@ const listFrameworks = asyncHandler(async (req, res) => {
   res.json(source);
 });
 
-// GET /api/mapping
+// GET /api/mapping  (requirement -> ISO 27002 links; proposed, not yet validated)
 const getMapping = asyncHandler(async (req, res) => {
-  const docs = await Mapping.find().sort({ _id: 1 }).lean();
-  if (!docs.length) return res.json(CONTROL_MAPPING);
-  res.json(docs.map((m) => ({ ncf: m.ncf, iso: m.iso, alignment: m.alignment, notes: m.notes })));
+  res.json(REQUIREMENT_LINKS);
 });
 
-// GET /api/gaps
+// GET /api/gaps  (derived from the requirements dataset)
 const getGaps = asyncHandler(async (req, res) => {
-  const doc = await GapAnalysis.findOne({ key: 'default' });
-  res.json(doc ? doc.toApi() : GAP_ANALYSIS);
+  res.json(GAP_ANALYSIS);
 });
 
 module.exports = { getGhana, getIso, listFrameworks, getMapping, getGaps };

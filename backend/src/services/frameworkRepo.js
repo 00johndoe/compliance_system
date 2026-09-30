@@ -1,7 +1,7 @@
 'use strict';
 
 const Framework = require('../models/Framework');
-const { GHANA_NCF, ISO27002 } = require('../data/frameworks');
+const { GHANA_REQUIREMENTS, ISO27002 } = require('../data/frameworks');
 
 /** Normalizes static framework data into { key, name, version, groupLabel, groups }. */
 function staticToNormalized(fw) {
@@ -15,7 +15,7 @@ function staticToNormalized(fw) {
 }
 
 const STATIC = {
-  ghana: staticToNormalized(GHANA_NCF),
+  ghana: staticToNormalized(GHANA_REQUIREMENTS),
   iso: staticToNormalized(ISO27002),
   iso27002: staticToNormalized(ISO27002),
 };

@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22        # tests use Node's built-in WebSocket/fetch (no dependencies to install)
+      - name: Requirements data in sync (gh-requirements.js matches data/ghana-requirements.json)
+        run: node scripts/build-requirements.mjs --check
       - name: Run end-to-end tests
         run: node tests/e2e/run.mjs
         env:

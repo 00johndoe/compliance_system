@@ -1,10 +1,10 @@
 'use strict';
 
 const { body, param } = require('express-validator');
-const { GHANA_NCF, ISO27002, flattenControls } = require('../data/frameworks');
+const { GHANA_REQUIREMENTS, ISO27002, flattenControls } = require('../data/frameworks');
 const { SECTORS, SIZES } = require('../data/orgOptions');
 
-const GHANA_IDS = new Set(flattenControls(GHANA_NCF).map((c) => c.id));
+const GHANA_IDS = new Set(flattenControls(GHANA_REQUIREMENTS).map((c) => c.id));
 const ISO_IDS = new Set(flattenControls(ISO27002).map((c) => c.id));
 
 /**
@@ -72,6 +72,15 @@ const createAssessmentRules = [
     .bail()
     .isIn(SIZES)
     .withMessage(`organization size must be one of: ${SIZES.join(', ')}`),
+
+  body('applicability').custom((value) => {
+    if (value === undefined || value === null) return true;
+    if (typeof value !== 'object' || Array.isArray(value)) throw new Error('applicability must be an object');
+    for (const key of ['personalData', 'ciiOwner']) {
+      if (key in value && typeof value[key] !== 'boolean') throw new Error(`applicability.${key} must be true or false`);
+    }
+    return true;
+  }),
 
   body('ghana_responses').custom(responsesValidator(GHANA_IDS, 'ghana_responses')),
   body('ghana').custom(responsesValidator(GHANA_IDS, 'ghana')),

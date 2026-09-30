@@ -8,6 +8,9 @@ const controlSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String, default: '' },
     weight: { type: Number, required: true, min: 1, max: 5 },
+    // Ghana requirements only: applicability tier and legal citation.
+    tier: { type: String },
+    source: { type: String },
   },
   { _id: false }
 );
@@ -50,6 +53,7 @@ frameworkSchema.methods.toApi = function toApi() {
         title: c.title,
         ...(c.description ? { description: c.description } : {}),
         weight: c.weight,
+        ...(c.tier ? { tier: c.tier, source: c.source } : {}),
       })),
     })),
   };

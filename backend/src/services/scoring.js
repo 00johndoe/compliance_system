@@ -84,6 +84,19 @@ function getMaturityLabel(score) {
   return 'Non-Existent';
 }
 
+/**
+ * Keeps only the Ghana requirements that apply to the organisation.
+ * Tier gates come from the dataset: 'always', or a boolean flag on the
+ * applicability object (personalData, ciiOwner). Groups left empty are dropped.
+ */
+function filterApplicable(groups, tiers, applicability) {
+  const flags = applicability || {};
+  const active = new Set(tiers.filter((t) => t.gate === 'always' || flags[t.gate] === true).map((t) => t.id));
+  return groups
+    .map((g) => ({ ...g, controls: g.controls.filter((c) => !c.tier || active.has(c.tier)) }))
+    .filter((g) => g.controls.length > 0);
+}
+
 const PRIORITY_ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 };
 
 /**
@@ -96,7 +109,7 @@ function generateRecommendations(ghanaScores, isoScores) {
 
   for (const d of ghanaScores.domains) {
     for (const c of d.controls) {
-      allControls.push({ ...c, framework: 'Ghana NCF', domain: d.name });
+      allControls.push({ ...c, framework: 'Ghana requirements', domain: d.name });
     }
   }
   for (const d of isoScores.domains) {
@@ -160,6 +173,7 @@ module.exports = {
   calculateScores,
   getMaturityLabel,
   generateRecommendations,
+  filterApplicable,
   round1,
   clampMaturity,
 };

@@ -1,13 +1,13 @@
 # GH-CYBERCOMPLY — Node.js + MongoDB Backend
 
-Backend for the **Ghana NCF vs ISO/IEC 27002 Compliance Measurement System**.
-Built with **Express** and **Mongoose (MongoDB)**. It serves the existing static
-frontend **unchanged** and exposes a complete REST API for frameworks, control
-mappings, gap analysis, and organizational compliance assessments (with weighted
-maturity scoring and prioritized recommendations).
+Backend for the **Ghana requirements vs ISO/IEC 27002 Compliance Measurement System**.
+Built with **Express** and **Mongoose (MongoDB)**. It serves the static frontend and exposes a
+REST API for the Ghana requirements, the proposed requirement-to-ISO links, the gap analysis, and
+organizational compliance assessments (scoring plus prioritized recommendations).
 
-This replaces the original in-memory `server.py` with a persistent, production-
-shaped Node.js service. The API surface is a superset of the Python server's.
+The Ghana side comes from `../data/ghana-requirements.json`, the single source of truth shared with
+the browser (see the project README). This service replaces the original prototype `../server.py`,
+which is retired and still holds an earlier, unofficial control list.
 
 ## Requirements
 
@@ -56,14 +56,16 @@ by this backend. The API base is <http://localhost:8000/api>.
 | `npm run dev`          | Start with **nodemon** hot-reload (watches `server.js`, `src/`).|
 | `npm run dev:memory`   | nodemon hot-reload + ephemeral in-memory MongoDB.               |
 | `npm run start:memory` | Start with an ephemeral in-memory MongoDB.                      |
-| `npm run seed`         | Upsert reference data (frameworks, mappings, gaps).             |
+| `npm run seed`         | Upsert the framework reference data.                            |
 | `npm run test:api`     | Run the end-to-end smoke test against a running server.         |
 
 Development uses **nodemon** (config in `nodemon.json`) to auto-restart on
 changes to `server.js` and anything under `src/`.
 
 Reference data is also auto-seeded on boot when `SEED_ON_START=true` (default).
-Seeding is idempotent (upserts) and never touches saved assessments.
+Seeding is idempotent (upserts) and never touches saved assessments. It also removes the
+`mappings` and `gap_analysis` collections left by older versions: the mapping and gap analysis are
+now calculated from the requirements data on every request.
 
 ## Configuration (`.env`)
 
@@ -86,11 +88,11 @@ Base path: `/api`
 
 ### Reference data
 
-- `GET /api/frameworks` — summary of both frameworks
-- `GET /api/frameworks/ghana` — Ghana NCF (6 domains, 37 controls)
-- `GET /api/frameworks/iso27002` — ISO/IEC 27002:2022 (4 themes, 93 controls)
-- `GET /api/mapping` — NCF → ISO control mappings (47 rows)
-- `GET /api/gaps` — gap analysis (Ghana-unique, ISO-unique, structural comparison)
+- `GET /api/frameworks` - summary of both frameworks
+- `GET /api/frameworks/ghana` - Ghana requirements (7 groups, 53 requirements; each has `tier` and `source`)
+- `GET /api/frameworks/iso27002` - ISO/IEC 27002:2022 (4 themes, 93 controls)
+- `GET /api/mapping` - proposed requirement to ISO control links (`{ requirement, iso, status: "proposed" }`, 153 rows). No strength ratings, because the links have not been validated.
+- `GET /api/gaps` - calculated: requirements with no ISO link, ISO controls no requirement refers to, coverage by theme, structural comparison
 
 ### Assessments
 
@@ -104,15 +106,18 @@ Base path: `/api`
 
 ```json
 {
-  "organization": { "name": "Acme Ltd", "sector": "Finance", "size": "201-500", "email": "ops@acme.com" },
-  "ghana_responses": { "GOV-01": 5, "GOV-02": 4, "RISK-01": 3 },
+  "organization": { "name": "Acme Ltd", "sector": "Financial Services", "size": "Medium (51-250)", "email": "ops@acme.com" },
+  "applicability": { "personalData": true, "ciiOwner": false },
+  "ghana_responses": { "T1A-01": 5, "T1B-11": 2.5 },
   "iso_responses":   { "5.1": 5, "8.5": 4, "8.7": 2 }
 }
 ```
 
-- Keys are **control IDs** (`GOV-01…`, `5.1…`). Values are **maturity 0–5**.
-- Aliases accepted: `ghana` / `ncf` for `ghana_responses`, `iso` for `iso_responses`.
+- Keys are **requirement IDs** (`T1A-01`, `T1B-11`, `T2-04` ...) and **ISO control IDs** (`5.1` ...). Values are **maturity 0-5**.
+- `applicability` decides which Ghana requirements are scored: Tier 1A always (2 requirements); Tier 1B when `personalData` is `true` (+18); Tier 2 when `ciiOwner` is `true` (+33). Omitted means both `false`. Answers for requirements that do not apply are ignored and not stored. The applicability is saved with the assessment.
+- Aliases accepted: `ghana` / `ncf` (legacy) for `ghana_responses`, `iso` for `iso_responses`.
 - Missing controls default to maturity `0`.
+- The retired ids from the old "Ghana NCF" list (`GOV-01` ...) are rejected with `400`.
 
 #### Validation
 
@@ -122,7 +127,8 @@ with `{ error: "Validation failed", details: [{ field, message }] }`:
 - `organization.name` — required text, 2–200 chars, safe characters only
 - `organization.email` — required, valid email
 - `organization.sector` / `organization.size` — required, must match the allowed lists
-- response values — must be numbers in `0–5`, keyed only by **known control IDs**
+- response values — must be numbers in `0–5`, keyed only by **known requirement / control IDs**
+- `applicability` — optional object; `personalData` and `ciiOwner` must be booleans
 - `assessment_id` / `:id` — required, alphanumeric/hyphen, ≤ 64 chars
 
 The frontend form mirrors these rules for immediate feedback before submitting.
@@ -145,24 +151,25 @@ Maturity labels: `Non-Existent (<10) · Initial (10) · Developing (30) · Defin
 
 ```
 backend/
-├── server.js                  # bootstrap: DB → seed → HTTP → graceful shutdown
-├── scripts/smoke-test.js      # end-to-end API test
-└── src/
-    ├── app.js                 # Express app (security, static frontend, routes)
-    ├── config/                # env + db (real / in-memory)
-    ├── data/                  # canonical reference data (frameworks, mapping, gaps)
-    ├── models/                # Mongoose schemas (Framework, Mapping, GapAnalysis, Assessment)
-    ├── services/              # scoring engine + framework repository
-    ├── controllers/           # reference + assessment handlers
-    ├── routes/                # /api router
-    ├── middleware/            # async wrapper + error handling
-    └── seed.js                # idempotent reference-data seeder
+  server.js                  bootstrap: DB, seed, HTTP, graceful shutdown
+  scripts/smoke-test.js      end-to-end API and security-header test
+  src/
+    config/                  env + db (real / in-memory)
+    data/
+      frameworks.js          Ghana requirements (from ../../data/ghana-requirements.json) + ISO/IEC 27002
+      derived.js             requirement-to-ISO links and gap analysis, calculated from the dataset
+    models/                  Mongoose schemas (Framework, Assessment)
+    services/                scoring engine + framework repository
+    controllers/             reference + assessment handlers
+    routes/                  /api router
+    middleware/              async wrapper + error handling
+    validators/              express-validator rules
+    seed.js                  idempotent reference-data seeder
 ```
 
 ## Notes on the frontend
 
-The frontend (`../index.html`, `../assessment.html`, `../results.html`,
-`../mapping.html`, `../gaps.html`) is served **unchanged**. As shipped, it
-computes and stores assessments client-side via `localStorage`. This backend
-provides the persistent API those flows can be pointed at (POST `/api/assess`,
-GET `/api/assessments/:id`, etc.) without any change to the visual UI.
+The frontend pages in the repository root are served through an allow-list (top-level pages, scripts,
+styles and `/vendor/` only), so backend source, `data/`, `docs/` and `server.py` are never exposed.
+As shipped, the pages compute and store assessments in the browser (`localStorage`); this API is
+available for flows that need server-side storage.

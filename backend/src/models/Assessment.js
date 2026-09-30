@@ -74,6 +74,11 @@ const assessmentSchema = new mongoose.Schema(
     },
     organization: { type: organizationSchema, default: () => ({}) },
     date: { type: Date, default: Date.now },
+    // Which Ghana requirement tiers applied: 1A always, 1B if personalData, 2 if ciiOwner.
+    applicability: {
+      type: new mongoose.Schema({ personalData: Boolean, ciiOwner: Boolean }, { _id: false }),
+      default: () => ({ personalData: false, ciiOwner: false }),
+    },
     ghana_scores: { type: frameworkScoreSchema, required: true },
     iso_scores: { type: frameworkScoreSchema, required: true },
     recommendations: { type: [recommendationSchema], default: [] },
@@ -98,6 +103,7 @@ assessmentSchema.methods.toApi = function toApi() {
     id: this.assessmentId,
     organization: this.organization,
     date: this.date instanceof Date ? this.date.toISOString() : this.date,
+    applicability: this.applicability,
     ghana_scores: this.ghana_scores,
     iso_scores: this.iso_scores,
     recommendations: this.recommendations,

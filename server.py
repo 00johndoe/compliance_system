@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """
+RETIRED - DO NOT USE. This is the original prototype server. It still holds the earlier,
+unofficial "Ghana NCF" control list, which the project no longer uses. The maintained backend is
+backend/ (Node.js), driven by data/ghana-requirements.json. Kept only for history.
+
 Ghana NCF vs ISO/IEC 27002 Compliance Measurement System - Backend Server
 """
 
