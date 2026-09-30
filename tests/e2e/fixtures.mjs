@@ -17,5 +17,5 @@ export const SEED = {
   timestamp: '2026-09-01T10:00:00.000Z',
 };
 
-export const MAIN_PAGES = ['index', 'mapping', 'assessment', 'gaps'];
+export const MAIN_PAGES = ['index', 'mapping', 'assessment', 'gaps', 'actions'];
 export const ALL_PAGES = [...MAIN_PAGES, 'results', 'results-print'];

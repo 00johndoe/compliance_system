@@ -121,7 +121,7 @@ async function run() {
     const r = await fetch(`${BASE}${p}`);
     ok(r.status === 404, `not publicly served: ${p} (got ${r.status})`);
   }
-  for (const p of ['/vendor/chart.umd.min.js', '/vendor/fontawesome/css/all.min.css', '/mobile.js', '/mapping', '/favicon.ico']) {
+  for (const p of ['/vendor/chart.umd.min.js', '/vendor/fontawesome/css/all.min.css', '/mobile.js', '/mapping', '/actions', '/gh-plan.js', '/favicon.ico']) {
     const r = await fetch(`${BASE}${p}`);
     ok(r.status === 200, `served: ${p} (got ${r.status})`);
   }

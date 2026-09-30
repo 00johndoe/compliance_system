@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="gh-select.css" />
     <link rel="stylesheet" href="results.css" />
     <link rel="stylesheet" href="print.css" />
+    <script src="gh-data.js"></script>
+    <script src="gh-plan.js"></script>
     <script src="mobile.js" defer></script>
     <script src="gh-select.js" defer></script>
 </head>
@@ -33,6 +35,7 @@
             <a href="mapping.html"><i class="fas fa-diagram-project" aria-hidden="true"></i> Control Mapping</a>
             <a href="assessment.html"><i class="fas fa-clipboard-check" aria-hidden="true"></i> Assessment</a>
             <a href="results.html" class="active" aria-current="page"><i class="fas fa-chart-pie" aria-hidden="true"></i> Results</a>
+            <a href="actions.html"><i class="fas fa-list-check" aria-hidden="true"></i> Action Plan</a>
             <a href="gaps.html"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Gap Analysis</a>
         </nav>
         <p class="drawer-label">In this report</p>
@@ -380,6 +383,10 @@
                             <i class="fas fa-download"></i>
                             Export JSON
                         </button>
+                        <a class="action-button action-button--secondary" href="actions.html">
+                            <i class="fas fa-list-check"></i>
+                            Action plan
+                        </a>
                         <a class="action-button action-button--secondary" href="assessment.html">
                             <i class="fas fa-redo"></i>
                             New Assessment
@@ -785,7 +792,7 @@
             const container = document.getElementById('recommendations');
             const sorted = [...allScores].sort((a, b) => a.pct - b.pct);
 
-            const cards = sorted.map((entry) => {
+            const cards = sorted.map((entry, recIndex) => {
                 const severity = getSeverity(entry.pct);
                 const severityMeta = severityMap[severity];
                 const title = `${entry.domain} Control Maturity`;
@@ -814,12 +821,37 @@
                         <div class="finding-footer">
                             <span class="priority-label">Implementation Priority</span>
                             <span class="priority-value">${getPriorityText(entry.pct)}</span>
+                            <button type="button" class="plan-add" data-rec="${recIndex}"><i class="fas fa-plus" aria-hidden="true"></i> Add to action plan</button>
                         </div>
                     </article>
                 `;
             }).join('');
 
             container.innerHTML = cards;
+            wirePlanButtons(container, sorted);
+        }
+
+        // "Add to action plan": adds a tracked action for that domain; once added the button links to the plan.
+        function wirePlanButtons(container, sorted) {
+            if (!window.GHPlan) { container.querySelectorAll('.plan-add').forEach((b) => b.remove()); return; }
+            const keyOf = (e) => GHPlan.sourceKey(e.framework, e.domain);
+            const refresh = () => container.querySelectorAll('.plan-add').forEach((btn) => {
+                const e = sorted[Number(btn.dataset.rec)];
+                const planned = !!(e && GHPlan.plannedForKey(keyOf(e)));
+                btn.classList.toggle('is-added', planned);
+                btn.setAttribute('aria-pressed', planned ? 'true' : 'false');
+                btn.innerHTML = planned ? '<i class="fas fa-check" aria-hidden="true"></i> In your action plan &middot; view' : '<i class="fas fa-plus" aria-hidden="true"></i> Add to action plan';
+            });
+            container.onclick = (ev) => {
+                const btn = ev.target.closest ? ev.target.closest('.plan-add') : null;
+                if (!btn) return;
+                const e = sorted[Number(btn.dataset.rec)];
+                if (!e) return;
+                if (GHPlan.plannedForKey(keyOf(e))) { window.location.href = 'actions.html'; return; }
+                GHPlan.add(GHPlan.suggestionFor(e.domain, e.framework, e.pct));
+                refresh();
+            };
+            refresh();
         }
 
         function updateTableRows(searchText = '', statusFilter = 'all') {

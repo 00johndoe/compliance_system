@@ -138,10 +138,22 @@
         .gloss-list dt { font-weight: 700; color: #e2e8f0; font-size: 0.9rem; }
         .gloss-list dd { margin-top: 0.15rem; font-size: 0.85rem; color: #94a3b8; line-height: 1.55; }
         @media (min-width: 768px) { .gloss-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; } }
+        .plan-card { margin-bottom: 1.5rem; }
+        .pc-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem 1rem; flex-wrap: wrap; margin-bottom: 0.85rem; }
+        .pc-head h2 { font-size: 1.05rem; font-weight: 700; color: #fff; }
+        .pc-head p { font-size: 0.85rem; color: #94a3b8; margin-top: 0.15rem; overflow-wrap: anywhere; }
+        .pc-bar { height: 10px; border-radius: 6px; background: rgba(80,80,80,0.4); overflow: hidden; }
+        .pc-bar > i { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, #38bdf8, #00ff88); }
+        .pc-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.85rem; }
+        .pc-chip { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; background: rgba(148,163,184,0.12); color: #cbd5e1; }
+        .pc-chip.bad { background: rgba(239,68,68,0.18); color: #fecaca; }
+        .pc-chip.warn { background: rgba(255,234,0,0.14); color: #fde68a; }
+        @media (max-width: 479px) { .pc-head .btn-mini { width: 100%; } }
     </style>
     <link rel="stylesheet" href="mobile.css">
     <script src="mapping-data.js"></script>
     <script src="gh-data.js"></script>
+    <script src="gh-plan.js"></script>
     <script src="mobile.js" defer></script>
 </head>
 <body>
@@ -164,6 +176,7 @@
                 <a href="mapping.html" class="nav-link">Control Mapping</a>
                 <a href="assessment.html" class="nav-link">Assessment</a>
                 <a href="results.html" class="nav-link">Results</a>
+                <a href="actions.html" class="nav-link">Action Plan</a>
                 <a href="gaps.html" class="nav-link">Gap Analysis</a>
             </div>
             <button type="button" class="menu-btn" id="menuBtn" onclick="toggleDrawer()" aria-label="Open menu" aria-controls="drawer" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i></button>
@@ -181,6 +194,7 @@
         <a href="mapping.html" class="nav-link"><i class="fas fa-diagram-project" aria-hidden="true"></i>Control Mapping</a>
         <a href="assessment.html" class="nav-link"><i class="fas fa-clipboard-check" aria-hidden="true"></i>Assessment</a>
         <a href="results.html" class="nav-link"><i class="fas fa-chart-pie" aria-hidden="true"></i>Results</a>
+        <a href="actions.html" class="nav-link"><i class="fas fa-list-check" aria-hidden="true"></i>Action Plan</a>
         <a href="gaps.html" class="nav-link"><i class="fas fa-magnifying-glass" aria-hidden="true"></i>Gap Analysis</a>
     </div>
 
@@ -218,6 +232,9 @@
                 <a class="btn-mini primary" href="assessment.html"><i class="fas fa-play" aria-hidden="true"></i> Start assessment</a>
             </div>
         </section>
+
+        <!-- Action plan progress (rendered from this browser's plan; hidden until there is something to show) -->
+        <section id="planCard" class="card plan-card reveal" aria-labelledby="pcTitle" hidden></section>
 
         <!-- How it works -->
         <section class="how reveal" aria-labelledby="howTitle">
@@ -577,6 +594,34 @@
                     });
                 }
             }
+        })();
+
+        // ── Action plan card: progress, overdue, next due (or a prompt to build the plan from gaps) ──
+        (function renderPlanCard() {
+            if (!window.GHPlan) return;
+            const host = document.getElementById('planCard');
+            const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+            const st = GHPlan.stats(), sg = GHPlan.suggestions();
+            if (!st.total && !sg.length) { host.hidden = true; return; }
+            host.hidden = false;
+            if (!st.total) {
+                host.innerHTML = `<div class="pc-head"><div><h2 id="pcTitle">Action plan</h2><p>${plural(sg.length, 'area')} in your latest assessment scored below 75%. Turn them into tracked actions with an owner and a due date.</p></div>
+                    <a class="btn-mini primary" href="actions.html"><i class="fas fa-list-check" aria-hidden="true"></i> Build your action plan</a></div>`;
+                return;
+            }
+            let next = '';
+            if (st.nextDue) { const [y, m, d] = st.nextDue.due.split('-').map(Number); next = 'Next due: ' + st.nextDue.title + ' · ' + new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(y, m - 1, d)); }
+            host.innerHTML = `<div class="pc-head"><div><h2 id="pcTitle">Action plan</h2><p>${st.done} of ${plural(st.total, 'action')} done (${st.percentDone}%)</p></div>
+                <a class="btn-mini primary" href="actions.html"><i class="fas fa-list-check" aria-hidden="true"></i> Open action plan</a></div>
+                <div class="pc-bar" role="progressbar" aria-labelledby="pcTitle" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${st.percentDone}"><i style="width:${st.percentDone}%"></i></div>
+                <div class="pc-chips">
+                    ${st.overdue ? `<span class="pc-chip bad"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i>${plural(st.overdue, 'action')} overdue</span>` : ''}
+                    ${st.dueSoon ? `<span class="pc-chip warn"><i class="fas fa-bell" aria-hidden="true"></i>${st.dueSoon} due within 3 days</span>` : ''}
+                    <span class="pc-chip">${st.open} open</span>
+                    ${sg.length ? `<span class="pc-chip"><i class="fas fa-lightbulb" aria-hidden="true"></i>${plural(sg.length, 'suggestion')} not yet in your plan</span>` : ''}
+                    ${next ? `<span class="pc-chip" style="max-width:100%"><i class="fas fa-calendar" aria-hidden="true"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(next)}</span></span>` : ''}
+                </div>`;
         })();
     </script>
 </body>

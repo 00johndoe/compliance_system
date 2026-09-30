@@ -61,7 +61,7 @@ test('navigation: mobile menu opens, traps focus, closes on Escape and returns f
   eq(await page.eval("document.getElementById('menuBtn').getAttribute('aria-expanded')"), 'true');
   expect(await page.waitFor("document.getElementById('drawer').contains(document.activeElement)"), 'focus moved into the drawer');
   const links = await page.eval("[...document.querySelectorAll('#drawer .nav-link')].map((a) => a.textContent.trim())");
-  eq(links, ['Dashboard', 'Control Mapping', 'Assessment', 'Results', 'Gap Analysis']);
+  eq(links, ['Dashboard', 'Control Mapping', 'Assessment', 'Results', 'Action Plan', 'Gap Analysis']);
   await page.key('Escape', 'Escape', 27);
   await page.waitFor("!document.getElementById('drawer').classList.contains('open')");
   eq(await page.eval("document.activeElement.id"), 'menuBtn', 'focus returns to the menu button');

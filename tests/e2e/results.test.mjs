@@ -33,7 +33,7 @@ test('report: mobile menu lists the site pages and the report sections, and clos
   await report(page, base, 390, 844);
   await page.eval("document.getElementById('menuBtn').click(); true");
   await page.waitFor("document.getElementById('drawer').classList.contains('open')");
-  eq(await page.eval("[...document.querySelectorAll('#drawer nav[aria-label=\"Site pages\"] a')].map((a) => a.textContent.trim())"), ['Dashboard', 'Control Mapping', 'Assessment', 'Results', 'Gap Analysis']);
+  eq(await page.eval("[...document.querySelectorAll('#drawer nav[aria-label=\"Site pages\"] a')].map((a) => a.textContent.trim())"), ['Dashboard', 'Control Mapping', 'Assessment', 'Results', 'Action Plan', 'Gap Analysis']);
   eq(await page.eval("document.querySelectorAll('#drawer nav[aria-label=\"Report sections\"] a').length"), 7);
   await page.eval("document.querySelector('#drawer a[href=\"#risk-matrix\"]').click(); true");
   await page.waitFor("!document.getElementById('drawer').classList.contains('open')");
