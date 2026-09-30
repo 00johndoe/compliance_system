@@ -77,6 +77,10 @@
         .map-controls { margin-bottom: 1rem; }
         .filter-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; margin-top: 1rem; }
         @media (min-width: 640px) { .filter-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        .notice { display: flex; gap: 0.85rem; align-items: flex-start; margin-bottom: 1.25rem; padding: 1rem 1.125rem; border-radius: 14px; background: rgba(255,234,0,0.07); border: 1px solid rgba(255,234,0,0.3); }
+        .notice i { color: #ffea00; margin-top: 0.2rem; }
+        .notice p { font-size: 0.875rem; line-height: 1.6; color: #e2e8f0; }
+        .notice strong { color: #fff; }
         .sel > span { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #8393aa; margin-bottom: 0.35rem; }
         .sel select { width: 100%; padding: 0.65rem 0.9rem; background: rgba(30,30,30,0.6); border: 1px solid rgba(80,80,80,0.5); border-radius: 12px; color: #f3f4f6; font-size: 0.9rem; font-family: 'Inter', sans-serif; }
         .sel select:focus { border-color: #38bdf8; }
@@ -185,7 +189,7 @@
     </style>
     <link rel="stylesheet" href="mobile.css">
     <link rel="stylesheet" href="gh-select.css">
-    <script src="mapping-data.js"></script>
+    <script src="gh-requirements.js"></script>
     <script src="mobile.js" defer></script>
     <script src="gh-select.js" defer></script>
 </head>
@@ -241,35 +245,36 @@
 
         <div class="hero-border reveal" style="margin-bottom:2rem;text-align:center;">
             <div class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;margin-bottom:1rem;display:inline-flex;">
-                <i class="fas fa-project-diagram"></i> Cross-Framework Analysis
+                <i class="fas fa-project-diagram"></i> Requirements &harr; ISO 27002
             </div>
             <h1 style="font-weight:900;color:white;margin-bottom:0.75rem;">Control Mapping</h1>
-            <p style="color:#94a3b8;max-width:600px;margin:auto;">Detailed mapping between Ghana NCF controls and their corresponding ISO/IEC 27002:2022 controls with alignment levels.</p>
+            <p style="color:#94a3b8;max-width:600px;margin:auto;">Proposed links between Ghana&rsquo;s cybersecurity and data-protection requirements and the ISO/IEC 27002:2022 controls that support them.</p>
         </div>
 
-        <!-- Stats: click a card to filter by alignment strength (counts are computed from the data) -->
-        <div class="stats-grid stats-grid--3 reveal" id="mapStats" role="group" aria-label="Filter by alignment strength">
-            <button type="button" class="stat-card stat-btn" data-align="strong" aria-pressed="false">
-                <div class="stat-num" style="color:#00ff88;" id="cntStrong">0</div>
-                <div class="stat-label">Strong Alignment</div>
-            </button>
-            <button type="button" class="stat-card stat-btn" data-align="moderate" aria-pressed="false">
-                <div class="stat-num" style="color:#ffea00;" id="cntModerate">0</div>
-                <div class="stat-label">Moderate Alignment</div>
-            </button>
-            <button type="button" class="stat-card stat-btn" data-align="partial" aria-pressed="false">
-                <div class="stat-num" style="color:#f97316;" id="cntPartial">0</div>
-                <div class="stat-label">Partial Alignment</div>
-            </button>
+        <!-- Stats (counts are computed from the data) -->
+        <div class="stats-grid stats-grid--3 reveal" id="mapStats">
+            <div class="stat-card" style="text-align:center;">
+                <div class="stat-num" style="color:#38bdf8;" id="cntLinks">0</div>
+                <div class="stat-label">Proposed Links</div>
+            </div>
+            <div class="stat-card" style="text-align:center;">
+                <div class="stat-num" style="color:#a78bfa;" id="cntReq">0</div>
+                <div class="stat-label">Ghana Requirements</div>
+            </div>
+            <div class="stat-card" style="text-align:center;">
+                <div class="stat-num" style="color:#818cf8;" id="cntIso">0</div>
+                <div class="stat-label">ISO Controls Linked</div>
+            </div>
         </div>
 
-        <!-- Legend -->
+        <!-- How to read -->
         <details class="card legend reveal">
-            <summary><span><i class="fas fa-circle-info" aria-hidden="true" style="color:#38bdf8;margin-right:0.5rem;"></i>How alignment is rated</span><i class="fas fa-chevron-down chev" aria-hidden="true"></i></summary>
+            <summary><span><i class="fas fa-circle-info" aria-hidden="true" style="color:#38bdf8;margin-right:0.5rem;"></i>How to read this page</span><i class="fas fa-chevron-down chev" aria-hidden="true"></i></summary>
             <dl class="legend-list">
-                <div><dt><span class="badge-pill" style="background:rgba(0,255,136,0.1);color:#00ff88;border:1px solid rgba(0,255,136,0.3);">Strong</span></dt><dd id="lgStrong"></dd></div>
-                <div><dt><span class="badge-pill" style="background:rgba(255,234,0,0.1);color:#ffea00;border:1px solid rgba(255,234,0,0.3);">Moderate</span></dt><dd id="lgModerate"></dd></div>
-                <div><dt><span class="badge-pill" style="background:rgba(249,115,22,0.1);color:#f97316;border:1px solid rgba(249,115,22,0.3);">Partial</span></dt><dd id="lgPartial"></dd></div>
+                <div><dt><span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;border:1px solid rgba(56,189,248,0.35);">All organizations</span></dt><dd>Duties that apply to any organization, such as reporting cybersecurity incidents.</dd></div>
+                <div><dt><span class="badge-pill" style="background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.35);">Personal data</span></dt><dd>Duties under the Data Protection Act 2012 (Act 843) for organizations that process personal data.</dd></div>
+                <div><dt><span class="badge-pill" style="background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.35);">CII owners</span></dt><dd>Duties under the CSA Directive for owners of designated Critical Information Infrastructure.</dd></div>
+                <div><dt><span class="badge-pill" style="background:rgba(255,234,0,0.1);color:#ffea00;border:1px solid rgba(255,234,0,0.3);">Proposed</span></dt><dd>A link nobody has reviewed yet. Select a row to see the requirement&rsquo;s wording, its legal source and any caveats.</dd></div>
             </dl>
         </details>
 
@@ -278,25 +283,25 @@
             <div class="toolbar">
                 <div class="search-wrap">
                     <i class="fas fa-search" aria-hidden="true" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#64748b;"></i>
-                    <input type="text" class="search-input" placeholder="Search controls..." id="searchInput" aria-label="Search controls" autocomplete="off">
+                    <input type="text" class="search-input" placeholder="Search requirements or ISO controls..." id="searchInput" aria-label="Search requirements or ISO controls" autocomplete="off">
                 </div>
-                <div class="filter-group" role="group" aria-label="Filter by alignment" id="alignChips">
-                    <button type="button" class="filter-btn active" data-align="all" aria-pressed="true" id="chipAll">All</button>
-                    <button type="button" class="filter-btn" data-align="strong" aria-pressed="false">Strong</button>
-                    <button type="button" class="filter-btn" data-align="moderate" aria-pressed="false">Moderate</button>
-                    <button type="button" class="filter-btn" data-align="partial" aria-pressed="false">Partial</button>
+                <div class="filter-group" role="group" aria-label="Filter by who the requirement applies to" id="tierChips">
+                    <button type="button" class="filter-btn active" data-tier="all" aria-pressed="true" id="chipAll">All</button>
+                    <button type="button" class="filter-btn" data-tier="1A" aria-pressed="false">All organizations</button>
+                    <button type="button" class="filter-btn" data-tier="1B" aria-pressed="false">Personal data</button>
+                    <button type="button" class="filter-btn" data-tier="2" aria-pressed="false">CII owners</button>
                 </div>
             </div>
             <div class="filter-row">
-                <label class="sel"><span>NCF domain</span><select id="domainFilter"></select></label>
+                <label class="sel"><span>Requirement group</span><select id="groupFilter"></select></label>
                 <label class="sel"><span>ISO theme</span><select id="themeFilter"></select></label>
                 <label class="sel"><span>Sort by</span>
                     <select id="sortSelect">
                         <option value="default">Default order</option>
-                        <option value="ncf">NCF control (A–Z)</option>
-                        <option value="domain">NCF domain</option>
+                        <option value="req">Requirement ID</option>
+                        <option value="group">Requirement group</option>
+                        <option value="tier">Applies to</option>
                         <option value="iso">ISO control number</option>
-                        <option value="alignment">Alignment (strongest first)</option>
                     </select>
                 </label>
             </div>
@@ -314,7 +319,7 @@
         <!-- View switcher -->
         <div class="view-tabs" role="tablist" aria-label="Choose a view">
             <button type="button" class="view-tab" role="tab" id="tab-table" data-view="table" aria-controls="view-table" aria-selected="true"><i class="fas fa-table-list" aria-hidden="true"></i> Table</button>
-            <button type="button" class="view-tab" role="tab" id="tab-grouped" data-view="grouped" aria-controls="view-grouped" aria-selected="false" tabindex="-1"><i class="fas fa-layer-group" aria-hidden="true"></i> By domain</button>
+            <button type="button" class="view-tab" role="tab" id="tab-grouped" data-view="grouped" aria-controls="view-grouped" aria-selected="false" tabindex="-1"><i class="fas fa-layer-group" aria-hidden="true"></i> By group</button>
             <button type="button" class="view-tab" role="tab" id="tab-coverage" data-view="coverage" aria-controls="view-coverage" aria-selected="false" tabindex="-1"><i class="fas fa-table-cells-large" aria-hidden="true"></i> Coverage</button>
         </div>
 
@@ -326,11 +331,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Ghana NCF Control</th>
-                                <th>NCF Domain</th>
+                                <th>Ghana Requirement</th>
+                                <th>Group</th>
+                                <th>Applies To</th>
                                 <th>ISO 27002 Control</th>
                                 <th>ISO Theme</th>
-                                <th>Alignment</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody"></tbody>
@@ -346,11 +351,8 @@
         <div id="view-coverage" role="tabpanel" aria-labelledby="tab-coverage" hidden>
             <div class="card" style="padding:0;overflow:hidden;">
                 <div class="cov-head">
-                    <h2>Coverage by domain and theme</h2>
-                    <p>Number of mappings between each Ghana NCF domain and ISO/IEC 27002 theme, across all mappings. Select a cell to see those mappings.</p>
-                    <div class="cov-key" aria-hidden="true">
-                        <span><i style="background:#00ff88"></i>Strong</span><span><i style="background:#ffea00"></i>Moderate</span><span><i style="background:#f97316"></i>Partial</span>
-                    </div>
+                    <h2>Coverage by requirement group and theme</h2>
+                    <p>Number of proposed links between each Ghana requirement group and ISO/IEC 27002 theme. Select a number to see those links.</p>
                 </div>
                 <div class="table-scroll">
                     <table id="coverageTable" class="responsive-table rt-title-first" style="--rt-min:640px;">
@@ -380,40 +382,49 @@
             <i class="fas fa-shield-halved" style="color:#38bdf8;"></i>
             <span style="font-weight:700;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
         </div>
-        <p style="font-size:0.8rem;color:#8393aa;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
+        <p style="font-size:0.8rem;color:#8393aa;">Ghana requirements vs ISO/IEC 27002 Compliance Measurement System</p>
         <p style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;">&copy; 2026 All rights reserved.</p>
-        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana NCF control set is project-defined and is not an official publication of the Cyber Security Authority (CSA). Your assessments are stored only in this browser.</p>
+        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana requirements are this project&rsquo;s plain-language summary of the Cybersecurity Act 2020 (Act 1038), the Data Protection Act 2012 (Act 843) and the CSA Directive for Critical Information Infrastructure. They are not an official publication of the Cyber Security Authority (CSA) and have not yet been reviewed. Your assessments are stored only in this browser.</p>
     </footer>
 
     <script>
         window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300); });
 
-        // `mappings` comes from mapping-data.js (shared with the dashboard and gap pages)
-
-        // ── Control mapping: filtering, views, detail, export ─────────────────
-        // (The `mappings` data above is unchanged; everything below only reads it.)
+        // ── Requirement ↔ ISO/IEC 27002 links: filtering, views, detail, export ──
+        // Data comes from gh-requirements.js (generated from data/ghana-requirements.json, the same
+        // source the assessment, dashboard and API use). Every link is a PROPOSAL awaiting validation.
         const $ = (id) => document.getElementById(id);
         const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-        mappings.forEach((m, i) => { m.i = i; });
+        const R = window.GHRequirements;
 
-        const ALIGN = {
-            strong:   { label: 'Strong',   rank: 0, bg: 'rgba(0,255,136,0.1)',  text: '#00ff88', border: 'rgba(0,255,136,0.3)',  bar: '#00ff88' },
-            moderate: { label: 'Moderate', rank: 1, bg: 'rgba(255,234,0,0.1)',  text: '#ffea00', border: 'rgba(255,234,0,0.3)',  bar: '#ffea00' },
-            partial:  { label: 'Partial',  rank: 2, bg: 'rgba(249,115,22,0.1)', text: '#f97316', border: 'rgba(249,115,22,0.3)', bar: '#f97316' }
+        const TIERS = {
+            '1A': { label: 'All organizations', color: '#38bdf8', bg: 'rgba(56,189,248,0.1)' },
+            '1B': { label: 'Personal-data processors', color: '#a78bfa', bg: 'rgba(167,139,250,0.1)' },
+            '2':  { label: 'CII owners', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' }
         };
-        // Plain-language meaning of each rating (editorial wording; adjust to your methodology).
-        const MEANING = {
-            strong:   'The two controls address substantially the same requirement.',
-            moderate: 'The controls overlap in intent but differ in scope or depth.',
-            partial:  'Only part of the requirement is covered by the mapped control.'
+        const FLAG_TEXT = {
+            'scope-needs-confirmation': 'Who this duty applies to is unclear: the Act does not define "institution". Ask legal counsel.',
+            'source-heading-only-read': 'The source text was checked at heading level only. Re-read the Act before relying on this wording.',
+            'lettering-inferred': 'The paragraph reference was inferred from the Directive\'s layout. Verify it against the original.'
         };
+        const ANSWER = { 5: 'Fully implemented', 2.5: 'Partially implemented', 0: 'Not implemented' };
         const THEMES = ['Organizational', 'People', 'Physical', 'Technological'];
-        const DOMAINS = [...new Set(mappings.map((m) => m.domain))];
         const VIEWS = ['table', 'grouped', 'coverage'];
-        const SORTS = ['default', 'ncf', 'domain', 'iso', 'alignment'];
-        const state = { q: '', a: 'all', d: 'all', t: 'all', s: 'default', v: 'table' };
+        const SORTS = ['default', 'req', 'group', 'iso', 'tier'];
+        const GROUP_IDS = R.groups.map((g) => g.id);
+        const groupById = Object.fromEntries(R.groups.map((g) => [g.id, g]));
+        const isoById = Object.fromEntries(R.iso.map((c) => [c.id, c]));
 
-        // ── Optional: the user's own assessment scores (domain / theme level) ──
+        // One row per (requirement, ISO control) link.
+        const mappings = [];
+        R.requirements.forEach((r) => r.iso27002Links.forEach((iso) => {
+            const c = isoById[iso];
+            mappings.push({ i: mappings.length, r, id: r.id, title: r.title, group: r.group, groupName: groupById[r.group].name, tier: r.tier,
+                tierLabel: TIERS[r.tier].label, source: r.source, iso, isoTitle: c.title, theme: c.theme });
+        }));
+        const state = { q: '', g: 'all', w: 'all', t: 'all', s: 'default', v: 'table' };
+
+        // ── Optional: the user's own saved assessment (group, theme and requirement level) ──
         function loadScores() {
             try {
                 const data = JSON.parse(localStorage.getItem('assessmentData') || 'null');
@@ -430,32 +441,35 @@
                     Object.entries(groups).forEach(([name, vals]) => { out[name] = Math.round((vals.reduce((a, b) => a + b, 0) / vals.length / 5) * 100); });
                     return out;
                 };
-                return { org: (data.organization && data.organization.name) || '', ncf: avg(data.ncf), iso: avg(data.iso) };
+                const modern = !!(data.requirements && typeof data.requirements === 'object');
+                return { org: (data.organization && data.organization.name) || '', ncf: modern ? avg(data.ncf) : {}, iso: avg(data.iso), req: modern ? data.requirements : {} };
             } catch (e) { return null; }
         }
         const scores = loadScores();
-        const ncfScore = (domain) => (scores && domain in scores.ncf ? scores.ncf[domain] : null);
+        const groupScore = (name) => (scores && name in scores.ncf ? scores.ncf[name] : null);
         const isoScore = (theme) => (scores && (theme + ' Controls') in scores.iso ? scores.iso[theme + ' Controls'] : null);
+        const answerFor = (id) => (scores && id in scores.req && Number(scores.req[id]) in ANSWER ? ANSWER[Number(scores.req[id])] : null);
 
         // ── Filtering & sorting ──
         const isoKey = (iso) => { const m = iso.match(/^(\d+)(?:\.(\d+))?/); return m ? [Number(m[1]), Number(m[2] || 0)] : [999, 0]; };
+        const TIER_ORDER = { '1A': 0, '1B': 1, '2': 2 };
         const SORTERS = {
-            default:   (a, b) => a.i - b.i,
-            ncf:       (a, b) => a.ncf.localeCompare(b.ncf),
-            domain:    (a, b) => a.domain.localeCompare(b.domain) || a.ncf.localeCompare(b.ncf),
-            iso:       (a, b) => { const x = isoKey(a.iso), y = isoKey(b.iso); return x[0] - y[0] || x[1] - y[1] || a.i - b.i; },
-            alignment: (a, b) => ALIGN[a.alignment].rank - ALIGN[b.alignment].rank || a.i - b.i
+            default: (a, b) => a.i - b.i,
+            req:     (a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }) || a.i - b.i,
+            group:   (a, b) => GROUP_IDS.indexOf(a.group) - GROUP_IDS.indexOf(b.group) || a.i - b.i,
+            iso:     (a, b) => { const x = isoKey(a.iso), y = isoKey(b.iso); return x[0] - y[0] || x[1] - y[1] || a.i - b.i; },
+            tier:    (a, b) => TIER_ORDER[a.tier] - TIER_ORDER[b.tier] || a.i - b.i
         };
         function getFiltered() {
             const q = state.q.trim().toLowerCase();
             return mappings
-                .filter((m) => (state.a === 'all' || m.alignment === state.a)
-                    && (state.d === 'all' || m.domain === state.d)
+                .filter((m) => (state.g === 'all' || m.group === state.g)
+                    && (state.w === 'all' || m.tier === state.w)
                     && (state.t === 'all' || m.theme === state.t)
-                    && (!q || [m.ncf, m.iso, m.domain, m.theme].some((x) => x.toLowerCase().includes(q))))
+                    && (!q || [m.id, m.title, m.groupName, m.source, m.iso, m.isoTitle, m.theme].some((x) => x.toLowerCase().includes(q))))
                 .sort(SORTERS[state.s]);
         }
-        const filtersActive = () => !!(state.q.trim() || state.a !== 'all' || state.d !== 'all' || state.t !== 'all');
+        const filtersActive = () => !!(state.q.trim() || state.g !== 'all' || state.w !== 'all' || state.t !== 'all');
 
         // Highlight matches of the search text (input is escaped piece by piece)
         function hl(text) {
@@ -469,70 +483,65 @@
             }
             return out + esc(text.slice(from));
         }
-        const pill = (m) => { const c = ALIGN[m.alignment]; return `<span class="badge-pill" style="background:${c.bg};color:${c.text};border:1px solid ${c.border};">${c.label}</span>`; };
+        const tierPill = (tier) => { const t = TIERS[tier]; return `<span class="badge-pill" style="background:${t.bg};color:${t.color};border:1px solid ${t.color}55;">${esc(t.label)}</span>`; };
+        const emptyRow = '<div class="empty"><span>No links match your search or filters.</span><button type="button" class="ghost-btn" data-clear><i class="fas fa-rotate-left" aria-hidden="true"></i> Clear filters</button></div>';
 
         // ── Views ──
         function renderTable(list) {
             const tbody = $('tableBody');
-            if (!list.length) {
-                tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><span>No mappings match your search or filters.</span><button type="button" class="ghost-btn" data-clear><i class="fas fa-rotate-left" aria-hidden="true"></i> Clear filters</button></div></td></tr>';
-                return;
-            }
+            if (!list.length) { tbody.innerHTML = `<tr><td colspan="6">${emptyRow}</td></tr>`; return; }
             tbody.innerHTML = list.map((m, n) => `<tr data-i="${m.i}">
                 <td style="color:#64748b;font-weight:600;">${n + 1}</td>
-                <td><button type="button" class="link-btn" data-open="${m.i}">${hl(m.ncf)}</button></td>
-                <td><span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">${hl(m.domain)}</span></td>
-                <td style="font-weight:500;">${hl(m.iso)}</td>
+                <td><button type="button" class="link-btn" data-open="${m.i}">${hl(m.id + ' · ' + m.title)}</button></td>
+                <td><span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">${hl(m.groupName)}</span></td>
+                <td>${tierPill(m.tier)}</td>
+                <td style="font-weight:500;">${hl(m.iso + ' ' + m.isoTitle)}</td>
                 <td><span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">${hl(m.theme)}</span></td>
-                <td>${pill(m)}</td>
             </tr>`).join('');
         }
 
         function renderGrouped(list) {
             const host = $('view-grouped');
-            if (!list.length) { host.innerHTML = '<div class="card"><div class="empty"><span>No mappings match your search or filters.</span><button type="button" class="ghost-btn" data-clear><i class="fas fa-rotate-left" aria-hidden="true"></i> Clear filters</button></div></div>'; return; }
-            host.innerHTML = DOMAINS.map((domain) => {
-                const items = list.filter((m) => m.domain === domain);
+            if (!list.length) { host.innerHTML = `<div class="card">${emptyRow}</div>`; return; }
+            host.innerHTML = R.groups.map((g) => {
+                const items = list.filter((m) => m.group === g.id);
                 if (!items.length) return '';
-                const tally = ['strong', 'moderate', 'partial'].map((k) => [k, items.filter((m) => m.alignment === k).length]).filter((x) => x[1]).map((x) => `${x[1]} ${ALIGN[x[0]].label.toLowerCase()}`).join(' · ');
-                const sc = ncfScore(domain);
+                const reqs = new Set(items.map((m) => m.id)).size;
+                const sc = groupScore(g.name);
                 return `<details class="card group" open>
                     <summary><i class="fas fa-chevron-right chev" aria-hidden="true"></i>
-                        <span class="group-title">${esc(domain)}${sc !== null ? `<span class="score-chip" title="Your assessment score">You: ${sc}%</span>` : ''}<span class="group-sub">${items.length} mapping${items.length === 1 ? '' : 's'} · ${tally}</span></span>
+                        <span class="group-title">${esc(g.name)}${sc !== null ? `<span class="score-chip" title="Your assessment score">You: ${sc}%</span>` : ''}<span class="group-sub">${reqs} requirement${reqs === 1 ? '' : 's'} · ${items.length} proposed link${items.length === 1 ? '' : 's'}</span></span>
                     </summary>
                     <div class="group-list">${items.map((m) => `<button type="button" class="map-item" data-open="${m.i}">
-                        <span class="m-ncf">${hl(m.ncf)}</span>
-                        <span class="m-iso"><i class="fas fa-arrow-right" aria-hidden="true" style="font-size:0.7rem;margin-right:0.4rem;"></i>${hl(m.iso)}</span>
-                        <span class="tags">${pill(m)}<span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">${hl(m.theme)}</span></span>
+                        <span class="m-ncf">${hl(m.id + ' · ' + m.title)}</span>
+                        <span class="m-iso"><i class="fas fa-arrow-right" aria-hidden="true" style="font-size:0.7rem;margin-right:0.4rem;"></i>${hl(m.iso + ' ' + m.isoTitle)}</span>
+                        <span class="tags">${tierPill(m.tier)}<span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">${hl(m.theme)}</span></span>
                     </button>`).join('')}</div>
                 </details>`;
             }).join('');
         }
 
         function renderCoverage() {
-            $('covHeadRow').innerHTML = '<th>NCF domain</th>' + THEMES.map((t) => `<th>${t}</th>`).join('') + '<th>Total</th>';
-            const cell = (domain, theme) => {
-                const items = mappings.filter((m) => m.domain === domain && (theme === null || m.theme === theme));
-                if (!items.length) return '<span class="cov-zero" aria-label="No mappings">—</span>';
-                const cnt = (k) => items.filter((m) => m.alignment === k).length;
-                const seg = ['strong', 'moderate', 'partial'].map((k) => `<i style="width:${(cnt(k) / items.length) * 100}%;background:${ALIGN[k].bar}"></i>`).join('');
-                const pressed = state.d === domain && state.t === (theme === null ? 'all' : theme);
-                const label = `${items.length} mapping${items.length === 1 ? '' : 's'}: ${cnt('strong')} strong, ${cnt('moderate')} moderate, ${cnt('partial')} partial. Show them.`;
-                return `<button type="button" class="cov-cell" style="--i:${Math.min(1, items.length / 8)}" data-cov-d="${esc(domain)}" data-cov-t="${theme === null ? 'all' : theme}" aria-pressed="${pressed}" aria-label="${esc(domain)}, ${theme === null ? 'all themes' : theme}: ${label}">${items.length}<span class="mini-bars" aria-hidden="true">${seg}</span></button>`;
+            $('covHeadRow').innerHTML = '<th>Requirement group</th>' + THEMES.map((t) => `<th>${t}</th>`).join('') + '<th>Total</th>';
+            const cell = (g, theme) => {
+                const n = mappings.filter((m) => m.group === g.id && (theme === null || m.theme === theme)).length;
+                if (!n) return '<span class="cov-zero" aria-label="No links">—</span>';
+                const pressed = state.g === g.id && state.t === (theme === null ? 'all' : theme);
+                return `<button type="button" class="cov-cell" style="--i:${Math.min(1, n / 12)}" data-cov-g="${esc(g.id)}" data-cov-t="${theme === null ? 'all' : theme}" aria-pressed="${pressed}" aria-label="${esc(g.name)}, ${theme === null ? 'all themes' : theme}: ${n} proposed link${n === 1 ? '' : 's'}. Show them."><span>${n}</span></button>`;
             };
-            $('covBody').innerHTML = DOMAINS.map((d) => {
-                const sc = ncfScore(d);
-                return `<tr><td style="font-weight:600;color:#fff;">${esc(d)}${sc !== null ? `<span class="score-chip" title="Your assessment score">You: ${sc}%</span>` : ''}</td>${THEMES.map((t) => `<td>${cell(d, t)}</td>`).join('')}<td>${cell(d, null)}</td></tr>`;
+            $('covBody').innerHTML = R.groups.map((g) => {
+                const sc = groupScore(g.name);
+                return `<tr><td style="font-weight:600;color:#fff;">${esc(g.name)}${sc !== null ? `<span class="score-chip" title="Your assessment score">You: ${sc}%</span>` : ''}</td>${THEMES.map((t) => `<td>${cell(g, t)}</td>`).join('')}<td>${cell(g, null)}</td></tr>`;
             }).join('');
 
             const foot = [];
-            const empty = THEMES.filter((t) => !mappings.some((m) => m.theme === t));
-            if (empty.length) foot.push(`<span><i class="fas fa-triangle-exclamation" aria-hidden="true" style="color:#ffea00;margin-right:0.4rem;"></i>No Ghana NCF controls are mapped to the ISO <strong>${empty.join(', ')}</strong> theme${empty.length === 1 ? '' : 's'}. See <a href="gaps.html">Gap Analysis</a>.</span>`);
+            const unlinked = R.requirements.filter((r) => !r.iso27002Links.length);
+            if (unlinked.length) foot.push(`<span><i class="fas fa-triangle-exclamation" aria-hidden="true" style="color:#ffea00;margin-right:0.4rem;"></i>${unlinked.length} requirement${unlinked.length === 1 ? ' has' : 's have'} no proposed ISO link: ${unlinked.map((r) => esc(r.id + ' ' + r.title)).join('; ')}. See <a href="gaps.html">Gap Analysis</a>.</span>`);
             if (scores) {
                 const parts = THEMES.map((t) => [t, isoScore(t)]).filter((x) => x[1] !== null).map((x) => `${x[0]} ${x[1]}%`);
-                foot.push(`<span><i class="fas fa-clipboard-check" aria-hidden="true" style="color:#38bdf8;margin-right:0.4rem;"></i>Your latest assessment${scores.org ? ` (${esc(scores.org)})` : ''} — ISO themes: ${parts.join(' · ')}. Domain scores appear beside each NCF domain.</span>`);
+                foot.push(`<span><i class="fas fa-clipboard-check" aria-hidden="true" style="color:#38bdf8;margin-right:0.4rem;"></i>Your latest assessment${scores.org ? ` (${esc(scores.org)})` : ''} — ISO themes: ${parts.join(' · ')}. Group scores appear beside each requirement group.</span>`);
             } else {
-                foot.push('<span><i class="fas fa-clipboard-check" aria-hidden="true" style="color:#38bdf8;margin-right:0.4rem;"></i><a href="assessment.html">Complete an assessment</a> to see your own scores beside each domain here.</span>');
+                foot.push('<span><i class="fas fa-clipboard-check" aria-hidden="true" style="color:#38bdf8;margin-right:0.4rem;"></i><a href="assessment.html">Complete an assessment</a> to see your own scores beside each group here.</span>');
             }
             $('covFoot').innerHTML = foot.join('');
         }
@@ -540,23 +549,23 @@
         // ── Main render ──
         function render() {
             const list = getFiltered();
-            $('cntStrong').textContent = mappings.filter((m) => m.alignment === 'strong').length;
-            $('cntModerate').textContent = mappings.filter((m) => m.alignment === 'moderate').length;
-            $('cntPartial').textContent = mappings.filter((m) => m.alignment === 'partial').length;
+            $('cntLinks').textContent = mappings.length;
+            $('cntReq').textContent = R.requirements.length;
+            $('cntIso').textContent = new Set(mappings.map((m) => m.iso)).size;
             $('chipAll').textContent = `All (${mappings.length})`;
 
-            document.querySelectorAll('[data-align]').forEach((el) => {
-                const on = el.dataset.align === state.a;
+            document.querySelectorAll('#tierChips [data-tier]').forEach((el) => {
+                const on = el.dataset.tier === state.w;
                 el.setAttribute('aria-pressed', on);
-                if (el.classList.contains('filter-btn')) el.classList.toggle('active', on);
+                el.classList.toggle('active', on);
             });
             if ($('searchInput').value !== state.q) $('searchInput').value = state.q;
-            $('domainFilter').value = state.d;
+            $('groupFilter').value = state.g;
             $('themeFilter').value = state.t;
             $('sortSelect').value = state.s;
             $('clearBtn').disabled = !filtersActive();
             $('exportBtn').disabled = !list.length;
-            $('resultCount').textContent = `Showing ${list.length} of ${mappings.length} mappings${filtersActive() ? ' (filtered)' : ''}`;
+            $('resultCount').textContent = `Showing ${list.length} of ${mappings.length} proposed links${filtersActive() ? ' (filtered)' : ''}`;
 
             VIEWS.forEach((v) => {
                 const on = v === state.v;
@@ -576,8 +585,8 @@
             try {
                 const p = new URLSearchParams();
                 if (state.q.trim()) p.set('q', state.q.trim());
-                if (state.a !== 'all') p.set('a', state.a);
-                if (state.d !== 'all') p.set('d', state.d);
+                if (state.g !== 'all') p.set('g', state.g);
+                if (state.w !== 'all') p.set('w', state.w);
                 if (state.t !== 'all') p.set('t', state.t);
                 if (state.s !== 'default') p.set('s', state.s);
                 if (state.v !== 'table') p.set('v', state.v);
@@ -588,8 +597,8 @@
         function readURL() {
             const p = new URLSearchParams(location.search);
             state.q = (p.get('q') || '').slice(0, 100);
-            if (['strong', 'moderate', 'partial'].includes(p.get('a'))) state.a = p.get('a');
-            if (DOMAINS.includes(p.get('d'))) state.d = p.get('d');
+            if (GROUP_IDS.includes(p.get('g'))) state.g = p.get('g');
+            if (p.get('w') in TIERS) state.w = p.get('w');
             if (THEMES.includes(p.get('t'))) state.t = p.get('t');
             if (SORTS.includes(p.get('s'))) state.s = p.get('s');
             if (VIEWS.includes(p.get('v'))) state.v = p.get('v');
@@ -597,46 +606,53 @@
 
         // ── Detail sheet ──
         let sheetTrigger = null;
-        function scoreBlock(title, name, sc) {
+        function scoreBlock(name, sc) {
             if (sc === null) return '';
             return `<div class="meter"><span style="min-width:0;flex:0 1 auto;">${esc(name)}</span><span class="bar" aria-hidden="true"><span style="width:${sc}%"></span></span><b>${sc}%</b></div>`;
         }
         function openSheet(i, trigger) {
             const m = mappings[i];
             if (!m) return;
-            const related = mappings.filter((x) => x.iso === m.iso && x.i !== m.i);
-            const nS = ncfScore(m.domain), iS = isoScore(m.theme);
-            $('sheetTitle').textContent = 'Mapping detail';
+            const r = m.r;
+            const others = mappings.filter((x) => x.iso === m.iso && x.i !== m.i);
+            const gS = groupScore(m.groupName), iS = isoScore(m.theme), ans = answerFor(m.id);
+            const flags = (r.flags || []).filter((f) => FLAG_TEXT[f]);
+            $('sheetTitle').textContent = 'Link detail';
             $('sheetBody').innerHTML = `
                 <div class="sheet-block">
-                    <h3>Alignment</h3>
-                    <p>${pill(m)}</p>
-                    <p class="sub">${esc(MEANING[m.alignment])}</p>
+                    <h3>Status</h3>
+                    <p><span class="badge-pill" style="background:rgba(255,234,0,0.1);color:#ffea00;border:1px solid rgba(255,234,0,0.3);">Proposed</span></p>
+                    <p class="sub">This link is a suggestion that has not been validated. No strength of alignment is given.</p>
                 </div>
                 <div class="sheet-block">
-                    <h3>Ghana NCF</h3>
-                    <p><strong>${esc(m.ncf)}</strong></p>
-                    <p class="sub">Domain: ${esc(m.domain)}</p>
+                    <h3>Ghana requirement</h3>
+                    <p><strong>${esc(m.id)} · ${esc(m.title)}</strong></p>
+                    <p class="sub">${esc(r.requirement)}</p>
+                    <p class="sub">Source: ${esc(r.source)}</p>
+                    <p class="sub">Applies to: ${esc(m.tierLabel)} · Group: ${esc(m.groupName)}</p>
+                    ${flags.map((f) => `<p class="sub" style="color:#f59e0b;"><i class="fas fa-circle-info" aria-hidden="true"></i> ${esc(FLAG_TEXT[f])}</p>`).join('')}
                 </div>
                 <div class="sheet-block">
                     <h3>ISO/IEC 27002:2022</h3>
-                    <p><strong>${esc(m.iso)}</strong></p>
+                    <p><strong>${esc(m.iso)} ${esc(m.isoTitle)}</strong></p>
                     <p class="sub">Theme: ${esc(m.theme)}</p>
+                    ${(r.isoNotes || []).map((n) => `<p class="sub">Note: ${esc(n)}</p>`).join('')}
                 </div>
                 <div class="sheet-block">
                     <h3>Your assessment</h3>
-                    ${scores ? `<p class="sub" style="margin:0 0 0.25rem;">Domain and theme level${scores.org ? ' — ' + esc(scores.org) : ''}</p>
-                        ${scoreBlock('NCF', m.domain, nS) || '<p class="sub">No score for this domain.</p>'}
-                        ${scoreBlock('ISO', m.theme + ' controls', iS) || '<p class="sub">No score for this ISO theme.</p>'}`
-                        : '<p class="sub"><a href="assessment.html" style="color:#38bdf8;">Complete an assessment</a> to see how your organization scores on this domain and theme.</p>'}
+                    ${scores ? `<p class="sub" style="margin:0 0 0.25rem;">${scores.org ? esc(scores.org) : 'Latest assessment'}</p>
+                        ${ans ? `<p class="sub" style="color:#e2e8f0;">This requirement: ${esc(ans)}</p>` : '<p class="sub">This requirement was not part of your assessment (it may not apply to your organization).</p>'}
+                        ${scoreBlock(m.groupName, gS)}
+                        ${scoreBlock('ISO ' + m.theme + ' controls', iS) || '<p class="sub">No score for this ISO theme.</p>'}`
+                        : '<p class="sub"><a href="assessment.html" style="color:#38bdf8;">Complete an assessment</a> to see how your organization scores here.</p>'}
                 </div>
                 <div class="sheet-block">
-                    <h3>Other NCF controls mapped to this ISO control</h3>
-                    ${related.length ? `<ul>${related.map((x) => `<li><button type="button" class="link-btn" data-open="${x.i}">${esc(x.ncf)}</button> <span class="sub">— ${ALIGN[x.alignment].label}</span></li>`).join('')}</ul>` : '<p class="sub">No other NCF controls map to this ISO control.</p>'}
+                    <h3>Other requirements linked to this ISO control</h3>
+                    ${others.length ? `<ul>${others.map((x) => `<li><button type="button" class="link-btn" data-open="${x.i}">${esc(x.id + ' · ' + x.title)}</button></li>`).join('')}</ul>` : '<p class="sub">No other requirement links to this ISO control.</p>'}
                 </div>
                 <div class="sheet-actions">
                     <button type="button" class="ghost-btn" data-act="iso" data-i="${m.i}"><i class="fas fa-magnifying-glass" aria-hidden="true"></i> Show this ISO control</button>
-                    <button type="button" class="ghost-btn" data-act="domain" data-i="${m.i}"><i class="fas fa-filter" aria-hidden="true"></i> Filter by this domain</button>
+                    <button type="button" class="ghost-btn" data-act="group" data-i="${m.i}"><i class="fas fa-filter" aria-hidden="true"></i> Filter by this group</button>
                 </div>`;
             if (!$('detailSheet').classList.contains('open')) sheetTrigger = trigger || document.activeElement;
             $('detailSheet').classList.add('open');
@@ -670,31 +686,30 @@
         function exportCSV() {
             const list = getFiltered();
             if (!list.length) return;
-            const rows = [['#', 'Ghana NCF Control', 'NCF Domain', 'ISO 27002 Control', 'ISO Theme', 'Alignment']]
-                .concat(list.map((m, n) => [n + 1, m.ncf, m.domain, m.iso, m.theme, ALIGN[m.alignment].label]));
-            const blob = new Blob(['﻿' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+            const rows = [['#', 'Requirement ID', 'Requirement', 'Group', 'Applies to', 'Source', 'ISO 27002 Control', 'ISO Title', 'ISO Theme', 'Status']]
+                .concat(list.map((m, n) => [n + 1, m.id, m.title, m.groupName, m.tierLabel, m.source, m.iso, m.isoTitle, m.theme, 'Proposed (not validated)']));
+            const blob = new Blob(['\uFEFF' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'ghana-ncf-iso27002-mapping.csv';
+            a.download = 'ghana-requirements-iso27002-links.csv';
             document.body.appendChild(a); a.click(); a.remove();
             setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-            toast(`Exported ${list.length} mapping${list.length === 1 ? '' : 's'}`);
+            toast(`Exported ${list.length} link${list.length === 1 ? '' : 's'}`);
         }
         function copyLink() {
             const done = () => toast('Link copied');
             if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(location.href).then(done, () => toast('Copy failed — copy the address bar instead'));
             else { try { const t = document.createElement('textarea'); t.value = location.href; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); done(); } catch (e) { toast('Copy failed — copy the address bar instead'); } }
         }
-        function clearFilters() { state.q = ''; state.a = 'all'; state.d = 'all'; state.t = 'all'; render(); }
+        function clearFilters() { state.q = ''; state.g = 'all'; state.w = 'all'; state.t = 'all'; render(); }
         function jumpToResults() { setTimeout(() => $('resultCount').scrollIntoView({ behavior: 'smooth', block: 'center' }), 60); }
 
         // ── Wire up ──
-        $('domainFilter').innerHTML = '<option value="all">All domains</option>' + DOMAINS.map((d) => `<option value="${esc(d)}">${esc(d)} (${mappings.filter((m) => m.domain === d).length})</option>`).join('');
+        $('groupFilter').innerHTML = '<option value="all">All groups</option>' + R.groups.map((g) => `<option value="${esc(g.id)}">${esc(g.name)} (${mappings.filter((m) => m.group === g.id).length})</option>`).join('');
         $('themeFilter').innerHTML = '<option value="all">All themes</option>' + THEMES.filter((t) => mappings.some((m) => m.theme === t)).map((t) => `<option value="${t}">${t} (${mappings.filter((m) => m.theme === t).length})</option>`).join('');
-        Object.keys(MEANING).forEach((k) => { $('lg' + k[0].toUpperCase() + k.slice(1)).textContent = MEANING[k]; });
 
         $('searchInput').addEventListener('input', (e) => { state.q = e.target.value; render(); });
-        $('domainFilter').addEventListener('change', (e) => { state.d = e.target.value; render(); });
+        $('groupFilter').addEventListener('change', (e) => { state.g = e.target.value; render(); });
         $('themeFilter').addEventListener('change', (e) => { state.t = e.target.value; render(); });
         $('sortSelect').addEventListener('change', (e) => { state.s = e.target.value; render(); });
         $('clearBtn').addEventListener('click', clearFilters);
@@ -706,16 +721,16 @@
 
         document.addEventListener('click', (e) => {
             const t = e.target.closest ? e.target : e.target.parentElement;
-            const align = t.closest('[data-align]');
-            if (align) { state.a = (align.classList.contains('stat-btn') && state.a === align.dataset.align) ? 'all' : align.dataset.align; render(); return; }
+            const tier = t.closest('[data-tier]');
+            if (tier) { state.w = tier.dataset.tier; render(); return; }
             if (t.closest('[data-clear]')) { clearFilters(); return; }
-            const cov = t.closest('[data-cov-d]');
-            if (cov) { state.d = cov.dataset.covD; state.t = cov.dataset.covT; state.v = 'table'; render(); jumpToResults(); return; }
+            const cov = t.closest('[data-cov-g]');
+            if (cov) { state.g = cov.dataset.covG; state.t = cov.dataset.covT; state.v = 'table'; render(); jumpToResults(); return; }
             const act = t.closest('[data-act]');
             if (act) {
                 const m = mappings[Number(act.dataset.i)];
-                if (act.dataset.act === 'iso') { state.q = m.iso; state.a = 'all'; state.d = 'all'; state.t = 'all'; }
-                else { state.d = m.domain; }
+                if (act.dataset.act === 'iso') { state.q = m.iso + ' ' + m.isoTitle; state.g = 'all'; state.w = 'all'; state.t = 'all'; }
+                else { state.g = m.group; }
                 state.v = 'table';
                 closeSheet(); render(); jumpToResults(); return;
             }

@@ -51,9 +51,22 @@
         td { padding: 0.85rem 1rem; font-size: 0.85rem; border-bottom: 1px solid rgba(80,80,80,0.2); color: #cbd5e1; }
         tr:hover td { background: rgba(56,189,248,0.03); }
 
+        [hidden] { display: none !important; }
+        .notice { display: flex; gap: 0.85rem; align-items: flex-start; margin-bottom: 1.25rem; padding: 1rem 1.125rem; border-radius: 14px; background: rgba(255,234,0,0.07); border: 1px solid rgba(255,234,0,0.3); }
+        .notice i { color: #ffea00; margin-top: 0.2rem; }
+        .notice p { font-size: 0.875rem; line-height: 1.6; color: #e2e8f0; }
+        .notice strong { color: #fff; }
+        .notice a { color: #38bdf8; }
+        .theme-bar { display: grid; gap: 0.4rem; }
+        .theme-bar .tb-head { display: flex; justify-content: space-between; gap: 0.75rem; font-size: 0.85rem; color: #cbd5e1; }
+        .theme-bar .tb-track { height: 8px; border-radius: 4px; background: rgba(80,80,80,0.4); overflow: hidden; }
+        .theme-bar .tb-track i { display: block; height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8); }
+        .unref-group { margin-bottom: 0.75rem; }
+        .unref-group summary { cursor: pointer; padding: 0.6rem 0; font-weight: 600; color: #fff; font-size: 0.9rem; }
+        .unref-group .gap-row { margin-top: 0.4rem; }
     </style>
     <link rel="stylesheet" href="mobile.css">
-    <script src="mapping-data.js"></script>
+    <script src="gh-requirements.js"></script>
     <script src="mobile.js" defer></script>
 </head>
 <body>
@@ -108,125 +121,75 @@
 
         <div class="hero-border reveal" style="margin-bottom:2rem;text-align:center;">
             <div class="badge-pill" style="background:rgba(255,234,0,0.1);color:#ffea00;margin-bottom:1rem;display:inline-flex;">
-                <i class="fas fa-search"></i> Framework Gaps
+                <i class="fas fa-search"></i> Where they do not overlap
             </div>
             <h1 style="font-weight:900;color:white;margin-bottom:0.75rem;">Gap Analysis</h1>
-            <p style="color:#94a3b8;max-width:650px;margin:auto;">Identifying structural and control-level gaps between Ghana's National Cybersecurity Framework and ISO/IEC 27002:2022.</p>
+            <p style="color:#94a3b8;max-width:650px;margin:auto;">Which Ghana requirements have no matching ISO/IEC 27002:2022 control, and which ISO controls no Ghana requirement refers to. Everything on this page is calculated from the same data as the mapping page.</p>
         </div>
 
-        <!-- Overview Stats -->
+        <!-- Overview Stats (calculated) -->
         <div class="stats-grid reveal" id="gapStats">
             <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" id="gapDomains" style="color:#38bdf8;">6</div>
-                <div class="stat-label">NCF Domains</div>
+                <div class="stat-num" id="gapReq" style="color:#38bdf8;">0</div>
+                <div class="stat-label">Ghana Requirements</div>
             </div>
             <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" style="color:#818cf8;">93</div>
+                <div class="stat-num" id="gapNoLink" style="color:#f97316;">0</div>
+                <div class="stat-label">With No ISO Link</div>
+            </div>
+            <div class="stat-card" style="text-align:center;">
+                <div class="stat-num" id="gapIso" style="color:#818cf8;">0</div>
                 <div class="stat-label">ISO 27002 Controls</div>
             </div>
             <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" id="gapMappings" style="color:#00ff88;">47</div>
-                <div class="stat-label">Mappings</div>
-            </div>
-            <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" id="gapUnique" style="color:#f97316;">13</div>
-                <div class="stat-label">Unique/<wbr>Unmapped</div>
+                <div class="stat-num" id="gapUnref" style="color:#ffea00;">0</div>
+                <div class="stat-label">Not Referenced</div>
             </div>
         </div>
 
-        <!-- Ghana-Unique Controls -->
+        <!-- Requirements without an ISO link -->
         <div class="card reveal" style="margin-bottom:1.5rem;">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
                 <div style="width:40px;height:40px;background:rgba(56,189,248,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
                     <i class="fas fa-flag" style="color:#38bdf8;"></i>
                 </div>
                 <div>
-                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana NCF — Unique Controls</h2>
-                    <p style="font-size:0.8rem;color:#8393aa;">Controls in Ghana NCF without direct ISO 27002 equivalent</p>
+                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">Ghana requirements with no ISO link</h2>
+                    <p style="font-size:0.8rem;color:#8393aa;">No ISO/IEC 27002 control has been proposed for these. Follow the legal text directly.</p>
                 </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">National cybersecurity strategy development & oversight</span>
-                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">Governance</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">Cybercrime legislation & prosecution frameworks</span>
-                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">Legal</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">Academic curriculum integration for cybersecurity</span>
-                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">Capacity</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">International treaty participation & bilateral agreements</span>
-                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">International</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#38bdf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">National CERT/CSIRT establishment & operations</span>
-                    <span class="badge-pill" style="background:rgba(56,189,248,0.1);color:#38bdf8;">Incident</span>
-                </div>
-            </div>
+            <div id="noLinkList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+            <h3 style="font-size:0.85rem;font-weight:700;color:white;margin:1.5rem 0 0.6rem;">Partly outside ISO/IEC 27002</h3>
+            <p style="font-size:0.8rem;color:#8393aa;margin-bottom:0.75rem;">These have proposed links, but the reviewer notes say part of the requirement sits elsewhere, for example in ISO/IEC 27001.</p>
+            <div id="noteList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
         </div>
 
-        <!-- ISO-Unique Controls -->
+        <!-- ISO controls no requirement refers to -->
         <div class="card reveal" style="margin-bottom:1.5rem;">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
                 <div style="width:40px;height:40px;background:rgba(129,140,248,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
                     <i class="fas fa-globe" style="color:#818cf8;"></i>
                 </div>
                 <div>
-                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">ISO 27002 — Unique Controls</h2>
-                    <p style="font-size:0.8rem;color:#8393aa;">Controls in ISO 27002 without direct Ghana NCF equivalent</p>
+                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">ISO 27002 controls no Ghana requirement refers to</h2>
+                    <p style="font-size:0.8rem;color:#8393aa;">Good practice that the Ghanaian texts read so far do not require. It is not a list of unimportant controls: choose from it through your own risk assessment.</p>
                 </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">7.1-7.14 Physical security perimeters & controls</span>
-                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Physical</span>
+            <div id="unrefList"></div>
+        </div>
+
+        <!-- Coverage by theme -->
+        <div class="card reveal" style="margin-bottom:1.5rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
+                <div style="width:40px;height:40px;background:rgba(0,255,136,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-chart-simple" style="color:#00ff88;"></i>
                 </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">8.11 Data masking techniques</span>
-                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Technological</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">8.12 Data leakage prevention</span>
-                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Technological</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">8.25-8.28 Secure development lifecycle & coding</span>
-                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Technological</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">5.12-5.13 Information classification & labelling</span>
-                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Organizational</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">8.15-8.17 Logging, monitoring & clock synchronization</span>
-                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Technological</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">6.1 Personnel screening & vetting</span>
-                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">People</span>
-                </div>
-                <div class="gap-row">
-                    <i class="fas fa-circle" style="color:#818cf8;font-size:0.4rem;flex-shrink:0;"></i>
-                    <span class="gap-text">5.32 Intellectual property rights protection</span>
-                    <span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">Organizational</span>
+                <div>
+                    <h2 style="font-size:1.1rem;font-weight:700;color:white;">ISO controls referenced, by theme</h2>
+                    <p style="font-size:0.8rem;color:#8393aa;">How many controls in each theme at least one Ghana requirement links to.</p>
                 </div>
             </div>
+            <div id="coverageBars" style="display:flex;flex-direction:column;gap:1rem;"></div>
         </div>
 
         <!-- Structural Comparison -->
@@ -242,67 +205,33 @@
             <div class="table-scroll">
                 <table class="responsive-table rt-title-first" style="--rt-min:560px;">
                     <thead>
-                        <tr><th>Aspect</th><th>Ghana NCF</th><th>ISO/IEC 27002</th></tr>
+                        <tr><th>Aspect</th><th>Ghana requirements</th><th>ISO/IEC 27002</th></tr>
                     </thead>
-                    <tbody>
-                        <tr><td style="font-weight:600;color:white;">Scope</td><td>National-level cybersecurity</td><td>Organizational information security</td></tr>
-                        <tr><td style="font-weight:600;color:white;">Structure</td><td>6 policy domains</td><td>4 control themes, 93 controls</td></tr>
-                        <tr><td style="font-weight:600;color:white;">Focus</td><td>Policy, governance, national capacity</td><td>Technical & operational controls</td></tr>
-                        <tr><td style="font-weight:600;color:white;">Applicability</td><td>Ghana public & private sectors</td><td>Any organization globally</td></tr>
-                        <tr><td style="font-weight:600;color:white;">Enforcement</td><td>Regulatory (Cyber Security Authority)</td><td>Voluntary (certification-based)</td></tr>
-                        <tr><td style="font-weight:600;color:white;">Physical Security</td><td>Limited coverage</td><td>14 dedicated controls</td></tr>
-                        <tr><td style="font-weight:600;color:white;">International Aspect</td><td>5 dedicated controls</td><td>Implicit via best practices</td></tr>
-                        <tr><td style="font-weight:600;color:white;">Update Cycle</td><td>Government-driven periodic review</td><td>ISO revision cycle (2022 latest)</td></tr>
-                    </tbody>
+                    <tbody id="structBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Key Insights -->
-        <div class="triple-grid" id="insightsGrid">
-            <div class="card reveal">
-                <div style="width:44px;height:44px;background:rgba(56,189,248,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-                    <i class="fas fa-lightbulb" style="color:#38bdf8;font-size:1.1rem;"></i>
-                </div>
-                <h3 style="font-size:0.95rem;font-weight:700;color:white;margin-bottom:0.5rem;">Governance Strength</h3>
-                <p style="font-size:0.85rem;color:#94a3b8;line-height:1.7;">Ghana NCF excels in national governance, strategic direction, and stakeholder coordination — areas where ISO 27002 focuses on organizational-level governance only.</p>
-            </div>
-            <div class="card reveal">
-                <div style="width:44px;height:44px;background:rgba(129,140,248,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-                    <i class="fas fa-cogs" style="color:#818cf8;font-size:1.1rem;"></i>
-                </div>
-                <h3 style="font-size:0.95rem;font-weight:700;color:white;margin-bottom:0.5rem;">Technical Depth</h3>
-                <p style="font-size:0.85rem;color:#94a3b8;line-height:1.7;">ISO 27002 provides significantly deeper technical and physical security controls. Organizations in Ghana should supplement NCF with these ISO controls for comprehensive coverage.</p>
-            </div>
-            <div class="card reveal">
-                <div style="width:44px;height:44px;background:rgba(0,255,136,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-                    <i class="fas fa-handshake" style="color:#00ff88;font-size:1.1rem;"></i>
-                </div>
-                <h3 style="font-size:0.95rem;font-weight:700;color:white;margin-bottom:0.5rem;">Complementary Frameworks</h3>
-                <p style="font-size:0.85rem;color:#94a3b8;line-height:1.7;">The two frameworks are highly complementary. Adopting both gives organizations a robust cybersecurity posture covering national compliance and international best practices.</p>
-            </div>
-        </div>
-
-        <!-- Recommendations -->
+        <!-- What to do with this -->
         <div class="card reveal" style="margin-bottom:2rem;">
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
                 <div style="width:40px;height:40px;background:rgba(0,255,136,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;">
                     <i class="fas fa-clipboard-list" style="color:#00ff88;"></i>
                 </div>
-                <h2 style="font-size:1.1rem;font-weight:700;color:white;">Recommendations for Organizations</h2>
+                <h2 style="font-size:1.1rem;font-weight:700;color:white;">How to use this</h2>
             </div>
             <div style="display:flex;flex-direction:column;gap:0.75rem;">
                 <div style="padding:1rem;background:rgba(30,30,30,0.5);border-radius:12px;border-left:3px solid #38bdf8;">
-                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">1. Adopt Both Frameworks</h4>
-                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">Use Ghana NCF for national regulatory compliance and ISO 27002 as a technical implementation guide to achieve comprehensive cybersecurity coverage.</p>
+                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">1. Treat the law as the starting point</h4>
+                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">The Ghana requirements are legal duties that apply according to what your organization does. ISO/IEC 27002 helps you meet them but does not replace them.</p>
                 </div>
                 <div style="padding:1rem;background:rgba(30,30,30,0.5);border-radius:12px;border-left:3px solid #818cf8;">
-                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">2. Address Physical Security Gaps</h4>
-                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">Implement ISO 27002's 14 physical security controls (Section 7) as Ghana NCF provides limited physical security guidance.</p>
+                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">2. Use ISO for the rest through a risk assessment</h4>
+                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">Controls that no requirement refers to are optional good practice. Select those that address risks you have actually identified.</p>
                 </div>
                 <div style="padding:1rem;background:rgba(30,30,30,0.5);border-radius:12px;border-left:3px solid #00ff88;">
-                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">3. Strengthen Secure Development</h4>
-                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">Adopt ISO 27002's secure development lifecycle controls (8.25-8.28) for software security, which are absent in Ghana NCF.</p>
+                    <h4 style="font-size:0.9rem;font-weight:600;color:white;margin-bottom:0.3rem;">3. Have the links reviewed before relying on them</h4>
+                    <p style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">The links are proposals. Ask your supervisor, and for production use an ISO 27001 Lead Auditor in Ghana, to validate them.</p>
                 </div>
             </div>
         </div>
@@ -313,22 +242,65 @@
             <i class="fas fa-shield-halved" style="color:#38bdf8;"></i>
             <span style="font-weight:700;color:white;">GH-CYBER<span style="color:#38bdf8;">COMPLY</span></span>
         </div>
-        <p style="font-size:0.8rem;color:#8393aa;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
+        <p style="font-size:0.8rem;color:#8393aa;">Ghana requirements vs ISO/IEC 27002 Compliance Measurement System</p>
         <p style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;">&copy; 2026 All rights reserved.</p>
-        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana NCF control set is project-defined and is not an official publication of the Cyber Security Authority (CSA). Your assessments are stored only in this browser.</p>
+        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana requirements are this project&rsquo;s plain-language summary of the Cybersecurity Act 2020 (Act 1038), the Data Protection Act 2012 (Act 843) and the CSA Directive for Critical Information Infrastructure. They are not an official publication of the Cyber Security Authority (CSA) and have not yet been reviewed. Your assessments are stored only in this browser.</p>
     </footer>
 
     <script>
         window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300); });
-        // Figures derived from the data/lists on the site so pages cannot disagree
+
+        // Everything here is calculated from gh-requirements.js, the dataset the mapping page and API use.
         (function () {
-            const M = window.GH_MAPPINGS || [];
-            if (M.length) {
-                document.getElementById('gapDomains').textContent = new Set(M.map((m) => m.domain)).size;
-                document.getElementById('gapMappings').textContent = M.length;
-            }
-            const unique = document.querySelectorAll('.gap-row').length;
-            if (unique) document.getElementById('gapUnique').textContent = unique;
+            const R = window.GHRequirements;
+            if (!R) return;
+            const $ = (id) => document.getElementById(id);
+            const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const TIER = { '1A': ['All organizations', '#38bdf8'], '1B': ['Personal data', '#a78bfa'], '2': ['CII owners', '#f59e0b'] };
+            const THEMES = ['Organizational', 'People', 'Physical', 'Technological'];
+            const linked = new Set(R.requirements.flatMap((r) => r.iso27002Links));
+            const noLink = R.requirements.filter((r) => !r.iso27002Links.length);
+            const unref = R.iso.filter((c) => !linked.has(c.id));
+            const withNotes = R.requirements.filter((r) => r.isoNotes.length && r.iso27002Links.length);
+
+            $('gapReq').textContent = R.requirements.length;
+            $('gapNoLink').textContent = noLink.length;
+            $('gapIso').textContent = R.iso.length;
+            $('gapUnref').textContent = unref.length;
+
+            const row = (dot, text, pill, sub) => `<div class="gap-row"><i class="fas fa-circle" style="color:${dot};font-size:0.4rem;flex-shrink:0;" aria-hidden="true"></i><span class="gap-text">${text}${sub ? `<span style="display:block;font-size:0.78rem;color:#8393aa;font-weight:400;margin-top:0.15rem;">${sub}</span>` : ''}</span>${pill}</div>`;
+            const tierPill = (r) => { const [l, c] = TIER[r.tier]; return `<span class="badge-pill" style="background:${c}1a;color:${c};">${esc(l)}</span>`; };
+
+            $('noLinkList').innerHTML = noLink.length
+                ? noLink.map((r) => row('#38bdf8', esc(r.id + ' · ' + r.title), tierPill(r), esc(r.source))).join('')
+                : '<p style="font-size:0.85rem;color:#94a3b8;">Every requirement has at least one proposed ISO link.</p>';
+            $('noteList').innerHTML = withNotes.length
+                ? withNotes.map((r) => row('#f59e0b', esc(r.id + ' · ' + r.title), tierPill(r), esc(r.isoNotes.map((n) => n.charAt(0).toUpperCase() + n.slice(1)).join('. ')))).join('')
+                : '<p style="font-size:0.85rem;color:#94a3b8;">No notes.</p>';
+
+            $('unrefList').innerHTML = THEMES.map((t) => {
+                const items = unref.filter((c) => c.theme === t);
+                const total = R.iso.filter((c) => c.theme === t).length;
+                if (!items.length) return `<p class="sub" style="font-size:0.85rem;color:#94a3b8;margin-bottom:0.5rem;"><strong style="color:#fff;">${t}:</strong> every control is referenced.</p>`;
+                return `<details class="unref-group" open><summary>${t} controls (${items.length} of ${total} not referenced)</summary>${items.map((c) => row('#818cf8', esc(c.id + ' ' + c.title), `<span class="badge-pill" style="background:rgba(129,140,248,0.1);color:#818cf8;">${t}</span>`)).join('')}</details>`;
+            }).join('');
+
+            $('coverageBars').innerHTML = THEMES.map((t) => {
+                const total = R.iso.filter((c) => c.theme === t).length;
+                const n = R.iso.filter((c) => c.theme === t && linked.has(c.id)).length;
+                const pct = total ? Math.round((n / total) * 100) : 0;
+                return `<div class="theme-bar"><div class="tb-head"><span>${t}</span><span>${n} of ${total} referenced (${pct}%)</span></div><div class="tb-track" role="img" aria-label="${t}: ${n} of ${total} controls referenced"><i style="width:${pct}%"></i></div></div>`;
+            }).join('');
+
+            const tier = (id) => R.requirements.filter((r) => r.tier === id).length;
+            const struct = [
+                ['Structure', `${R.requirements.length} cited requirements in ${new Set(R.requirements.map((r) => r.group)).size} groups (Tier 1A: ${tier('1A')}, Tier 1B: ${tier('1B')}, Tier 2: ${tier('2')})`, `${THEMES.length} themes, ${R.iso.length} controls`],
+                ['Basis', 'Legal duties and CSA directive (paraphrased)', 'International best-practice standard'],
+                ['Applicability', 'Depends on the organization: all, personal-data processors, or designated CII owners', 'Selected through a risk assessment'],
+                ['Legal context', 'Act 1038, Act 843, CSA CII Directive', 'Framework-agnostic'],
+                ['Certification', 'Regulatory compliance, no certificate', 'ISO/IEC 27001 certification uses this guidance']
+            ];
+            $('structBody').innerHTML = struct.map((r) => `<tr><td style="font-weight:600;color:white;">${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('');
         })();
     </script>
 </body>
