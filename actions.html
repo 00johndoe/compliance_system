@@ -89,6 +89,9 @@
         .sortbox > span { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #8393aa; margin-bottom: 0.35rem; }
         .tool-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(80,80,80,0.3); align-items: center; }
         .tool-actions .spacer { flex: 1 1 auto; }
+        .tool-hint { margin-top: 0.85rem; font-size: 0.78rem; line-height: 1.55; color: #8393aa; }
+        .tool-hint i { color: #38bdf8; margin-right: 0.35rem; }
+        .tool-hint strong { color: #cbd5e1; }
         @media (max-width: 639px) {
             .chip-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
             .sortbox { width: 100%; }
@@ -292,10 +295,12 @@
                 <span class="spacer"></span>
                 <button type="button" class="ghost-btn" id="exportJsonBtn"><i class="fas fa-file-export" aria-hidden="true"></i> Export JSON</button>
                 <button type="button" class="ghost-btn" id="exportCsvBtn"><i class="fas fa-file-csv" aria-hidden="true"></i> Export CSV</button>
+                <button type="button" class="ghost-btn" id="icsBtn" aria-describedby="icsHint"><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add to calendar</button>
                 <button type="button" class="ghost-btn" id="importBtn"><i class="fas fa-file-import" aria-hidden="true"></i> Import</button>
                 <button type="button" class="ghost-btn" id="printBtn"><i class="fas fa-print" aria-hidden="true"></i> Print</button>
                 <button type="button" class="ghost-btn danger" id="clearDoneBtn"><i class="fas fa-broom" aria-hidden="true"></i> <span>Clear completed</span></button>
             </div>
+            <p class="tool-hint" id="icsHint"><i class="fas fa-calendar-days" aria-hidden="true"></i> <strong>Add to calendar</strong> downloads a calendar file (.ics). Open it in Google Calendar (Settings, then Import), Outlook or Apple Calendar: each open action with a due date becomes an all-day event with reminders at 9am the day before and on the day. Importing again usually updates the same events instead of duplicating them.</p>
             <input type="file" id="importFile" accept="application/json,.json" hidden>
         </section>
 
@@ -470,6 +475,7 @@
             document.querySelectorAll('.filter-btn').forEach((b) => { b.textContent = ({ all: 'All', todo: 'To do', doing: 'In progress', done: 'Done', overdue: 'Overdue' })[b.dataset.filter] + ' (' + counts[b.dataset.filter] + ')'; });
             $('sortSelect').value = state.s;
             $('exportJsonBtn').disabled = $('exportCsvBtn').disabled = $('printBtn').disabled = !st.total;
+            $('icsBtn').disabled = !st.openDated;
             $('clearDoneBtn').disabled = !st.done;
 
             // suggestions
@@ -599,6 +605,13 @@
         }
         $('exportJsonBtn').addEventListener('click', () => { download('action-plan-' + P.todayStr() + '.json', P.exportJSON(), 'application/json'); toast('Exported a JSON backup'); });
         $('exportCsvBtn').addEventListener('click', () => { download('action-plan-' + P.todayStr() + '.csv', P.exportCSV(), 'text/csv;charset=utf-8'); toast('Exported a CSV for spreadsheets'); });
+        $('icsBtn').addEventListener('click', () => {
+            const r = P.exportICS();
+            if (!r.count) { toast('No open actions have a due date yet.'); return; }
+            download('action-plan-deadlines-' + P.todayStr() + '.ics', r.ics, 'text/calendar;charset=utf-8');
+            const msg = 'Calendar file downloaded with ' + plural(r.count, 'deadline') + (r.noDue ? ' (' + plural(r.noDue, 'action') + ' without a due date skipped)' : '');
+            toast(msg); announce(msg);
+        });
         $('importBtn').addEventListener('click', () => $('importFile').click());
         $('importFile').addEventListener('change', (e) => {
             const file = e.target.files && e.target.files[0];

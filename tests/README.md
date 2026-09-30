@@ -22,7 +22,7 @@ What they cover:
 | `assessment.test.mjs` | "Partially implemented" scores 2.5 (50%); autosave and restore; validation and the custom dropdowns; dashboard trend, history and clear-data |
 | `mapping.test.mjs` | Filters, search, sorting, URL state, grouped and coverage views, detail panel, CSV export |
 | `dropdown.test.mjs` | Combobox roles, mouse and full keyboard use, outside click, viewport containment and flipping, long lists |
-| `actions.test.mjs` | Action plan: suggestions from gaps and de-duplication, add/edit/status/delete with undo, validation and size limits, overdue and due-soon logic, filters and sorting, export/import round-trip, hostile and corrupted data never rendered as HTML, dashboard card, report "Add to action plan", dialog focus handling, navigation |
+| `actions.test.mjs` | Action plan: suggestions from gaps and de-duplication, add/edit/status/delete with undo, validation and size limits, overdue and due-soon logic, filters and sorting, export/import round-trip, calendar (.ics) export (escaping, 75-byte folding, stable IDs, injection), hostile and corrupted data never rendered as HTML, dashboard card, report "Add to action plan", dialog focus handling, navigation |
 | `results.test.mjs` | Report score matches the dashboard; controls table filter; phone layout; report menu; printing |
 
 Each test starts from a clean browser state. A failing test prints what it expected and what it got.

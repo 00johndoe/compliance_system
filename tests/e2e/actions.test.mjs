@@ -78,6 +78,7 @@ test('plan: the form validates, and the data layer clamps oversized or invalid v
   await page.waitFor("!document.getElementById('fTitleErr').hidden");
   eq(await page.eval("[document.getElementById('modalOverlay').classList.contains('open'), fTitle.getAttribute('aria-invalid'), GHPlan.list().length]"), [true, 'true', 0], 'blank title is rejected and the dialog stays open');
   eq(await page.eval("document.activeElement.id"), 'fTitle', 'focus returns to the field with the error');
+  eq(await page.eval("(() => { const i = GHPlan.add({ title: 'Two\\r\\nlines', owner: 'A\\nB', notes: 'keep\\nbreaks' }).item; return [i.title, i.owner, i.notes]; })()"), ['Two lines', 'A B', 'keep\nbreaks'], 'single-line fields are flattened; notes keep their line breaks');
   eq(await page.eval("(() => { const r = GHPlan.add({ title: 'x'.repeat(500), notes: 'n'.repeat(5000), owner: 'o'.repeat(500), status: 'bogus', priority: 'urgent', due: '2026-02-31' }); const i = r.item; return [i.title.length, i.notes.length, i.owner.length, i.status, i.priority, i.due]; })()"), [140, 1000, 80, 'todo', 'medium', ''], 'lengths clamped, unknown enums defaulted, impossible date dropped');
 });
 
@@ -217,6 +218,58 @@ test('plan: dialog traps focus, closes on Escape and returns focus; layout holds
   await page.waitFor("!document.getElementById('modalOverlay').classList.contains('open')");
   eq(await page.eval("document.activeElement.id"), 'addBtn', 'focus returns to the button that opened it');
   eq(await page.eval('document.documentElement.scrollWidth <= document.documentElement.clientWidth'), true, 'still no sideways scroll');
+});
+
+test('calendar: the .ics file has stable, correctly escaped all-day events with reminders, and cannot be injected into', async ({ page, base }) => {
+  await open(page, base, { plan: [
+    { title: 'Approve policy, then publish; review', notes: 'Line one\nLine two, with comma; semicolon and \\ backslash', owner: 'Ama', priority: 'high', due: '2026-12-31' },
+    { title: 'Leap day task', due: '2028-02-28' },
+    { title: 'Café Ünïcode ✓ ' + 'long '.repeat(30), due: '2027-03-01', priority: 'low' },
+    { title: 'Already done', due: '2026-11-01', status: 'done' },
+    { title: 'No due date' },
+    { title: 'Evil\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nSUMMARY:injected', notes: 'x\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nSUMMARY:also injected', due: '2026-10-05' },
+  ] });
+  const r = await page.eval(`(() => {
+    const a = GHPlan.exportICS(), b = GHPlan.exportICS(), enc = new TextEncoder();
+    const lines = a.ics.split('\\r\\n');
+    return { ics: a.ics, count: a.count, noDue: a.noDue, lines: lines.length, maxBytes: Math.max(...lines.map((l) => enc.encode(l).length)),
+      bareBreaks: /[^\\r]\\n|\\r[^\\n]/.test(a.ics), uidsA: a.ics.match(/^UID:.*$/gm), uidsB: b.ics.match(/^UID:.*$/gm) };
+  })()`);
+  eq([r.count, r.noDue], [4, 1], 'open dated actions exported; the done and the undated one are not');
+  expect(r.ics.startsWith('BEGIN:VCALENDAR\r\nVERSION:2.0\r\n') && r.ics.endsWith('END:VCALENDAR\r\n'), 'calendar envelope, CRLF line endings');
+  eq(r.bareBreaks, false, 'every line break is CRLF');
+  expect(r.maxBytes <= 75, `no line longer than 75 octets (longest: ${r.maxBytes})`);
+  const unfolded = r.ics.replace(/\r\n /g, '');
+  eq((unfolded.match(/^BEGIN:VEVENT$/gm) || []).length, 4, 'exactly four events, none injected');
+  expect(unfolded.includes('SUMMARY:Due: Approve policy\\, then publish\\; review'), 'commas and semicolons escaped in SUMMARY');
+  expect(unfolded.includes('Line one\\nLine two\\, with comma\\; semicolon and \\\\ backslash'), 'notes: newline, comma, semicolon and backslash escaped');
+  expect(unfolded.includes('DTSTART;VALUE=DATE:20261231') && unfolded.includes('DTEND;VALUE=DATE:20270101'), 'a due date at year end ends on 1 January (all-day, exclusive end)');
+  expect(unfolded.includes('DTSTART;VALUE=DATE:20280228') && unfolded.includes('DTEND;VALUE=DATE:20280229'), 'leap day handled');
+  expect(unfolded.includes('Café Ünïcode ✓ long'), 'accented and symbol characters survive line folding intact');
+  expect(!/^SUMMARY:injected/m.test(unfolded) && !/^SUMMARY:also injected/m.test(unfolded), 'line breaks in titles or notes cannot start new properties');
+  eq((unfolded.match(/^BEGIN:VALARM$/gm) || []).length, 8, 'two reminders per event');
+  expect(/TRIGGER:-PT15H/.test(unfolded) && /TRIGGER:PT9H/.test(unfolded), '9am the day before and 9am on the day');
+  expect(/PRIORITY:3/.test(unfolded) && /PRIORITY:7/.test(unfolded) && /PRIORITY:5/.test(unfolded), 'priority mapped to iCalendar values');
+  eq(r.uidsA, r.uidsB, 'event IDs are stable between exports, so re-importing updates instead of duplicating');
+  eq(new Set(r.uidsA).size, 4, 'one unique ID per action');
+  expect(r.uidsA.every((u) => /^UID:[A-Za-z0-9_-]+@gh-cybercomply$/.test(u)), 'well-formed IDs');
+});
+
+test('calendar: the button downloads a .ics file and is disabled when no open action has a due date', async ({ page, base }) => {
+  await open(page, base, { plan: [{ title: 'Undated' }, { title: 'Finished', due: '2026-11-01', status: 'done' }] });
+  eq(await page.eval('document.getElementById("icsBtn").disabled'), true, 'nothing to add yet');
+  await page.eval("GHPlan.add({ title: 'Dated one', due: '2027-01-15' }); GHPlan.add({ title: 'Dated two', due: '2027-01-20' }); true");
+  await page.goto(base, '/actions.html');
+  await page.waitFor("document.getElementById('icsBtn').disabled === false");
+  await page.eval(`window.__dl = null; const O = window.Blob; window.Blob = function (p, o) { window.__blob = { type: o && o.type, text: p.join('') }; return new O(p, o); };
+    HTMLAnchorElement.prototype.click = function () { window.__dl = { name: this.download }; }; true`);
+  await page.eval("document.getElementById('icsBtn').click(); true");
+  await page.waitFor('!!window.__dl');
+  const got = await page.eval('({ name: window.__dl.name, type: window.__blob.type, hasCal: window.__blob.text.startsWith("BEGIN:VCALENDAR"), toast: document.getElementById("toastText").textContent })');
+  expect(/^action-plan-deadlines-\d{4}-\d{2}-\d{2}\.ics$/.test(got.name), `file name (${got.name})`);
+  eq(got.type, 'text/calendar;charset=utf-8', 'calendar media type');
+  expect(got.hasCal, 'file content is a calendar');
+  expect(/2 deadlines/.test(got.toast) && /1 action without a due date skipped/.test(got.toast), `toast explains what was exported (${got.toast})`);
 });
 
 test('navigation: "Action Plan" is in the desktop menu and the mobile menu of every page, active on its own page', async ({ page, base }) => {
