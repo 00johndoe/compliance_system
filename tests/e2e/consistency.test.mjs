@@ -27,34 +27,40 @@ test('assets load: icon font, Inter, and Chart.js 4.5.1 (pinned) on the report',
   await page.waitFor("[...document.querySelectorAll('canvas')].length === 3 && [...document.querySelectorAll('canvas')].every((c) => c.width > 0)");
 });
 
-test('figures agree: dashboard, gap analysis and mapping use the same data', async ({ page, base }) => {
+test('figures agree: dashboard figures come from the requirements dataset', async ({ page, base }) => {
   await page.goto(base, '/index.html');
-  await page.waitFor("[...document.querySelectorAll('#statsGrid .stat-num')].map((x) => x.textContent).join() === '6,93,47,6'", 8000);
-  // each domain badge on the dashboard equals the number of mapping rows for that domain
-  const mismatched = await page.eval(`(() => {
-    const M = window.GH_MAPPINGS, bad = [];
-    document.querySelectorAll('a.kv-link[href^="mapping.html?d="]').forEach((a) => {
-      const d = new URL(a.href, location.href).searchParams.get('d');
-      const shown = parseInt(a.querySelector('.badge-pill').textContent, 10);
-      const actual = M.filter((m) => m.domain === d).length;
-      if (shown !== actual) bad.push(d + ': ' + shown + ' vs ' + actual);
-    });
-    return bad;
+  await page.waitFor("[...document.querySelectorAll('#statsGrid .stat-num')].map((x) => x.textContent).join() === '53,93,153,6'", 8000);
+  const groups = await page.eval(`(() => {
+    const R = window.GHRequirements;
+    const shown = [...document.querySelectorAll('#groupList a')].map((a) => [new URL(a.href, location.href).searchParams.get('g'), parseInt(a.querySelector('.badge-pill').textContent, 10)]);
+    return { shown, expected: R.groups.map((g) => [g.id, R.requirements.filter((r) => r.group === g.id).length]) };
   })()`);
-  eq(mismatched, [], 'dashboard badges vs mapping data');
+  eq(groups.shown, groups.expected, 'dashboard group badges equal the requirement counts');
+  eq(await page.eval("[...document.querySelectorAll('#themeList .badge-pill')].map((b) => b.textContent)"), ['27 of 37 linked', '4 of 8 linked', '14 of 14 linked', '15 of 34 linked'], 'ISO theme link counts (60 of 93 controls are linked)');
+  eq(await page.eval("document.querySelector('#groupList').textContent.includes('NCF')"), false, 'no retired NCF wording');
+});
+
+test('gaps: every figure and list is calculated from the requirements dataset', async ({ page, base }) => {
+  const D = JSON.parse((await import('node:fs')).readFileSync(new URL('../../data/ghana-requirements.json', import.meta.url), 'utf8'));
+  const linked = new Set(D.requirements.flatMap((r) => r.iso27002Links));
+  const noLink = D.requirements.filter((r) => !r.iso27002Links.length);
   await page.goto(base, '/gaps.html');
-  eq(await page.eval("[...document.querySelectorAll('#gapStats .stat-num')].map((x) => x.textContent)"), ['6', '93', '47', '13']);
-  eq(await page.eval("document.querySelectorAll('.gap-row').length"), 13, 'gap list rows equal the "unique" figure');
-  await page.goto(base, '/mapping.html');
-  const totals = await page.eval("[cntStrong.textContent, cntModerate.textContent, cntPartial.textContent, document.querySelectorAll('#tableBody tr[data-i]').length]");
-  eq(totals, ['21', '16', '10', 47], 'alignment counts computed from the data, and 47 rows');
+  await page.waitFor("document.getElementById('gapReq').textContent !== '0'");
+  eq(await page.eval("[...document.querySelectorAll('#gapStats .stat-num')].map((x) => x.textContent)"), [String(D.requirements.length), String(noLink.length), '93', String(93 - linked.size)], 'stat cards');
+  eq(await page.eval("document.querySelectorAll('#noLinkList .gap-row').length"), noLink.length, 'requirements with no ISO link are listed');
+  expect(await page.eval("/T2-21/.test(noLinkList.textContent)"), 'T2-21 (risk register) is the requirement with no ISO link');
+  eq(await page.eval("document.querySelectorAll('#unrefList .gap-row').length"), 93 - linked.size, 'unreferenced ISO controls are listed');
+  const t = await page.eval("document.body.innerText");
+  expect(!/Based on proposed links/.test(t), 'no validation notice');
+  expect(!/NCF/.test(t), 'no retired NCF wording');
+  eq(await page.eval("document.querySelectorAll('#coverageBars .theme-bar').length"), 4, 'four themes shown');
 });
 
 test('wording: no page claims an official framework, "version 2024" or ISO 27001', async ({ page, base }) => {
   await page.seedAssessment(base, SEED);
   for (const p of ALL_PAGES) {
     await page.goto(base, `/${p}.html`);
-    const hit = await page.eval("(document.body.innerText.match(/version 2024|official Ghana|ISO 27001/i) || [null])[0]");
+    const hit = await page.eval("(document.body.innerText.replace(/ISO 27001 Lead Auditor/g, '').match(/version 2024|official Ghana|ISO 27001/i) || [null])[0]");
     eq(hit, null, `${p}: unwanted wording`);
   }
 });
@@ -69,6 +75,6 @@ test('disclaimers: every page footer and both report versions say it is a self-a
   for (const p of ['results', 'results-print']) {
     await page.goto(base, `/${p}.html`);
     const t = await page.eval("(document.querySelector('.report-disclaimer') || {}).textContent || ''");
-    expect(/not legal advice/.test(t) && /project-defined/.test(t), `${p}: report disclaimer missing`);
+    expect(/not legal advice/.test(t) && /plain-language summary/.test(t), `${p}: report disclaimer missing`);
   }
 });

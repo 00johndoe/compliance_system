@@ -22,7 +22,7 @@ test('layout: scroll-reveal never leaves content invisible (regression: 13,000px
     await page.goto(base, `/${p}.html`, { width: 390, height: 800, reduceMotion: false });
     for (let y = 0; y < 16000; y += 500) { await page.eval(`window.scrollTo(0, ${y}); true`); await sleep(70); }
     await sleep(800);
-    const stuck = await page.eval("[...document.querySelectorAll('.reveal')].filter((e) => getComputedStyle(e).opacity === '0').map((e) => e.className)");
+    const stuck = await page.eval("[...document.querySelectorAll('.reveal')].filter((e) => getComputedStyle(e).display !== 'none' && getComputedStyle(e).opacity === '0').map((e) => e.className)");
     eq(stuck, [], `${p}: elements still invisible after scrolling`);
   }
 });
@@ -47,8 +47,8 @@ test('layout: the mapping table is readable as cards on a phone', async ({ page,
     return { opacity: getComputedStyle(card).opacity, rows: document.querySelectorAll('#tableBody tr[data-i]').length, label: td && td.dataset.label, display: getComputedStyle(document.querySelector('#tableBody tr')).display };
   })()`);
   eq(info.opacity, '1', 'table card opacity');
-  eq(info.rows, 47, 'rows rendered');
-  eq(info.label, 'Ghana NCF Control', 'cell label used in card layout');
+  eq(info.rows, 153, 'rows rendered');
+  eq(info.label, 'Ghana Requirement', 'cell label used in card layout');
   eq(info.display, 'block', 'rows are cards on a phone');
 });
 

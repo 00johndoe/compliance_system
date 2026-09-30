@@ -1,4 +1,8 @@
+import { readFileSync } from 'node:fs';
 import { test, expect, eq, sleep } from './harness.mjs';
+
+const DATA = JSON.parse(readFileSync(new URL('../../data/ghana-requirements.json', import.meta.url), 'utf8'));
+const groupLinks = (id) => DATA.requirements.filter((r) => r.group === id).reduce((n, r) => n + r.iso27002Links.length, 0);
 
 const T = (i) => `document.querySelectorAll('.gs-trigger')[${i}]`;
 const PANEL = "(() => { const p = document.querySelector('.gs-panel'); if (!p) return null; const r = p.getBoundingClientRect(); return { l: Math.round(r.left), t: Math.round(r.top), r: Math.round(r.right), b: Math.round(r.bottom), vw: document.documentElement.clientWidth, vh: innerHeight, place: p.dataset.place }; })()";
@@ -11,9 +15,9 @@ async function open(page, base, width = 1280, height = 900) {
 
 test('dropdown: native selects are replaced by accessible comboboxes and stay the source of truth', async ({ page, base }) => {
   await open(page, base);
-  const info = await page.eval(`(() => { const t = ${T(0)}; const n = document.getElementById('domainFilter').getBoundingClientRect();
+  const info = await page.eval(`(() => { const t = ${T(0)}; const n = document.getElementById('groupFilter').getBoundingClientRect();
     return { role: t.getAttribute('role'), popup: t.getAttribute('aria-haspopup'), expanded: t.getAttribute('aria-expanded'), name: t.getAttribute('aria-label'), text: t.textContent.trim(), nativeSize: [Math.round(n.width), Math.round(n.height)] }; })()`);
-  eq(info, { role: 'combobox', popup: 'listbox', expanded: 'false', name: 'NCF domain', text: 'All domains', nativeSize: [1, 1] });
+  eq(info, { role: 'combobox', popup: 'listbox', expanded: 'false', name: 'Requirement group', text: 'All groups', nativeSize: [1, 1] });
 });
 
 test('dropdown: opens with counts, marks the selected option, and selecting applies the filter', async ({ page, base }) => {
@@ -21,10 +25,10 @@ test('dropdown: opens with counts, marks the selected option, and selecting appl
   await page.eval(`${T(0)}.click(); true`);
   await page.waitFor("document.querySelector('.gs-panel.is-open')");
   const list = await page.eval(`({ options: document.querySelectorAll('.gs-opt').length, counts: [...document.querySelectorAll('.gs-count')].map((c) => c.textContent).join(), selected: document.querySelector('.gs-opt[aria-selected=true]').textContent.trim(), labelsHaveNoCount: [...document.querySelectorAll('.gs-label')].every((l) => !/\\(\\d+\\)/.test(l.textContent)) })`);
-  eq(list, { options: 7, counts: '10,6,9,9,6,7', selected: 'All domains', labelsHaveNoCount: true });
+  eq(list, { options: 1 + DATA.groups.length, counts: DATA.groups.map((g) => groupLinks(g.id)).join(','), selected: 'All groups', labelsHaveNoCount: true });
   await page.eval("document.querySelectorAll('.gs-opt')[3].click(); true");
-  await page.waitFor("document.querySelectorAll('#tableBody tr[data-i]').length === 9");
-  eq(await page.eval(`[domainFilter.value, ${T(0)}.textContent.trim(), !document.querySelector('.gs-panel.is-open')]`), ['Incident Response', 'Incident Response', true]);
+  await page.waitFor(`document.querySelectorAll('#tableBody tr[data-i]').length === ${groupLinks('SEC')}`);
+  eq(await page.eval(`[groupFilter.value, ${T(0)}.textContent.trim(), !document.querySelector('.gs-panel.is-open')]`), ['SEC', 'Security safeguards & risk', true]);
   eq(await page.eval(`document.activeElement === ${T(0)}`), true, 'focus returns to the trigger');
 });
 
@@ -44,10 +48,10 @@ test('dropdown: full keyboard support (arrows, Enter, Space, Home/End, Escape, t
   await page.eval(`${T(2)}.focus(); true`);
   await page.key(' ', 'Space', 32);
   await page.key('End', 'End', 35); await page.key('Enter', 'Enter', 13);
-  await page.waitFor("document.getElementById('sortSelect').value === 'alignment'");
+  await page.waitFor("document.getElementById('sortSelect').value === 'iso'");
   await page.eval(`${T(0)}.focus(); true`);
-  await page.key('ArrowDown', 'ArrowDown', 40); await page.key('l', 'KeyL', 76); await page.key('Enter', 'Enter', 13);
-  await page.waitFor("document.getElementById('domainFilter').value === 'Legal & Regulatory'");
+  await page.key('ArrowDown', 'ArrowDown', 40); await page.key('p', 'KeyP', 80); await page.key('Enter', 'Enter', 13);
+  await page.waitFor("document.getElementById('groupFilter').value === 'PPL'");
 });
 
 test('dropdown: closes on outside click; programmatic value changes update the trigger', async ({ page, base }) => {
@@ -56,12 +60,12 @@ test('dropdown: closes on outside click; programmatic value changes update the t
   await page.waitFor("document.querySelector('.gs-panel.is-open')");
   await page.mouseClick(5, 5);
   await page.waitFor(`${T(0)}.getAttribute('aria-expanded') === 'false'`);
-  await page.eval("domainFilter.value = 'Capacity Building'; themeFilter.value = 'People'; true");   // programmatic writes, as the page's own code does
-  eq(await page.eval("[...document.querySelectorAll('.gs-trigger')].slice(0, 2).map((t) => t.textContent.trim())"), ['Capacity Building', 'People'], 'triggers follow programmatic value changes');
-  await page.eval("domainFilter.dispatchEvent(new Event('change', { bubbles: true })); true");                  // now register the filter with the page
+  await page.eval("groupFilter.value = 'GOV'; themeFilter.value = 'People'; true");   // programmatic writes, as the page's own code does
+  eq(await page.eval("[...document.querySelectorAll('.gs-trigger')].slice(0, 2).map((t) => t.textContent.trim())"), ['Governance & accountability', 'People'], 'triggers follow programmatic value changes');
+  await page.eval("groupFilter.dispatchEvent(new Event('change', { bubbles: true })); true");                  // now register the filter with the page
   await page.waitFor('clearBtn.disabled === false');
   await page.eval('clearBtn.click(); true');
-  await page.waitFor(`${T(0)}.textContent.trim() === 'All domains'`);
+  await page.waitFor(`${T(0)}.textContent.trim() === 'All groups'`);
 });
 
 test('dropdown: the panel stays inside the viewport at every width, flipping above near the bottom', async ({ page, base }) => {

@@ -19,21 +19,21 @@ async function open(page, base, { seed = false, width = 1280, height = 900, plan
 
 test('plan: suggestions come from the latest assessment, can be added, and are never duplicated', async ({ page, base }) => {
   await open(page, base, { seed: true });
-  // SEED has 6 areas below 75% (Legal 50, Incident 25, Capacity 25, Organizational 50, Physical 50, Technological 50); Governance is exactly 75
-  eq(await page.eval("document.querySelectorAll('#sgList .sg-item').length"), 6, 'suggested areas');
+  // SEED has 5 areas below 75% (Incident reporting 17, Security safeguards 40, Organizational 50, Physical 50, Technological 50); Data protection principles is exactly 75
+  eq(await page.eval("document.querySelectorAll('#sgList .sg-item').length"), 5, 'suggested areas');
   eq(await page.eval(items), 0, 'nothing in the plan yet');
   await page.eval("document.querySelector('[data-add-suggest]').click(); true");
   await page.waitFor(`${items} === 1`);
-  eq(await page.eval("document.querySelectorAll('#sgList .sg-item').length"), 5, 'added suggestion leaves the list');
+  eq(await page.eval("document.querySelectorAll('#sgList .sg-item').length"), 4, 'added suggestion leaves the list');
   const first = await page.eval("(() => { const i = GHPlan.list()[0]; return { kind: i.source.kind, status: i.status, priority: i.priority, pct: i.source.pct }; })()");
   eq(first.kind, 'gap'); eq(first.status, 'todo');
   // same bands as the report: below 25% immediate, below 50% high, below 75% medium
-  expect(first.priority === 'high' && first.pct === 25, `weakest area (25%) is added first with "high" priority (got ${first.priority}, ${first.pct}%)`);
+  expect(first.priority === 'immediate' && first.pct === 17, `weakest area (17%) is added first with "immediate" priority (got ${first.priority}, ${first.pct}%)`);
   eq(await page.eval("['immediate', 'high', 'medium', 'low'].map((p, i) => GHPlan.priorityForScore([10, 25, 50, 75][i]))"), ['immediate', 'high', 'medium', 'low'], 'priority bands');
   await page.eval("document.getElementById('addAllBtn').click(); true");
-  await page.waitFor(`${items} === 6`);
+  await page.waitFor(`${items} === 5`);
   eq(await page.eval("document.getElementById('suggest').hidden"), true, 'no suggestions left');
-  eq(await page.eval("(() => { const s = GHPlan.suggestionFor('Incident Response', 'Ghana NCF', 25); const r = GHPlan.add(s); return [r.existing === true, GHPlan.list().length]; })()"), [true, 6], 'adding the same gap again returns the existing action');
+  eq(await page.eval("(() => { const s = GHPlan.suggestionFor('Incident reporting & response', 'Ghana requirements', 17); const r = GHPlan.add(s); return [r.existing === true, GHPlan.list().length]; })()"), [true, 5], 'adding the same gap again returns the existing action');
 });
 
 test('plan: add, edit, change status, and delete with undo', async ({ page, base }) => {
@@ -180,7 +180,7 @@ test('plan: the dashboard shows progress, overdue work, and a prompt to build th
   eq(await page.eval("document.getElementById('planCard').hidden"), true, 'hidden with no assessment and no plan');
   await page.seedAssessment(base, SEED);
   await page.goto(base, '/index.html');
-  expect(await page.eval("/6 areas in your latest assessment/.test(planCard.textContent) && !!planCard.querySelector('a[href=\"actions.html\"]')"), 'prompts to build a plan from the gaps');
+  expect(await page.eval("/5 areas in your latest assessment/.test(planCard.textContent) && !!planCard.querySelector('a[href=\"actions.html\"]')"), 'prompts to build a plan from the gaps');
   await page.eval(`(() => { const off = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return GHPlan.todayStr(d); };
     GHPlan.add({ title: 'Late', due: off(-2) }); GHPlan.add({ title: 'Next', due: off(1) }); GHPlan.add({ title: 'Done one', status: 'done' }); return true; })()`);
   await page.goto(base, '/index.html');
@@ -193,7 +193,7 @@ test('plan: the dashboard shows progress, overdue work, and a prompt to build th
 test('report: each recommendation can be added to the action plan, once', async ({ page, base }) => {
   await page.seedAssessment(base, SEED);
   await page.goto(base, '/results.html');
-  await page.waitFor("document.querySelectorAll('#recommendations .plan-add').length === 10");
+  await page.waitFor("document.querySelectorAll('#recommendations .plan-add').length === 7");
   await page.eval("document.querySelector('#recommendations .plan-add').click(); true");
   await page.waitFor("GHPlan.list().length === 1 && document.querySelector('#recommendations .plan-add').classList.contains('is-added')");
   const added = await page.eval("(() => { const i = GHPlan.list()[0]; return [i.source.kind, i.source.pct, i.status]; })()");
@@ -201,7 +201,7 @@ test('report: each recommendation can be added to the action plan, once', async 
   await page.eval("document.querySelector('#recommendations .plan-add').click(); true");
   await page.waitFor("location.pathname.endsWith('actions.html')");
   await page.waitFor(`${items} === 1`);
-  eq(await page.eval("document.querySelectorAll('#sgList .sg-item').length"), 5, 'that area is no longer suggested');
+  eq(await page.eval("document.querySelectorAll('#sgList .sg-item').length"), 4, 'that area is no longer suggested');
 });
 
 test('plan: dialog traps focus, closes on Escape and returns focus; layout holds with very long text at 320px', async ({ page, base }) => {
