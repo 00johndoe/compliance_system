@@ -12,8 +12,8 @@
 // ─── Ghana National Cybersecurity Framework ───
 const GHANA_NCF = {
   key: 'ghana',
-  name: 'Ghana National Cybersecurity Framework',
-  version: '2024',
+  name: 'Ghana Cybersecurity Controls (project-defined, not an official CSA publication)',
+  version: 'draft-1',
   groupLabel: 'domains',
   domains: [
     {

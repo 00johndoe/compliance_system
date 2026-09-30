@@ -281,6 +281,7 @@
         </div>
         <p style="font-size:0.8rem;color:#8393aa;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
         <p style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;">&copy; 2026 All rights reserved.</p>
+        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana NCF control set is project-defined and is not an official publication of the Cyber Security Authority (CSA). Your assessments are stored only in this browser.</p>
     </footer>
 
     <script>
@@ -523,8 +524,8 @@
                 organization: { name: document.getElementById('orgName').value, sector: document.getElementById('orgSector').value, size: document.getElementById('orgSize').value, email: document.getElementById('orgEmail').value },
                 ncf: {}, iso: {}, timestamp: new Date().toISOString()
             };
-            document.querySelectorAll('input[type="hidden"][id^="ncf_"]').forEach(s => { data.ncf[s.id] = parseInt(s.value); });
-            document.querySelectorAll('input[type="hidden"][id^="iso_"]').forEach(s => { data.iso[s.id] = parseInt(s.value); });
+            document.querySelectorAll('input[type="hidden"][id^="ncf_"]').forEach(s => { data.ncf[s.id] = parseFloat(s.value); });
+            document.querySelectorAll('input[type="hidden"][id^="iso_"]').forEach(s => { data.iso[s.id] = parseFloat(s.value); });
             localStorage.setItem('assessmentData', JSON.stringify(data));
             try { draftReady = false; GHData.seedHistory(); GHData.addHistory(data); GHData.clearDraft(); } catch (e) { /* history is optional */ }
             window.location.href = 'results.html';

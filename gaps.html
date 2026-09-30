@@ -54,6 +54,7 @@
 
     </style>
     <link rel="stylesheet" href="mobile.css">
+    <script src="mapping-data.js"></script>
     <script src="mobile.js" defer></script>
 </head>
 <body>
@@ -115,19 +116,19 @@
         <!-- Overview Stats -->
         <div class="stats-grid reveal" id="gapStats">
             <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" style="color:#38bdf8;">37</div>
-                <div class="stat-label">Ghana NCF Controls</div>
+                <div class="stat-num" id="gapDomains" style="color:#38bdf8;">6</div>
+                <div class="stat-label">NCF Domains</div>
             </div>
             <div class="stat-card" style="text-align:center;">
                 <div class="stat-num" style="color:#818cf8;">93</div>
                 <div class="stat-label">ISO 27002 Controls</div>
             </div>
             <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" style="color:#00ff88;">47</div>
-                <div class="stat-label">Mapped Controls</div>
+                <div class="stat-num" id="gapMappings" style="color:#00ff88;">47</div>
+                <div class="stat-label">Mappings</div>
             </div>
             <div class="stat-card" style="text-align:center;">
-                <div class="stat-num" style="color:#f97316;">13</div>
+                <div class="stat-num" id="gapUnique" style="color:#f97316;">13</div>
                 <div class="stat-label">Unique/<wbr>Unmapped</div>
             </div>
         </div>
@@ -313,12 +314,23 @@
         </div>
         <p style="font-size:0.8rem;color:#8393aa;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
         <p style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;">&copy; 2026 All rights reserved.</p>
+        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana NCF control set is project-defined and is not an official publication of the Cyber Security Authority (CSA). Your assessments are stored only in this browser.</p>
     </footer>
 
     <script>
         window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 300); });
         const observer = new IntersectionObserver((entries) => { entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); }); }, { threshold: 0 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        // Figures derived from the data/lists on the site so pages cannot disagree
+        (function () {
+            const M = window.GH_MAPPINGS || [];
+            if (M.length) {
+                document.getElementById('gapDomains').textContent = new Set(M.map((m) => m.domain)).size;
+                document.getElementById('gapMappings').textContent = M.length;
+            }
+            const unique = document.querySelectorAll('.gap-row').length;
+            if (unique) document.getElementById('gapUnique').textContent = unique;
+        })();
     </script>
 </body>
 </html>

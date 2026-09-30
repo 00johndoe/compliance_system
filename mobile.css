@@ -375,3 +375,6 @@ label { cursor: pointer; }
   *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Site-wide disclaimer (footer) */
+.disclaimer { max-width: 46rem; margin: 0.75rem auto 0; font-size: 0.75rem; line-height: 1.55; color: #8393aa; }

@@ -141,6 +141,7 @@
         @media (min-width: 768px) { .gloss-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; } }
     </style>
     <link rel="stylesheet" href="mobile.css">
+    <script src="mapping-data.js"></script>
     <script src="gh-data.js"></script>
     <script src="mobile.js" defer></script>
 </head>
@@ -235,8 +236,8 @@
                 <div style="width:44px;height:44px;background:rgba(56,189,248,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
                     <i class="fas fa-shield-halved" style="color:#38bdf8;font-size:1.1rem;"></i>
                 </div>
-                <div class="stat-num" style="color:white;" data-count="37">0</div>
-                <div class="stat-label">Ghana NCF Controls</div>
+                <div class="stat-num" id="statDomains" style="color:white;" data-count="6">0</div>
+                <div class="stat-label">NCF Domains</div>
             </div>
             <div class="stat-card" style="text-align:center;">
                 <div style="width:44px;height:44px;background:rgba(129,140,248,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
@@ -249,14 +250,14 @@
                 <div style="width:44px;height:44px;background:rgba(0,255,136,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
                     <i class="fas fa-link" style="color:#00ff88;font-size:1.1rem;"></i>
                 </div>
-                <div class="stat-num" style="color:white;" data-count="47">0</div>
+                <div class="stat-num" id="statMappings" style="color:white;" data-count="47">0</div>
                 <div class="stat-label">Cross-Mappings</div>
             </div>
             <div class="stat-card" style="text-align:center;">
                 <div style="width:44px;height:44px;background:rgba(255,234,0,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
                     <i class="fas fa-chart-bar" style="color:#ffea00;font-size:1.1rem;"></i>
                 </div>
-                <div class="stat-num" style="color:white;" data-count="5">0</div>
+                <div class="stat-num" id="statLevels" style="color:white;" data-count="6">0</div>
                 <div class="stat-label">Maturity Levels</div>
             </div>
         </div>
@@ -437,7 +438,7 @@
         <details class="card glossary reveal" style="margin-bottom:2rem;">
             <summary><span><i class="fas fa-book-open" aria-hidden="true" style="color:#38bdf8;margin-right:0.6rem;"></i>Glossary</span><i class="fas fa-chevron-down chev" aria-hidden="true"></i></summary>
             <dl class="gloss-list">
-                <div><dt>Ghana NCF</dt><dd>Ghana's National Cybersecurity Framework.</dd></div>
+                <div><dt>Ghana NCF</dt><dd>The project-defined set of Ghana-oriented cybersecurity controls used in this tool. It is not an official CSA publication.</dd></div>
                 <div><dt>ISO/IEC 27002:2022</dt><dd>An international standard of information security controls and guidance.</dd></div>
                 <div><dt>Control</dt><dd>A safeguard or measure an organization puts in place to manage a security risk.</dd></div>
                 <div><dt>Control mapping</dt><dd>Matching each Ghana NCF control to the ISO 27002 control(s) that address a similar requirement.</dd></div>
@@ -456,6 +457,7 @@
         </div>
         <p style="font-size:0.8rem;color:#8393aa;">Ghana NCF vs ISO/IEC 27002 Compliance Measurement System</p>
         <p style="font-size:0.75rem;color:#64748b;margin-top:0.25rem;">&copy; 2026 All rights reserved.</p>
+        <p class="disclaimer">Self-assessment tool: results are indicative only and are not legal advice or a compliance certification. The Ghana NCF control set is project-defined and is not an official publication of the Cyber Security Authority (CSA). Your assessments are stored only in this browser.</p>
     </footer>
 
     <script>
@@ -469,6 +471,21 @@
             entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 100); } });
         }, { threshold: 0 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Figures derived from the shared mapping data so every page agrees
+        (function () {
+            const M = window.GH_MAPPINGS || [];
+            if (!M.length) return;
+            document.getElementById('statDomains').dataset.count = new Set(M.map((m) => m.domain)).size;
+            document.getElementById('statMappings').dataset.count = M.length;
+            document.getElementById('statLevels').dataset.count = document.querySelectorAll('#cmmGrid > div').length || 6;
+            document.querySelectorAll('a.kv-link[href^="mapping.html?d="]').forEach((a) => {
+                const d = new URL(a.href, location.href).searchParams.get('d') || '';
+                const n = M.filter((m) => m.domain === d).length;
+                const badge = a.querySelector('.badge-pill');
+                if (badge && n) badge.textContent = n + (n === 1 ? ' mapping' : ' mappings');
+            });
+        })();
 
         // Counter animation
         document.querySelectorAll('[data-count]').forEach(el => {

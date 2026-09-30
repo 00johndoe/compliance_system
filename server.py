@@ -15,8 +15,8 @@ assessments_db = {}
 
 # ─── Ghana NCF Controls ───
 GHANA_NCF = {
-    "name": "Ghana National Cybersecurity Framework",
-    "version": "2024",
+    "name": "Ghana Cybersecurity Controls (project-defined, not an official CSA publication)",
+    "version": "draft-1",
     "domains": [
         {
             "id": "GOV",
